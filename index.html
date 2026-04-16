@@ -8,706 +8,132 @@
 <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg: #06060a;
-  --surface: #0d0d14;
-  --card: #10101a;
-  --border: #1e1e2e;
-  --blue: #4F8EFF;
-  --blue-dim: rgba(79,142,255,0.08);
-  --green: #00E87A;
-  --red: #FF3B3B;
-  --yellow: #FFB800;
-  --white: #EEEEF5;
-  --muted: #52526a;
-  --dim: #252535;
+  --bg: #07070c;
+  --surface: #0f0f18;
+  --card: #13131f;
+  --border: #252538;
+  --border-bright: #2e2e48;
+  --blue: #5b9fff;
+  --blue-dim: rgba(91,159,255,0.08);
+  --green: #00f080;
+  --red: #ff4040;
+  --yellow: #ffbe00;
+  --white: #ffffff;
+  --off-white: #e8e8f0;
+  --light: #c0c0d8;
+  --muted: #7070a0;
+  --dim: #2a2a42;
 }
-
-body {
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Syne', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Subtle grid background */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(79,142,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79,142,255,0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Glow orb */
-body::after {
-  content: '';
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 600px;
-  background: radial-gradient(ellipse, rgba(79,142,255,0.06) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 40px;
-}
-
-/* ── HEADER ── */
-header {
-  padding: 32px 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 24px;
-  margin-bottom: 0;
-}
-
-.logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  letter-spacing: 3px;
-  color: var(--white);
-}
-
+body { background: var(--bg); color: var(--white); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(91,159,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(91,159,255,0.025) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; }
+body::after { content: ''; position: fixed; top: -300px; left: 50%; transform: translateX(-50%); width: 900px; height: 700px; background: radial-gradient(ellipse, rgba(91,159,255,0.08) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+header { padding: 28px 0 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-bright); }
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 4px; color: var(--white); }
 .logo span { color: var(--blue); }
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.network-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  padding: 6px 14px;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-}
-
-.connect-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #000;
-  background: var(--blue);
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-}
-
-.connect-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-.connect-btn.connected { background: var(--green); color: #000; }
-
-/* ── HERO ── */
-.hero {
-  padding: 72px 0 56px;
-  border-bottom: 1px solid var(--border);
-}
-
-.hero-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 4px;
-  color: var(--blue);
-  margin-bottom: 24px;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(56px, 10vw, 112px);
-  line-height: 0.9;
-  color: var(--white);
-  margin-bottom: 32px;
-  letter-spacing: 1px;
-}
-
+.header-right { display: flex; align-items: center; gap: 14px; }
+.network-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--light); padding: 7px 16px; border: 1px solid var(--border-bright); border-radius: 100px; }
+.connect-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: #000; background: var(--blue); border: none; padding: 11px 26px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-weight: 500; }
+.connect-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,159,255,0.3); }
+.connect-btn.connected { background: var(--green); }
+.hero { padding: 80px 0 64px; border-bottom: 1px solid var(--border-bright); }
+.hero-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 4px; color: var(--blue); margin-bottom: 28px; text-transform: uppercase; }
+.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 11vw, 120px); line-height: 0.9; color: var(--white); margin-bottom: 36px; }
 .hero h1 .blue { color: var(--blue); }
-.hero h1 .ghost { color: var(--muted); }
-
-.hero-sub {
-  font-size: 15px;
-  color: var(--muted);
-  font-weight: 400;
-  max-width: 480px;
-  line-height: 1.7;
-}
-
-/* ── CONTRACT STRIP ── */
-.contract-strip {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 0;
-}
-
-.contract-inner {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.contract-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--muted);
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-.contract-addr {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: var(--blue);
-  word-break: break-all;
-}
-
-.contract-addr a {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(79,142,255,0.3);
-  padding-bottom: 1px;
-  transition: border-color 0.2s;
-}
-
-.contract-addr a:hover { border-color: var(--blue); }
-
-.chain-pill {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  padding: 5px 12px;
-  border-radius: 100px;
-  background: rgba(0,232,122,0.08);
-  border: 1px solid rgba(0,232,122,0.2);
-  color: var(--green);
-  flex-shrink: 0;
-}
-
-/* ── MAIN GRID ── */
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--border);
-  margin-bottom: 0;
-}
-
-.panel {
-  background: var(--bg);
-  padding: 40px;
-}
-
-.panel-left { border-right: none; }
-
-.panel-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-/* ── CONTROLS ── */
-.control-group {
-  margin-bottom: 20px;
-}
-
-.control-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.control-label span { color: var(--white); font-weight: 600; }
-
-input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 4px;
-  background: var(--dim);
-  border-radius: 2px;
-  outline: none;
-  margin-bottom: 0;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--blue);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 0 0 3px rgba(79,142,255,0.15);
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 6px rgba(79,142,255,0.2);
-}
-
-input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 3px rgba(255,59,59,0.15); }
-input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 3px rgba(255,184,0,0.15); }
-
-/* ── ACTION BTNS ── */
-.action-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 28px;
-}
-
-.action-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 14px 16px;
-  border-radius: 8px;
-  border: 1px solid;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-}
-
-.action-btn.primary {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #000;
-}
-
-.action-btn.primary:hover { opacity: 0.85; transform: translateY(-1px); }
-
-.action-btn.secondary {
-  background: transparent;
-  border-color: var(--border);
-  color: var(--muted);
-}
-
-.action-btn.secondary:hover { border-color: var(--blue); color: var(--blue); }
-
-.action-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ── STATE DISPLAY ── */
-.state-display {
-  margin-top: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.state-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-}
-
-.state-row:last-child { border-bottom: none; }
-
-.state-key {
-  font-family: 'DM Mono', monospace;
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.state-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-/* ── EVENT LOG ── */
-.event-log-wrap {
-  margin-top: 0;
-}
-
-.log-header {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.log-clear {
-  font-size: 9px;
-  color: var(--muted);
-  cursor: pointer;
-  transition: color 0.2s;
-  background: none;
-  border: none;
-  font-family: 'DM Mono', monospace;
-  letter-spacing: 1px;
-}
-
-.log-clear:hover { color: var(--red); }
-
-.event-log {
-  height: 420px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.event-log::-webkit-scrollbar { width: 3px; }
-.event-log::-webkit-scrollbar-track { background: transparent; }
-.event-log::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
-
-.log-item {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  line-height: 1.5;
-  animation: logIn 0.25s ease forwards;
-  flex-shrink: 0;
-}
-
-@keyframes logIn {
-  from { opacity: 0; transform: translateX(-8px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.log-item.info { color: var(--muted); background: transparent; }
-.log-item.tx { color: #7FB3FF; background: rgba(79,142,255,0.06); }
-.log-item.event { color: var(--white); background: rgba(255,255,255,0.03); border-left: 2px solid var(--blue); }
-.log-item.success { color: var(--green); background: rgba(0,232,122,0.06); border-left: 2px solid var(--green); }
-.log-item.error { color: var(--red); background: rgba(255,59,59,0.06); border-left: 2px solid var(--red); }
-.log-item.warn { color: var(--yellow); background: rgba(255,184,0,0.06); }
-.log-item.critical { color: var(--red); background: rgba(255,59,59,0.1); font-weight: 700; border: 1px solid rgba(255,59,59,0.2); }
-.log-item.separator { color: var(--dim); text-align: center; letter-spacing: 4px; }
-
-/* ── METRICS STRIP ── */
-.metrics-strip {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.metrics-inner {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-}
-
-.metric-cell {
-  padding: 28px 32px;
-  border-right: 1px solid var(--border);
-  transition: background 0.3s;
-}
-
+.hero h1 .light-text { color: var(--light); }
+.hero-sub { font-size: 16px; color: var(--off-white); font-weight: 400; max-width: 500px; line-height: 1.75; }
+.contract-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); padding: 18px 0; }
+.contract-inner { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.contract-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; flex-shrink: 0; }
+.contract-addr { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); }
+.contract-addr a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(91,159,255,0.4); }
+.chain-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; padding: 5px 14px; border-radius: 100px; background: rgba(0,240,128,0.08); border: 1px solid rgba(0,240,128,0.25); color: var(--green); flex-shrink: 0; }
+.metrics-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); }
+.metrics-inner { display: grid; grid-template-columns: repeat(4, 1fr); }
+.metric-cell { padding: 28px 32px; border-right: 1px solid var(--border-bright); }
 .metric-cell:last-child { border-right: none; }
-
-.metric-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.metric-val {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 38px;
-  line-height: 1;
-  color: var(--white);
-  transition: color 0.3s;
-}
-
-/* ── SHIELD BAR ── */
-.shield-section {
-  padding: 32px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.shield-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.shield-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.shield-pct {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  transition: color 0.3s;
-}
-
-.shield-track {
-  height: 12px;
-  background: var(--dim);
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
-}
-
-.shield-fill {
-  height: 100%;
-  border-radius: 6px;
-  width: 0%;
-  transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s;
-  position: relative;
-}
-
-.shield-fill::after {
-  content: '';
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 30px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2));
-}
-
-.shield-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--muted);
-}
-
-/* ── VERDICT ── */
-.verdict-box {
-  margin-top: 28px;
-  padding: 20px 24px;
-  border-radius: 12px;
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-align: center;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.5s, transform 0.5s;
-  text-transform: uppercase;
-}
-
+.metric-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; margin-bottom: 10px; }
+.metric-val { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; color: var(--white); transition: color 0.3s; }
+.main-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border-bright); max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
+.panel { padding: 40px; }
+.panel:first-child { border-right: 1px solid var(--border-bright); }
+.panel-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border-bright); display: flex; align-items: center; gap: 8px; }
+.control-group { margin-bottom: 22px; }
+.control-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--light); text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
+.control-label span { color: var(--white); font-weight: 700; font-size: 13px; }
+input[type="range"] { -webkit-appearance: none; width: 100%; height: 3px; background: var(--dim); border-radius: 2px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--blue); border-radius: 50%; cursor: pointer; border: 2px solid #000; box-shadow: 0 0 0 4px rgba(91,159,255,0.2); }
+input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 4px rgba(255,64,64,0.2); }
+input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 4px rgba(255,190,0,0.2); }
+.action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
+.action-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 15px 16px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.action-btn.primary { background: var(--blue); border-color: var(--blue); color: #000; }
+.action-btn.primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,159,255,0.3); }
+.action-btn.secondary { background: transparent; border-color: var(--border-bright); color: var(--off-white); }
+.action-btn.secondary:hover { border-color: var(--blue); color: var(--blue); }
+.action-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
+.shield-section { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border-bright); }
+.shield-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.shield-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; }
+.shield-pct { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--white); transition: color 0.3s; }
+.shield-track { height: 10px; background: var(--dim); border-radius: 5px; overflow: hidden; }
+.shield-fill { height: 100%; border-radius: 5px; width: 0%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
+.shield-labels { display: flex; justify-content: space-between; margin-top: 7px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--light); }
+.shield-labels span:last-child { color: var(--red); }
+.state-display { margin-top: 24px; background: var(--card); border: 1px solid var(--border-bright); border-radius: 12px; overflow: hidden; }
+.state-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; border-bottom: 1px solid var(--border); }
+.state-row:last-child { border-bottom: none; }
+.state-key { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--light); text-transform: uppercase; }
+.state-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; color: var(--white); transition: color 0.3s; }
+.verdict-box { margin-top: 24px; padding: 18px 22px; border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 2px; text-align: center; font-weight: 500; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; text-transform: uppercase; }
 .verdict-box.show { opacity: 1; transform: translateY(0); }
-.verdict-box.insolvent { background: rgba(255,59,59,0.08); color: var(--red); border: 1px solid rgba(255,59,59,0.2); }
-.verdict-box.solvent { background: rgba(0,232,122,0.08); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
-
-/* ── PROOF ── */
-.proof-section {
-  padding: 80px 0;
-  border-bottom: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 80px;
-  align-items: center;
-}
-
-.proof-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(80px, 14vw, 140px);
-  line-height: 0.9;
-  white-space: nowrap;
-}
-
+.verdict-box.insolvent { background: rgba(255,64,64,0.1); color: var(--red); border: 1px solid rgba(255,64,64,0.3); }
+.verdict-box.solvent { background: rgba(0,240,128,0.08); color: var(--green); border: 1px solid rgba(0,240,128,0.25); }
+.log-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.event-log { height: 560px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 20px; }
+.event-log::-webkit-scrollbar { width: 3px; }
+.event-log::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+.log-item { font-family: 'DM Mono', monospace; font-size: 11px; padding: 8px 12px; border-radius: 5px; line-height: 1.5; animation: logIn 0.25s ease forwards; flex-shrink: 0; }
+@keyframes logIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+.log-item.info { color: var(--off-white); }
+.log-item.tx { color: #90c4ff; background: rgba(91,159,255,0.07); }
+.log-item.event { color: var(--white); background: rgba(255,255,255,0.04); border-left: 2px solid var(--blue); }
+.log-item.success { color: var(--green); background: rgba(0,240,128,0.07); border-left: 2px solid var(--green); }
+.log-item.error { color: var(--red); background: rgba(255,64,64,0.07); border-left: 2px solid var(--red); }
+.log-item.warn { color: var(--yellow); background: rgba(255,190,0,0.07); }
+.log-item.critical { color: var(--red); background: rgba(255,64,64,0.12); font-weight: 700; border: 1px solid rgba(255,64,64,0.25); }
+.log-item.separator { color: var(--dim); text-align: center; letter-spacing: 5px; font-size: 10px; }
+.log-clear { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); cursor: pointer; background: none; border: none; transition: color 0.2s; text-transform: uppercase; }
+.log-clear:hover { color: var(--red); }
+.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
+.status-dot.live { background: var(--green); animation: blink 2s ease infinite; }
+.status-dot.pending { background: var(--yellow); animation: blink 0.8s ease infinite; }
+.status-dot.error-dot { background: var(--red); }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.proof-section { padding: 80px 0; border-bottom: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 80px; align-items: center; }
+.proof-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 13vw, 140px); line-height: 0.9; white-space: nowrap; color: var(--white); }
 .proof-num .slash { color: var(--blue); }
-.proof-num .denom { color: var(--muted); }
-
-.proof-copy h3 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  line-height: 1.3;
-}
-
-.proof-copy p {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.8;
-  margin-bottom: 20px;
-}
-
-.proof-tag {
-  display: inline-block;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--green);
-  padding: 8px 20px;
-  border: 1px solid rgba(0,232,122,0.2);
-  border-radius: 100px;
-  background: rgba(0,232,122,0.06);
-}
-
-/* ── FOOTER ── */
-footer {
-  padding: 28px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--border);
-}
-
-.footer-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
-  letter-spacing: 3px;
-  color: var(--muted);
-}
-
-.footer-meta {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  text-align: right;
-  line-height: 1.8;
-  letter-spacing: 1px;
-}
-
-/* ── STATUS DOT ── */
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--muted);
-  margin-right: 6px;
-  vertical-align: middle;
-  transition: background 0.3s;
-}
-
-.status-dot.live { background: var(--green); animation: pulse 2s ease infinite; }
-.status-dot.pending { background: var(--yellow); animation: pulse 1s ease infinite; }
-.status-dot.error { background: var(--red); }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-/* ── WALLET MODAL ── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-
-.modal-overlay.show { opacity: 1; pointer-events: all; }
-
-.modal {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 40px;
-  width: 440px;
-  max-width: 90vw;
-}
-
-.modal h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-
-.modal p {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 28px;
-  line-height: 1.6;
-}
-
-.modal-btn {
-  width: 100%;
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--white);
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.modal-btn:hover { border-color: var(--blue); background: var(--blue-dim); }
-
-/* ── RESPONSIVE ── */
+.proof-num .denom { color: var(--light); }
+.proof-copy h3 { font-size: 24px; font-weight: 700; margin-bottom: 18px; line-height: 1.3; color: var(--white); }
+.proof-copy p { font-size: 15px; color: var(--off-white); line-height: 1.8; margin-bottom: 16px; }
+.proof-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--green); padding: 9px 22px; border: 1px solid rgba(0,240,128,0.25); border-radius: 100px; background: rgba(0,240,128,0.07); }
+footer { padding: 28px 0; display: flex; justify-content: space-between; align-items: center; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--light); }
+.footer-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; line-height: 1.9; }
 @media (max-width: 768px) {
   .wrap { padding: 0 20px; }
   .main-grid { grid-template-columns: 1fr; }
+  .panel:first-child { border-right: none; border-bottom: 1px solid var(--border-bright); }
   .metrics-inner { grid-template-columns: repeat(2, 1fr); }
   .proof-section { grid-template-columns: 1fr; gap: 32px; }
   .action-row { grid-template-columns: 1fr; }
-  header { flex-wrap: wrap; gap: 12px; }
+  .event-log { height: 360px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════ HEADER ═══════════════════════════════════════ -->
 <div class="wrap">
   <header>
     <div class="logo">PERP<span>IFY</span></div>
@@ -718,216 +144,121 @@ footer {
   </header>
 </div>
 
-<!-- ═══════════════════════════════════════ HERO ═══════════════════════════════════════ -->
 <div class="wrap">
   <div class="hero">
     <div class="hero-tag">Live Testnet Demo · Base Sepolia · PerpifyReopen.sol</div>
-    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br><span class="ghost">We Fixed It.</span></h1>
-    <p class="hero-sub">Connect your wallet and trigger a real reopen event on-chain. Watch the sequenced clearing execute — not a simulation, not a demo. A live contract call.</p>
+    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br><span class="light-text">We Fixed It.</span></h1>
+    <p class="hero-sub">Connect your wallet and trigger a real reopen event on-chain. Watch sequenced clearing execute — not a simulation. A live contract call on Base Sepolia.</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════ CONTRACT STRIP ═══════════════════════════════════════ -->
 <div class="contract-strip">
   <div class="wrap">
     <div class="contract-inner">
       <div class="contract-label">Contract</div>
-      <div class="contract-addr" id="contractAddrDisplay">
-        <span id="addrText">0x5FbDB2315678afecb367f032d93F642f64180aa3</span>
-        <!-- Replace above with Base Sepolia address when deployed -->
-      </div>
+      <div class="contract-addr"><span id="addrText">0x5FbDB2315678afecb367f032d93F642f64180aa3</span></div>
       <div class="chain-pill" id="chainPill">● LOCAL HARDHAT</div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════ METRICS ═══════════════════════════════════════ -->
 <div class="metrics-strip">
   <div class="wrap">
     <div class="metrics-inner">
-      <div class="metric-cell">
-        <div class="metric-label">Market State</div>
-        <div class="metric-val" id="m-state" style="font-size:24px; color: var(--muted)">—</div>
-      </div>
-      <div class="metric-cell">
-        <div class="metric-label">Total OI</div>
-        <div class="metric-val" id="m-oi" style="color: var(--muted)">—</div>
-      </div>
-      <div class="metric-cell">
-        <div class="metric-label">Shield Fund</div>
-        <div class="metric-val" id="m-shield" style="color: var(--muted)">—</div>
-      </div>
-      <div class="metric-cell">
-        <div class="metric-label">Bad Debt</div>
-        <div class="metric-val" id="m-debt" style="color: var(--muted)">—</div>
-      </div>
+      <div class="metric-cell"><div class="metric-label">Market State</div><div class="metric-val" id="m-state" style="font-size:22px;color:var(--muted)">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Total OI</div><div class="metric-val" id="m-oi" style="color:var(--muted)">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Shield Fund</div><div class="metric-val" id="m-shield" style="color:var(--muted)">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Bad Debt</div><div class="metric-val" id="m-debt" style="color:var(--muted)">—</div></div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════ MAIN GRID ═══════════════════════════════════════ -->
-<div class="wrap">
-<div class="main-grid" style="margin: 0 -40px;">
-
-  <!-- LEFT: Controls -->
-  <div class="panel panel-left">
-    <div class="panel-title">
-      <span class="status-dot" id="statusDot"></span>
-      Simulation Controls
-    </div>
-
-    <!-- Gap Size -->
+<div class="main-grid">
+  <div class="panel">
+    <div class="panel-title"><span class="status-dot" id="statusDot"></span> Simulation Controls</div>
     <div class="control-group">
-      <div class="control-label">
-        Gap Size (down)
-        <span id="gapVal">−3.2%</span>
-      </div>
-      <input type="range" class="red-range" id="gapSlider" min="10" max="120" value="32"
-        oninput="document.getElementById('gapVal').textContent = '−' + (this.value/10).toFixed(1) + '%'">
+      <div class="control-label">Gap Size (down) <span id="gapVal">−3.2%</span></div>
+      <input type="range" class="red-range" id="gapSlider" min="10" max="120" value="32" oninput="document.getElementById('gapVal').textContent='−'+(this.value/10).toFixed(1)+'%'">
     </div>
-
-    <!-- Base Price -->
     <div class="control-group">
-      <div class="control-label">
-        S&P 500 Close Price
-        <span id="priceVal">$4,800</span>
-      </div>
-      <input type="range" class="yellow-range" id="priceSlider" min="3000" max="6000" value="4800"
-        oninput="document.getElementById('priceVal').textContent = '$' + parseInt(this.value).toLocaleString()">
+      <div class="control-label">S&P 500 Close Price <span id="priceVal">$4,800</span></div>
+      <input type="range" class="yellow-range" id="priceSlider" min="3000" max="6000" value="4800" oninput="document.getElementById('priceVal').textContent='$'+parseInt(this.value).toLocaleString()">
     </div>
-
-    <!-- Leverage -->
     <div class="control-group">
-      <div class="control-label">
-        Max Leverage
-        <span id="levVal">6×</span>
-      </div>
-      <input type="range" id="levSlider" min="1" max="6" value="6"
-        oninput="document.getElementById('levVal').textContent = this.value + '×'">
+      <div class="control-label">Max Leverage <span id="levVal">6×</span></div>
+      <input type="range" id="levSlider" min="1" max="6" value="6" oninput="document.getElementById('levVal').textContent=this.value+'×'">
     </div>
-
     <div class="action-row">
-      <button class="action-btn primary" id="openBtn" onclick="openTestPositions()" disabled>
-        1 · Open Positions
-      </button>
-      <button class="action-btn secondary" id="closeBtn" onclick="closeMarket()" disabled>
-        2 · Close Market
-      </button>
-      <button class="action-btn primary" id="reopenBtn" onclick="triggerReopen()" disabled style="grid-column: span 2; background: var(--green); border-color: var(--green);">
-        3 · Trigger Reopen Gap
-      </button>
+      <button class="action-btn primary" id="openBtn" onclick="openTestPositions()" disabled>1 · Open Positions</button>
+      <button class="action-btn secondary" id="closeBtn" onclick="closeMarket()" disabled>2 · Close Market</button>
+      <button class="action-btn primary" id="reopenBtn" onclick="triggerReopen()" disabled style="grid-column:span 2;background:var(--green);border-color:var(--green);color:#000;">3 · Trigger Reopen Gap</button>
     </div>
-
-    <!-- Shield bar -->
     <div class="shield-section">
       <div class="shield-header">
         <div class="shield-title">Insurance Shield Usage</div>
-        <div class="shield-pct" id="shieldPct" style="color: var(--muted)">0%</div>
+        <div class="shield-pct" id="shieldPct">0%</div>
       </div>
-      <div class="shield-track">
-        <div class="shield-fill" id="shieldFill" style="background: var(--blue)"></div>
-      </div>
-      <div class="shield-labels">
-        <span>0%</span>
-        <span>50%</span>
-        <span style="color: var(--red)">100% = INSOLVENT</span>
-      </div>
+      <div class="shield-track"><div class="shield-fill" id="shieldFill" style="background:var(--blue)"></div></div>
+      <div class="shield-labels"><span>0%</span><span>50%</span><span>100% = INSOLVENT</span></div>
     </div>
-
-    <!-- On-chain state -->
     <div class="state-display">
-      <div class="state-row">
-        <div class="state-key">Open Positions</div>
-        <div class="state-val" id="s-poscount" style="color: var(--muted)">—</div>
-      </div>
-      <div class="state-row">
-        <div class="state-key">Shield Fund (ETH)</div>
-        <div class="state-val" id="s-shield" style="color: var(--muted)">—</div>
-      </div>
-      <div class="state-row">
-        <div class="state-key">Bad Debt (ETH)</div>
-        <div class="state-val" id="s-debt" style="color: var(--muted)">—</div>
-      </div>
-      <div class="state-row">
-        <div class="state-key">Shield Used</div>
-        <div class="state-val" id="s-shieldpct" style="color: var(--muted)">—</div>
-      </div>
-      <div class="state-row">
-        <div class="state-key">Protocol Solvent</div>
-        <div class="state-val" id="s-solvent" style="color: var(--muted)">—</div>
-      </div>
+      <div class="state-row"><div class="state-key">Open Positions</div><div class="state-val" id="s-poscount">—</div></div>
+      <div class="state-row"><div class="state-key">Shield Fund</div><div class="state-val" id="s-shield">—</div></div>
+      <div class="state-row"><div class="state-key">Bad Debt</div><div class="state-val" id="s-debt">—</div></div>
+      <div class="state-row"><div class="state-key">Shield Used</div><div class="state-val" id="s-shieldpct">—</div></div>
+      <div class="state-row"><div class="state-key">Protocol Solvent</div><div class="state-val" id="s-solvent">—</div></div>
     </div>
-
     <div class="verdict-box" id="verdictBox"></div>
   </div>
 
-  <!-- RIGHT: Event log -->
   <div class="panel">
     <div class="panel-title">
-      <div class="log-header" style="margin-bottom:0">
-        <span><span class="status-dot" id="logDot"></span>On-Chain Event Stream</span>
-        <button class="log-clear" onclick="clearLog()">CLEAR</button>
+      <div class="log-header-row">
+        <span><span class="status-dot" id="logDot"></span>&nbsp; On-Chain Event Stream</span>
+        <button class="log-clear" onclick="clearLog()">Clear</button>
       </div>
     </div>
-    <div class="event-log-wrap">
-      <div class="event-log" id="eventLog">
-        <div class="log-item info">Connect your wallet to begin. MetaMask required.</div>
-        <div class="log-item separator">────────────────────</div>
-        <div class="log-item info">This demo executes real on-chain transactions.</div>
-        <div class="log-item info">Events are emitted by the deployed contract.</div>
-        <div class="log-item info">All transactions are visible on BaseScan.</div>
-        <div class="log-item separator">────────────────────</div>
-        <div class="log-item warn">Step 1 — Connect wallet</div>
-        <div class="log-item warn">Step 2 — Open test positions</div>
-        <div class="log-item warn">Step 3 — Close the market (Friday 16:00)</div>
-        <div class="log-item warn">Step 4 — Trigger reopen gap (Monday 09:30)</div>
-      </div>
+    <div class="event-log" id="eventLog">
+      <div class="log-item info">Connect your wallet to begin. MetaMask required.</div>
+      <div class="log-item separator">────────────────────────</div>
+      <div class="log-item info">This demo executes real on-chain transactions.</div>
+      <div class="log-item info">Events are emitted live by the deployed contract.</div>
+      <div class="log-item info">All transactions visible on BaseScan.</div>
+      <div class="log-item separator">────────────────────────</div>
+      <div class="log-item warn">Step 1 — Connect wallet</div>
+      <div class="log-item warn">Step 2 — Open test positions</div>
+      <div class="log-item warn">Step 3 — Close the market (Friday 16:00)</div>
+      <div class="log-item warn">Step 4 — Trigger reopen gap (Monday 09:30)</div>
     </div>
   </div>
-
-</div>
 </div>
 
-<!-- ═══════════════════════════════════════ PROOF ═══════════════════════════════════════ -->
 <div class="wrap">
   <div class="proof-section">
     <div class="proof-num">0<span class="slash">/</span><span class="denom">10,000</span></div>
     <div class="proof-copy">
       <h3>Worst-case S&P 500 reopen scenarios. Zero insolvencies.</h3>
-      <p>The naive venue breached its insurance shield in 1 out of 10,000 scenarios — reaching 103.78% shield usage. Perpify's baseline architecture held max shield usage at 13.12% across the same scenarios. Even under doubled OI and 8× leverage, the stressed architecture peaked at 44.95% with zero insolvencies.</p>
-      <p>The margin of safety is not marginal. It is structural.</p>
+      <p>The naive venue breached its insurance shield in 1 out of 10,000 scenarios — reaching 103.78% shield usage. Perpify's baseline architecture held max shield usage at 13.12% across the same scenarios.</p>
+      <p>Even under doubled OI and 8× leverage, the stressed architecture peaked at 44.95% with zero insolvencies. The margin of safety is not marginal. It is structural.</p>
       <div class="proof-tag">✓ Zero Insolvencies · Full Python Script Available on Request</div>
     </div>
   </div>
-</div>
-
-<!-- ═══════════════════════════════════════ FOOTER ═══════════════════════════════════════ -->
-<div class="wrap">
   <footer>
     <div class="footer-logo">Perpify</div>
-    <div class="footer-meta">
-      perpify.trade · aakash@perpify.trade<br>
-      Base Sepolia Testnet · PerpifyReopen.sol
-    </div>
+    <div class="footer-meta">perpify.trade · aakash@perpify.trade<br>Base Sepolia Testnet · PerpifyReopen.sol</div>
   </footer>
 </div>
 
-<!-- ═══════════════════════════════════════ SCRIPT ═══════════════════════════════════════ -->
 <script>
-// ══════════════════════════════════════════════════════
-// CONFIG — Update CONTRACT_ADDRESS after Base Sepolia deploy
-// ══════════════════════════════════════════════════════
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const BASE_SEPOLIA_CHAIN_ID = 84532;
 const LOCAL_CHAIN_ID = 31337;
-
 const ABI = [
   "function openPosition(uint256 notionalUSD, uint256 leverage, bool isLong, uint8 riskTier) payable returns (uint256)",
   "function closeMarket() external",
   "function triggerReopen(int256 gapBps, uint256 basePrice) external",
   "function fundShield() payable external",
   "function getOpenPositionCount() view returns (uint256)",
-  "function getShieldStatus() view returns (uint256 fund, uint256 debt, uint256 usedBps)",
   "function totalOI() view returns (uint256)",
   "function marketState() view returns (uint8)",
   "function shieldFund() view returns (uint256)",
@@ -940,21 +271,9 @@ const ABI = [
   "event PositionCleared(uint256 indexed posId, address indexed trader, uint256 payout, uint256 badDebtGenerated)",
   "event ReopenComplete(uint256 totalPositionsCleared, uint256 totalBadDebt, uint256 shieldUsed, uint256 shieldUsedBps, bool protocolSolvent)"
 ];
-
-// ══════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════
 let provider, signer, contract;
-let connected = false;
-let chainId = null;
-
-const STATES = ["OPEN", "DARK", "REOPEN"];
-const TIERS = ["LOW", "MEDIUM", "HIGH"];
-const TIER_COLORS = { LOW: "var(--muted)", MEDIUM: "var(--yellow)", HIGH: "var(--red)" };
-
-// ══════════════════════════════════════════════════════
-// LOGGING
-// ══════════════════════════════════════════════════════
+const STATES = ["OPEN","DARK","REOPEN"];
+const TIERS = ["LOW","MEDIUM","HIGH"];
 function log(type, msg) {
   const el = document.getElementById("eventLog");
   const item = document.createElement("div");
@@ -963,319 +282,188 @@ function log(type, msg) {
   el.appendChild(item);
   el.scrollTop = el.scrollHeight;
 }
-
-function clearLog() {
-  document.getElementById("eventLog").innerHTML = "";
-}
-
-function sep() { log("separator", "────────────────────"); }
-
-// ══════════════════════════════════════════════════════
-// WALLET CONNECTION
-// ══════════════════════════════════════════════════════
+function clearLog() { document.getElementById("eventLog").innerHTML = ""; }
+function sep() { log("separator","────────────────────────"); }
 async function connectWallet() {
-  if (!window.ethereum) {
-    log("error", "MetaMask not detected. Please install MetaMask.");
-    return;
-  }
-
+  if (!window.ethereum) { log("error","MetaMask not detected."); return; }
   try {
     await window.ethereum.request({ method: "eth_requestAccounts" });
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
     const network = await provider.getNetwork();
-    chainId = network.chainId;
-    connected = true;
-
+    const chainId = network.chainId;
     const addr = await signer.getAddress();
-    const short = addr.slice(0, 6) + "..." + addr.slice(-4);
-
+    const short = addr.slice(0,6)+"..."+addr.slice(-4);
     document.getElementById("connectBtn").textContent = short;
     document.getElementById("connectBtn").className = "connect-btn connected";
-
     if (chainId === BASE_SEPOLIA_CHAIN_ID) {
       document.getElementById("networkBadge").textContent = "BASE SEPOLIA";
       document.getElementById("chainPill").textContent = "● BASE SEPOLIA";
-      const addrEl = document.getElementById("addrText");
-      addrEl.innerHTML = `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
+      document.getElementById("addrText").innerHTML = `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
     } else if (chainId === LOCAL_CHAIN_ID) {
       document.getElementById("networkBadge").textContent = "LOCAL HARDHAT";
     } else {
       document.getElementById("networkBadge").textContent = `CHAIN ${chainId}`;
-      log("warn", `Connected to chain ${chainId}. Switch to Base Sepolia or Local Hardhat.`);
     }
-
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-
-    setDot("statusDot", "live");
-    setDot("logDot", "live");
-
+    setDot("statusDot","live"); setDot("logDot","live");
     log("success", `✓ Wallet connected: ${short}`);
-    log("info", `Network: Chain ${chainId}`);
-    log("info", `Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
+    log("info", `Network: Chain ${chainId} · Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
     sep();
-
     await refreshState();
     enableButtons();
-
-    // Listen for events
     listenForEvents();
-
-  } catch (err) {
-    log("error", "Connection failed: " + (err.message || err));
-  }
+  } catch(err) { log("error","Connection failed: "+(err.message||err)); }
 }
-
-// ══════════════════════════════════════════════════════
-// EVENT LISTENERS
-// ══════════════════════════════════════════════════════
 function listenForEvents() {
-  contract.on("PositionOpened", (posId, trader, notional, margin, leverage, isLong, riskTier) => {
-    const tier = TIERS[riskTier] || riskTier;
-    log("event", `📋 PositionOpened #${posId} · ${leverage}× · ${isLong ? "LONG" : "SHORT"} · Tier: ${tier} · Margin: ${ethers.utils.formatEther(margin).slice(0,8)} ETH`);
+  contract.on("PositionOpened",(posId,trader,notional,margin,leverage,isLong,riskTier)=>{
+    log("event",`📋 PositionOpened #${posId} · ${leverage}× · ${isLong?"LONG":"SHORT"} · ${TIERS[riskTier]} · ${ethers.utils.formatEther(margin).slice(0,8)} ETH margin`);
     refreshState();
   });
-
-  contract.on("MarketClosed", (totalOI, shieldFund, timestamp) => {
-    log("event", `🔒 MarketClosed · Total OI: ${ethers.utils.formatUnits(totalOI, 6)} · Shield: ${ethers.utils.formatEther(shieldFund).slice(0,8)} ETH`);
+  contract.on("MarketClosed",(totalOI,shieldFund)=>{
+    log("event",`🔒 MarketClosed · OI: ${ethers.utils.formatUnits(totalOI,6)} · Shield: ${ethers.utils.formatEther(shieldFund).slice(0,8)} ETH`);
     refreshState();
   });
-
-  contract.on("GapAwareMarginApplied", (posId, oldMargin, newRequired, riskTier) => {
-    const tier = TIERS[riskTier] || riskTier;
-    log("event", `🔵 GapAwareMargin #${posId} · Tier: ${tier} · Required: ${ethers.utils.formatEther(newRequired).slice(0,8)} ETH`);
+  contract.on("GapAwareMarginApplied",(posId,oldMargin,newRequired,riskTier)=>{
+    log("event",`🔵 GapAwareMargin #${posId} · ${TIERS[riskTier]} · Required: ${ethers.utils.formatEther(newRequired).slice(0,8)} ETH`);
   });
-
-  contract.on("ReopenInitiated", (gapBps, reopenPrice, timestamp) => {
-    const gapPct = (Number(gapBps) / 100).toFixed(2);
-    log("warn", `⚡ ReopenInitiated · Gap: ${gapPct}% · Reopen Price: $${ethers.utils.formatUnits(reopenPrice, 6)}`);
+  contract.on("ReopenInitiated",(gapBps,reopenPrice)=>{
+    log("warn",`⚡ ReopenInitiated · Gap: ${(Number(gapBps)/100).toFixed(2)}% · Price: $${ethers.utils.formatUnits(reopenPrice,6)}`);
   });
-
-  contract.on("PositionSequenced", (posId, riskTier, loss, coveredByMargin, shieldUsed) => {
-    const tier = TIERS[riskTier] || riskTier;
-    const covered = coveredByMargin ? "margin absorbed" : `shield used: ${ethers.utils.formatEther(shieldUsed).slice(0,8)} ETH`;
-    log("event", `→ Sequenced #${posId} [${tier}] · Loss: ${ethers.utils.formatEther(loss).slice(0,8)} ETH · ${covered}`);
+  contract.on("PositionSequenced",(posId,riskTier,loss,coveredByMargin,shieldUsed)=>{
+    const covered = coveredByMargin?"margin absorbed":`shield: ${ethers.utils.formatEther(shieldUsed).slice(0,8)} ETH`;
+    log("event",`→ Sequenced #${posId} [${TIERS[riskTier]}] · Loss: ${ethers.utils.formatEther(loss).slice(0,8)} ETH · ${covered}`);
   });
-
-  contract.on("PositionCleared", (posId, trader, payout, badDebtGen) => {
+  contract.on("PositionCleared",(posId,trader,payout,badDebtGen)=>{
     const hasDebt = badDebtGen.gt(0);
-    const type = hasDebt ? "critical" : "success";
-    const msg = hasDebt
-      ? `💀 Cleared #${posId} · BAD DEBT: ${ethers.utils.formatEther(badDebtGen).slice(0,8)} ETH`
-      : `✓ Cleared #${posId} · Payout: ${ethers.utils.formatEther(payout).slice(0,8)} ETH`;
-    log(type, msg);
+    log(hasDebt?"critical":"success", hasDebt?`💀 Cleared #${posId} · BAD DEBT: ${ethers.utils.formatEther(badDebtGen).slice(0,8)} ETH`:`✓ Cleared #${posId} · Payout: ${ethers.utils.formatEther(payout).slice(0,8)} ETH`);
   });
-
-  contract.on("ReopenComplete", (cleared, totalBadDebt, shieldUsed, shieldUsedBps, solvent) => {
+  contract.on("ReopenComplete",(cleared,totalBadDebt,shieldUsed,shieldUsedBps,solvent)=>{
     sep();
-    log("success", `═══ REOPEN COMPLETE ═══`);
-    log("success", `Positions cleared: ${cleared}`);
-    log(totalBadDebt.gt(0) ? "critical" : "success", `Total bad debt: ${ethers.utils.formatEther(totalBadDebt)} ETH`);
-    log("success", `Shield used: ${(Number(shieldUsedBps) / 100).toFixed(2)}%`);
-    log(solvent ? "success" : "critical", `Protocol solvent: ${solvent ? "YES ✓" : "NO — INSOLVENT ✗"}`);
+    log("success","═══ REOPEN COMPLETE ═══");
+    log("success",`Positions cleared: ${cleared}`);
+    log(totalBadDebt.gt(0)?"critical":"success",`Total bad debt: ${ethers.utils.formatEther(totalBadDebt)} ETH`);
+    log("success",`Shield used: ${(Number(shieldUsedBps)/100).toFixed(2)}%`);
+    log(solvent?"success":"critical",`Protocol solvent: ${solvent?"YES ✓":"NO — INSOLVENT ✗"}`);
     sep();
-
-    // Update shield bar
-    const pct = Number(shieldUsedBps) / 100;
-    updateShield(pct, solvent);
-
-    // Verdict
+    const pct = Number(shieldUsedBps)/100;
+    const fill = document.getElementById("shieldFill");
+    const pctEl = document.getElementById("shieldPct");
+    fill.style.width = Math.min(pct,100)+"%";
+    const col = pct>100?"var(--red)":pct>70?"var(--yellow)":"var(--blue)";
+    fill.style.background = col; pctEl.style.color = col; pctEl.textContent = pct.toFixed(2)+"%";
     const box = document.getElementById("verdictBox");
-    if (solvent) {
-      box.textContent = "✓ Zero Insolvencies — Engine Stable";
-      box.className = "verdict-box solvent show";
-    } else {
-      box.textContent = "⚠ Shield Breached — Protocol Insolvent";
-      box.className = "verdict-box insolvent show";
-    }
-
+    box.textContent = solvent?"✓ Zero Insolvencies — Engine Stable":"⚠ Shield Breached — Protocol Insolvent";
+    box.className = `verdict-box ${solvent?"solvent":"insolvent"} show`;
     refreshState();
   });
 }
-
-// ══════════════════════════════════════════════════════
-// CONTRACT INTERACTIONS
-// ══════════════════════════════════════════════════════
-
-// Open 3 test positions with different risk tiers
 async function openTestPositions() {
   if (!contract) return;
-  disableButtons();
-  setDot("statusDot", "pending");
-
+  disableButtons(); setDot("statusDot","pending");
   try {
-    sep();
-    log("info", "Opening 3 test positions across risk tiers...");
-
+    sep(); log("info","Opening 3 positions across risk tiers...");
     const lev = document.getElementById("levSlider").value;
     const positions = [
-      { notional: 1000000000, leverage: lev, isLong: true,  tier: 2, margin: "0.015", label: "HIGH" },
-      { notional: 800000000,  leverage: Math.min(lev, 4), isLong: true,  tier: 1, margin: "0.01", label: "MEDIUM" },
-      { notional: 600000000,  leverage: Math.min(lev, 3), isLong: false, tier: 0, margin: "0.008", label: "LOW" },
+      {notional:1000000000,leverage:lev,isLong:true,tier:2,margin:"0.015",label:"HIGH"},
+      {notional:800000000,leverage:Math.min(lev,4),isLong:true,tier:1,margin:"0.01",label:"MEDIUM"},
+      {notional:600000000,leverage:Math.min(lev,3),isLong:false,tier:0,margin:"0.008",label:"LOW"},
     ];
-
     for (const pos of positions) {
-      log("tx", `Sending tx: openPosition (${pos.label} risk, ${pos.leverage}×)...`);
-      const tx = await contract.openPosition(
-        pos.notional, pos.leverage, pos.isLong, pos.tier,
-        { value: ethers.utils.parseEther(pos.margin) }
-      );
-      log("tx", `TX: ${tx.hash.slice(0,20)}... (pending)`);
-      await tx.wait();
-      log("success", `✓ Confirmed`);
+      log("tx",`Sending: openPosition (${pos.label} risk, ${pos.leverage}×)...`);
+      const tx = await contract.openPosition(pos.notional,pos.leverage,pos.isLong,pos.tier,{value:ethers.utils.parseEther(pos.margin)});
+      log("tx",`TX: ${tx.hash.slice(0,22)}... pending`);
+      await tx.wait(); log("success","✓ Confirmed");
     }
-
-    setDot("statusDot", "live");
+    setDot("statusDot","live");
     document.getElementById("closeBtn").disabled = false;
     document.getElementById("openBtn").disabled = true;
-
-  } catch (err) {
-    log("error", "Error: " + (err.reason || err.message || err));
-    setDot("statusDot", "error");
-    enableButtons();
-  }
+  } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); enableButtons(); }
 }
-
 async function closeMarket() {
   if (!contract) return;
-  setDot("statusDot", "pending");
-
+  setDot("statusDot","pending");
   try {
-    sep();
-    log("info", "FRIDAY 16:00 — Closing market, applying gap-aware margins...");
-    log("tx", "Sending tx: closeMarket()...");
+    sep(); log("info","FRIDAY 16:00 — Closing market, applying gap-aware margins...");
+    log("tx","Sending: closeMarket()...");
     const tx = await contract.closeMarket();
-    log("tx", `TX: ${tx.hash.slice(0,20)}... (pending)`);
+    log("tx",`TX: ${tx.hash.slice(0,22)}... pending`);
     await tx.wait();
-    log("success", "✓ Market closed. Gap-aware margins applied to HIGH & MEDIUM risk positions.");
-
-    setDot("statusDot", "live");
+    log("success","✓ Market closed. Gap-aware margins locked on HIGH & MEDIUM positions.");
+    setDot("statusDot","live");
     document.getElementById("reopenBtn").disabled = false;
     document.getElementById("closeBtn").disabled = true;
     await refreshState();
-
-  } catch (err) {
-    log("error", "Error: " + (err.reason || err.message || err));
-    setDot("statusDot", "error");
-  }
+  } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); }
 }
-
 async function triggerReopen() {
   if (!contract) return;
-  setDot("statusDot", "pending");
-
+  setDot("statusDot","pending");
   try {
     const gapBps = -parseInt(document.getElementById("gapSlider").value);
-    const basePrice = parseInt(document.getElementById("priceSlider").value) * 1000000;
-
+    const basePrice = parseInt(document.getElementById("priceSlider").value)*1000000;
     sep();
-    log("info", `MONDAY 09:30 — Triggering reopen gap: ${(gapBps/10).toFixed(1)}%`);
-    log("info", "Sequenced clearing: HIGH → MEDIUM → LOW risk");
-    log("tx", "Sending tx: triggerReopen()...");
-
-    const tx = await contract.triggerReopen(gapBps, basePrice);
-    log("tx", `TX: ${tx.hash.slice(0,20)}... (pending)`);
+    log("info",`MONDAY 09:30 — Triggering reopen: ${(gapBps/10).toFixed(1)}% gap`);
+    log("info","Sequenced clearing: HIGH → MEDIUM → LOW");
+    log("tx","Sending: triggerReopen()...");
+    const tx = await contract.triggerReopen(gapBps,basePrice);
+    log("tx",`TX: ${tx.hash.slice(0,22)}... pending`);
     await tx.wait();
-
-    setDot("statusDot", "live");
+    setDot("statusDot","live");
     document.getElementById("reopenBtn").disabled = true;
-
-  } catch (err) {
-    log("error", "Error: " + (err.reason || err.message || err));
-    setDot("statusDot", "error");
-  }
+  } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); }
 }
-
-// ══════════════════════════════════════════════════════
-// STATE REFRESH
-// ══════════════════════════════════════════════════════
 async function refreshState() {
   if (!contract) return;
   try {
-    const [stateRaw, posCount, totalOI, shieldFund, badDebt] = await Promise.all([
-      contract.marketState(),
-      contract.getOpenPositionCount(),
-      contract.totalOI(),
-      contract.shieldFund(),
-      contract.badDebt(),
+    const [stateRaw,posCount,totalOI,shieldFund,badDebt] = await Promise.all([
+      contract.marketState(),contract.getOpenPositionCount(),
+      contract.totalOI(),contract.shieldFund(),contract.badDebt(),
     ]);
-
-    const state = STATES[stateRaw] || "UNKNOWN";
-    const stateColors = { OPEN: "var(--green)", DARK: "var(--yellow)", REOPEN: "var(--blue)" };
-
-    setText("m-state", state, stateColors[state]);
-    setText("m-oi", formatOI(totalOI));
-    setText("m-shield", ethers.utils.formatEther(shieldFund).slice(0,8) + " ETH", "var(--blue)");
-    setText("m-debt", ethers.utils.formatEther(badDebt).slice(0,8) + " ETH", badDebt.gt(0) ? "var(--red)" : "var(--muted)");
-
-    setText("s-poscount", posCount.toString());
-    setText("s-shield", ethers.utils.formatEther(shieldFund).slice(0,8));
-    setText("s-debt", ethers.utils.formatEther(badDebt).slice(0,8), badDebt.gt(0) ? "var(--red)" : "");
-
+    const state = STATES[stateRaw]||"UNKNOWN";
+    const stateColors = {OPEN:"var(--green)",DARK:"var(--yellow)",REOPEN:"var(--blue)"};
+    setText("m-state",state,stateColors[state]);
+    setText("m-oi",formatOI(totalOI),"var(--white)");
+    setText("m-shield",ethers.utils.formatEther(shieldFund).slice(0,8)+" ETH","var(--blue)");
+    setText("m-debt",ethers.utils.formatEther(badDebt).slice(0,8)+" ETH",badDebt.gt(0)?"var(--red)":"var(--white)");
+    setText("s-poscount",posCount.toString(),"var(--white)");
+    setText("s-shield",ethers.utils.formatEther(shieldFund).slice(0,8)+" ETH","var(--white)");
+    setText("s-debt",ethers.utils.formatEther(badDebt).slice(0,8)+" ETH",badDebt.gt(0)?"var(--red)":"var(--white)");
     const shieldInitial = totalOI.mul(500).div(10000);
     let pctNum = 0;
-    if (badDebt.gt(0) && shieldInitial.gt(0)) {
-      pctNum = Math.min(badDebt.mul(10000).div(shieldInitial).toNumber() / 100, 200);
-    }
-    setText("s-shieldpct", pctNum.toFixed(2) + "%", pctNum > 100 ? "var(--red)" : pctNum > 50 ? "var(--yellow)" : "");
-    setText("s-solvent", badDebt.eq(0) ? "YES" : "NO", badDebt.eq(0) ? "var(--green)" : "var(--red)");
-
-  } catch (e) {
-    // Silent — contract may not be on this network
-  }
+    if (badDebt.gt(0)&&shieldInitial.gt(0)) pctNum = Math.min(badDebt.mul(10000).div(shieldInitial).toNumber()/100,200);
+    setText("s-shieldpct",pctNum.toFixed(2)+"%",pctNum>100?"var(--red)":pctNum>50?"var(--yellow)":"var(--white)");
+    setText("s-solvent",badDebt.eq(0)?"YES":"NO",badDebt.eq(0)?"var(--green)":"var(--red)");
+  } catch(e) {}
 }
-
 function formatOI(bn) {
-  const n = Number(ethers.utils.formatUnits(bn, 6));
-  if (n >= 1000000) return "$" + (n/1000000).toFixed(1) + "M";
-  if (n >= 1000) return "$" + (n/1000).toFixed(0) + "K";
-  return "$" + n;
+  const n = Number(ethers.utils.formatUnits(bn,6));
+  if (n>=1000000) return "$"+(n/1000000).toFixed(1)+"M";
+  if (n>=1000) return "$"+(n/1000).toFixed(0)+"K";
+  return "$"+n;
 }
-
-function updateShield(pct, solvent) {
-  const fill = document.getElementById("shieldFill");
-  const pctEl = document.getElementById("shieldPct");
-  const w = Math.min(pct, 100);
-  fill.style.width = w + "%";
-  const col = pct > 100 ? "var(--red)" : pct > 70 ? "var(--yellow)" : "var(--blue)";
-  fill.style.background = col;
-  pctEl.textContent = pct.toFixed(2) + "%";
-  pctEl.style.color = col;
-}
-
-// ══════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════
-function setText(id, val, color) {
+function setText(id,val,color) {
   const el = document.getElementById(id);
   if (!el) return;
   el.textContent = val;
   if (color) el.style.color = color;
 }
-
-function setDot(id, state) {
+function setDot(id,state) {
   const el = document.getElementById(id);
-  if (!el) return;
-  el.className = "status-dot " + state;
+  if (el) el.className = "status-dot "+state;
 }
-
 function enableButtons() {
   document.getElementById("openBtn").disabled = false;
   document.getElementById("closeBtn").disabled = true;
   document.getElementById("reopenBtn").disabled = true;
 }
-
 function disableButtons() {
-  ["openBtn", "closeBtn", "reopenBtn"].forEach(id => {
-    document.getElementById(id).disabled = true;
-  });
+  ["openBtn","closeBtn","reopenBtn"].forEach(id=>document.getElementById(id).disabled=true);
 }
-
-// Init
-window.addEventListener("load", () => {
+window.addEventListener("load",()=>{
   if (window.ethereum) {
-    window.ethereum.on("accountsChanged", () => location.reload());
-    window.ethereum.on("chainChanged", () => location.reload());
+    window.ethereum.on("accountsChanged",()=>location.reload());
+    window.ethereum.on("chainChanged",()=>location.reload());
   }
 });
 </script>
