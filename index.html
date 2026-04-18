@@ -9,125 +9,159 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #07070c;
-  --surface: #0f0f18;
-  --card: #13131f;
-  --border: #252538;
-  --border-bright: #2e2e48;
+  --bg: #09090f;
+  --surface: #0e0e18;
+  --card: #141422;
+  --border: #1e1e30;
+  --border-bright: #282840;
   --blue: #5b9fff;
-  --blue-dim: rgba(91,159,255,0.08);
-  --green: #00f080;
-  --red: #ff4040;
+  --blue-dim: rgba(91,159,255,0.10);
+  --green: #00e87a;
+  --red: #ff4444;
   --yellow: #ffbe00;
   --white: #ffffff;
-  --off-white: #e8e8f0;
-  --light: #c0c0d8;
-  --muted: #7070a0;
-  --dim: #2a2a42;
+  --off-white: #eeeef8;
+  --label: #b8b8d8;
+  --muted: #7878a8;
+  --dim: #252540;
 }
 body { background: var(--bg); color: var(--white); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
-body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(91,159,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(91,159,255,0.025) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; }
-body::after { content: ''; position: fixed; top: -300px; left: 50%; transform: translateX(-50%); width: 900px; height: 700px; background: radial-gradient(ellipse, rgba(91,159,255,0.08) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(91,159,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(91,159,255,0.015) 1px, transparent 1px); background-size: 64px 64px; pointer-events: none; z-index: 0; }
+body::after { content: ''; position: fixed; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(91,159,255,0.06) 0%, transparent 65%); pointer-events: none; z-index: 0; }
 .wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 0 40px; }
-header { padding: 28px 0 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-bright); }
+
+/* Header */
+header { padding: 24px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-bright); }
 .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 4px; color: var(--white); }
 .logo span { color: var(--blue); }
-.header-right { display: flex; align-items: center; gap: 14px; }
-.network-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--light); padding: 7px 16px; border: 1px solid var(--border-bright); border-radius: 100px; }
-.connect-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: #000; background: var(--blue); border: none; padding: 11px 26px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-weight: 500; }
-.connect-btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,159,255,0.3); }
-.connect-btn.connected { background: var(--green); }
-.hero { padding: 80px 0 64px; border-bottom: 1px solid var(--border-bright); }
-.hero-tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 4px; color: var(--blue); margin-bottom: 28px; text-transform: uppercase; }
-.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 11vw, 120px); line-height: 0.9; color: var(--white); margin-bottom: 36px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.network-badge { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: var(--label); padding: 7px 16px; border: 1px solid var(--border-bright); border-radius: 100px; }
+.network-badge.on-network { color: var(--green); border-color: rgba(0,232,122,0.3); background: rgba(0,232,122,0.06); }
+.connect-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: #000; background: var(--blue); border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-weight: 500; }
+.connect-btn:hover { filter: brightness(1.12); box-shadow: 0 4px 16px rgba(91,159,255,0.35); }
+.connect-btn.connected { background: var(--green); color: #000; }
+
+/* Hero */
+.hero { padding: 72px 0 56px; border-bottom: 1px solid var(--border-bright); }
+.hero-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--blue); margin-bottom: 24px; text-transform: uppercase; }
+.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 11vw, 118px); line-height: 0.9; color: var(--white); margin-bottom: 32px; }
 .hero h1 .blue { color: var(--blue); }
-.hero h1 .light-text { color: #ffffff; }
-.hero-sub { font-size: 16px; color: var(--off-white); font-weight: 400; max-width: 500px; line-height: 1.75; }
-.contract-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); padding: 18px 0; }
-.contract-inner { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-.contract-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; flex-shrink: 0; }
+.hero h1 .white { color: #ffffff; }
+.hero-sub { font-size: 16px; color: var(--off-white); font-weight: 400; max-width: 520px; line-height: 1.8; }
+
+/* Contract strip */
+.contract-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); padding: 16px 0; }
+.contract-inner { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.contract-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
 .contract-addr { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); }
-.contract-addr a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(91,159,255,0.4); }
-.chain-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; padding: 5px 14px; border-radius: 100px; background: rgba(0,240,128,0.08); border: 1px solid rgba(0,240,128,0.25); color: var(--green); flex-shrink: 0; }
+.contract-addr a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(91,159,255,0.35); }
+.chain-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; padding: 5px 14px; border-radius: 100px; background: rgba(0,232,122,0.08); border: 1px solid rgba(0,232,122,0.25); color: var(--green); flex-shrink: 0; }
+
+/* Metrics */
 .metrics-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); }
 .metrics-inner { display: grid; grid-template-columns: repeat(4, 1fr); }
-.metric-cell { padding: 28px 32px; border-right: 1px solid var(--border-bright); }
+.metric-cell { padding: 24px 28px; border-right: 1px solid var(--border-bright); }
 .metric-cell:last-child { border-right: none; }
-.metric-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; margin-bottom: 10px; }
-.metric-val { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; color: var(--white); transition: color 0.3s; }
+.metric-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; margin-bottom: 8px; }
+.metric-val { font-family: 'Bebas Neue', sans-serif; font-size: 34px; line-height: 1; color: var(--white); transition: color 0.3s; }
+
+/* Main grid */
 .main-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border-bright); max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
-.panel { padding: 40px; }
+.panel { padding: 36px; }
 .panel:first-child { border-right: 1px solid var(--border-bright); }
-.panel-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border-bright); display: flex; align-items: center; gap: 8px; }
-.control-group { margin-bottom: 22px; }
-.control-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--light); text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
-.control-label span { color: var(--white); font-weight: 700; font-size: 13px; }
-input[type="range"] { -webkit-appearance: none; width: 100%; height: 3px; background: var(--dim); border-radius: 2px; outline: none; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--blue); border-radius: 50%; cursor: pointer; border: 2px solid #000; box-shadow: 0 0 0 4px rgba(91,159,255,0.2); }
-input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 4px rgba(255,64,64,0.2); }
-input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 4px rgba(255,190,0,0.2); }
-.action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
-.action-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 15px 16px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: all 0.2s; font-weight: 500; }
-.action-btn.primary { background: var(--blue); border-color: var(--blue); color: #000; }
-.action-btn.primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,159,255,0.3); }
-.action-btn.secondary { background: transparent; border-color: var(--border-bright); color: var(--off-white); }
-.action-btn.secondary:hover { border-color: var(--blue); color: var(--blue); }
-.action-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
-.shield-section { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border-bright); }
+.panel-title { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2.5px; color: var(--off-white); font-weight: 500; text-transform: uppercase; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border-bright); display: flex; align-items: center; gap: 8px; }
+
+/* Controls */
+.control-group { margin-bottom: 20px; }
+.control-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: var(--label); text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.control-label span { color: var(--white); font-weight: 700; font-size: 14px; letter-spacing: 0; }
+input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--dim); border-radius: 2px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--blue); border-radius: 50%; cursor: pointer; border: 2px solid #09090f; box-shadow: 0 0 0 3px rgba(91,159,255,0.25); }
+input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 3px rgba(255,68,68,0.25); }
+input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 3px rgba(255,190,0,0.25); }
+
+/* Steps */
+.steps-header { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 24px 0 12px; }
+.action-row { display: flex; flex-direction: column; gap: 8px; }
+.action-btn { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; padding: 15px 20px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: all 0.2s; font-weight: 500; text-align: left; display: flex; align-items: center; gap: 12px; }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; flex-shrink: 0; }
+.action-btn.primary { background: rgba(91,159,255,0.12); border-color: rgba(91,159,255,0.4); color: var(--blue); }
+.action-btn.primary:not(:disabled):hover { background: rgba(91,159,255,0.2); border-color: var(--blue); }
+.action-btn.primary .step-num { background: var(--blue); color: #000; }
+.action-btn.trigger { background: rgba(0,232,122,0.08); border-color: rgba(0,232,122,0.35); color: var(--green); }
+.action-btn.trigger:not(:disabled):hover { background: rgba(0,232,122,0.15); border-color: var(--green); }
+.action-btn.trigger .step-num { background: var(--green); color: #000; }
+.action-btn.step2 { background: rgba(255,190,0,0.07); border-color: rgba(255,190,0,0.3); color: var(--yellow); }
+.action-btn.step2:not(:disabled):hover { background: rgba(255,190,0,0.14); border-color: var(--yellow); }
+.action-btn.step2 .step-num { background: var(--yellow); color: #000; }
+.action-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+.action-btn:disabled:hover { filter: none; }
+
+/* Shield */
+.shield-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border-bright); }
 .shield-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.shield-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--light); text-transform: uppercase; }
+.shield-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; }
 .shield-pct { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--white); transition: color 0.3s; }
-.shield-track { height: 10px; background: var(--dim); border-radius: 5px; overflow: hidden; }
-.shield-fill { height: 100%; border-radius: 5px; width: 0%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
-.shield-labels { display: flex; justify-content: space-between; margin-top: 7px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--light); }
+.shield-track { height: 8px; background: var(--dim); border-radius: 4px; overflow: hidden; }
+.shield-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
+.shield-labels { display: flex; justify-content: space-between; margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
 .shield-labels span:last-child { color: var(--red); }
-.state-display { margin-top: 24px; background: var(--card); border: 1px solid var(--border-bright); border-radius: 12px; overflow: hidden; }
-.state-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; border-bottom: 1px solid var(--border); }
+
+/* State display */
+.state-display { margin-top: 20px; background: var(--card); border: 1px solid var(--border-bright); border-radius: 10px; overflow: hidden; }
+.state-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
 .state-row:last-child { border-bottom: none; }
-.state-key { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--light); text-transform: uppercase; }
+.state-key { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--label); text-transform: uppercase; }
 .state-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; color: var(--white); transition: color 0.3s; }
-.verdict-box { margin-top: 24px; padding: 18px 22px; border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 2px; text-align: center; font-weight: 500; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; text-transform: uppercase; }
+.verdict-box { margin-top: 20px; padding: 16px 20px; border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-align: center; font-weight: 500; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; text-transform: uppercase; }
 .verdict-box.show { opacity: 1; transform: translateY(0); }
-.verdict-box.insolvent { background: rgba(255,64,64,0.1); color: var(--red); border: 1px solid rgba(255,64,64,0.3); }
-.verdict-box.solvent { background: rgba(0,240,128,0.08); color: var(--green); border: 1px solid rgba(0,240,128,0.25); }
+.verdict-box.insolvent { background: rgba(255,68,68,0.10); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
+.verdict-box.solvent { background: rgba(0,232,122,0.08); color: var(--green); border: 1px solid rgba(0,232,122,0.25); }
+
+/* Log */
 .log-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-.event-log { height: 560px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 20px; }
+.event-log { height: 580px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 16px; }
 .event-log::-webkit-scrollbar { width: 3px; }
 .event-log::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
-.log-item { font-family: 'DM Mono', monospace; font-size: 11px; padding: 8px 12px; border-radius: 5px; line-height: 1.5; animation: logIn 0.25s ease forwards; flex-shrink: 0; }
-@keyframes logIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+.log-item { font-family: 'DM Mono', monospace; font-size: 11.5px; padding: 8px 12px; border-radius: 5px; line-height: 1.5; animation: logIn 0.2s ease forwards; flex-shrink: 0; }
+@keyframes logIn { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: translateX(0); } }
 .log-item.info { color: var(--off-white); }
-.log-item.tx { color: #90c4ff; background: rgba(91,159,255,0.07); }
+.log-item.tx { color: #90c4ff; background: rgba(91,159,255,0.06); }
 .log-item.event { color: var(--white); background: rgba(255,255,255,0.04); border-left: 2px solid var(--blue); }
-.log-item.success { color: var(--green); background: rgba(0,240,128,0.07); border-left: 2px solid var(--green); }
-.log-item.error { color: var(--red); background: rgba(255,64,64,0.07); border-left: 2px solid var(--red); }
-.log-item.warn { color: var(--yellow); background: rgba(255,190,0,0.07); }
-.log-item.critical { color: var(--red); background: rgba(255,64,64,0.12); font-weight: 700; border: 1px solid rgba(255,64,64,0.25); }
-.log-item.separator { color: var(--dim); text-align: center; letter-spacing: 5px; font-size: 10px; }
-.log-clear { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); cursor: pointer; background: none; border: none; transition: color 0.2s; text-transform: uppercase; }
+.log-item.success { color: var(--green); background: rgba(0,232,122,0.06); border-left: 2px solid var(--green); }
+.log-item.error { color: var(--red); background: rgba(255,68,68,0.07); border-left: 2px solid var(--red); }
+.log-item.warn { color: var(--yellow); background: rgba(255,190,0,0.06); }
+.log-item.critical { color: var(--red); background: rgba(255,68,68,0.12); font-weight: 700; border: 1px solid rgba(255,68,68,0.25); }
+.log-item.separator { color: var(--dim); text-align: center; letter-spacing: 4px; font-size: 10px; }
+.log-clear { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--muted); cursor: pointer; background: none; border: none; transition: color 0.2s; text-transform: uppercase; }
 .log-clear:hover { color: var(--red); }
-.status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
+.status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
 .status-dot.live { background: var(--green); animation: blink 2s ease infinite; }
 .status-dot.pending { background: var(--yellow); animation: blink 0.8s ease infinite; }
 .status-dot.error-dot { background: var(--red); }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-.proof-section { padding: 80px 0; border-bottom: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 80px; align-items: center; }
+
+/* Proof section */
+.proof-section { padding: 72px 0; border-bottom: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 72px; align-items: center; }
 .proof-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 13vw, 140px); line-height: 0.9; white-space: nowrap; color: var(--white); }
 .proof-num .slash { color: var(--blue); }
-.proof-num .denom { color: var(--light); }
-.proof-copy h3 { font-size: 24px; font-weight: 700; margin-bottom: 18px; line-height: 1.3; color: var(--white); }
-.proof-copy p { font-size: 15px; color: var(--off-white); line-height: 1.8; margin-bottom: 16px; }
-.proof-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--green); padding: 9px 22px; border: 1px solid rgba(0,240,128,0.25); border-radius: 100px; background: rgba(0,240,128,0.07); }
-footer { padding: 28px 0; display: flex; justify-content: space-between; align-items: center; }
-.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--light); }
-.footer-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; line-height: 1.9; }
+.proof-num .denom { color: var(--label); }
+.proof-copy h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; line-height: 1.35; color: var(--white); }
+.proof-copy p { font-size: 15px; color: var(--off-white); line-height: 1.85; margin-bottom: 14px; }
+.proof-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--green); padding: 9px 20px; border: 1px solid rgba(0,232,122,0.25); border-radius: 100px; background: rgba(0,232,122,0.07); }
+footer { padding: 24px 0; display: flex; justify-content: space-between; align-items: center; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--label); }
+.footer-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; line-height: 2; }
+
+/* Wallet prompt banner */
+.wallet-prompt { background: rgba(91,159,255,0.07); border: 1px solid rgba(91,159,255,0.2); border-radius: 10px; padding: 14px 20px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); text-align: center; letter-spacing: 1px; margin-bottom: 20px; }
+
 @media (max-width: 768px) {
   .wrap { padding: 0 20px; }
   .main-grid { grid-template-columns: 1fr; }
   .panel:first-child { border-right: none; border-bottom: 1px solid var(--border-bright); }
   .metrics-inner { grid-template-columns: repeat(2, 1fr); }
   .proof-section { grid-template-columns: 1fr; gap: 32px; }
-  .action-row { grid-template-columns: 1fr; }
   .event-log { height: 360px; }
 }
 </style>
@@ -147,7 +181,7 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; align-i
 <div class="wrap">
   <div class="hero">
     <div class="hero-tag">Live Testnet Demo · Base Sepolia · PerpifyReopen.sol</div>
-    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br><span class="light-text">We Fixed It.</span></h1>
+    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br><span class="white">We Fixed It.</span></h1>
     <p class="hero-sub">Connect your wallet and trigger a real reopen event on-chain. Watch sequenced clearing execute — not a simulation. A live contract call on Base Sepolia.</p>
   </div>
 </div>
@@ -175,7 +209,10 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; align-i
 
 <div class="main-grid">
   <div class="panel">
-    <div class="panel-title"><span class="status-dot" id="statusDot"></span> Simulation Controls</div>
+    <div class="panel-title"><span class="status-dot" id="statusDot"></span>&nbsp; Simulation Controls</div>
+
+    <div id="walletPrompt" class="wallet-prompt">Connect your wallet above to start the demo</div>
+
     <div class="control-group">
       <div class="control-label">Gap Size (down) <span id="gapVal">−3.2%</span></div>
       <input type="range" class="red-range" id="gapSlider" min="10" max="120" value="32" oninput="document.getElementById('gapVal').textContent='−'+(this.value/10).toFixed(1)+'%'">
@@ -188,11 +225,20 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; align-i
       <div class="control-label">Max Leverage <span id="levVal">6×</span></div>
       <input type="range" id="levSlider" min="1" max="6" value="6" oninput="document.getElementById('levVal').textContent=this.value+'×'">
     </div>
+
+    <div class="steps-header">Execute in order →</div>
     <div class="action-row">
-      <button class="action-btn primary" id="openBtn" onclick="openTestPositions()" disabled>1 · Open Positions</button>
-      <button class="action-btn secondary" id="closeBtn" onclick="closeMarket()" disabled>2 · Close Market</button>
-      <button class="action-btn primary" id="reopenBtn" onclick="triggerReopen()" disabled style="grid-column:span 2;background:var(--green);border-color:var(--green);color:#000;">3 · Trigger Reopen Gap</button>
+      <button class="action-btn primary" id="openBtn" onclick="openTestPositions()" disabled>
+        <span class="step-num">1</span> Open Test Positions
+      </button>
+      <button class="action-btn step2" id="closeBtn" onclick="closeMarket()" disabled>
+        <span class="step-num">2</span> Close Market (Friday 16:00)
+      </button>
+      <button class="action-btn trigger" id="reopenBtn" onclick="triggerReopen()" disabled>
+        <span class="step-num">3</span> Trigger Reopen Gap (Monday 09:30)
+      </button>
     </div>
+
     <div class="shield-section">
       <div class="shield-header">
         <div class="shield-title">Insurance Shield Usage</div>
@@ -252,7 +298,7 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; align-i
 <script>
 const CONTRACT_ADDRESS = "0xF6FbB4be6844588A68704607f84bE6127F246A45";
 const BASE_SEPOLIA_CHAIN_ID = 84532;
-const LOCAL_CHAIN_ID = 31337;
+const BASE_SEPOLIA_HEX = "0x14a34";
 const ABI = [
   "function openPosition(uint256 notionalUSD, uint256 leverage, bool isLong, uint8 riskTier) payable returns (uint256)",
   "function closeMarket() external",
@@ -274,6 +320,7 @@ const ABI = [
 let provider, signer, contract;
 const STATES = ["OPEN","DARK","REOPEN"];
 const TIERS = ["LOW","MEDIUM","HIGH"];
+
 function log(type, msg) {
   const el = document.getElementById("eventLog");
   const item = document.createElement("div");
@@ -284,37 +331,70 @@ function log(type, msg) {
 }
 function clearLog() { document.getElementById("eventLog").innerHTML = ""; }
 function sep() { log("separator","────────────────────────"); }
+
+async function switchToBaseSepolia() {
+  try {
+    await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: BASE_SEPOLIA_HEX }] });
+    return true;
+  } catch (err) {
+    if (err.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: BASE_SEPOLIA_HEX,
+            chainName: "Base Sepolia",
+            nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+            rpcUrls: ["https://sepolia.base.org"],
+            blockExplorerUrls: ["https://sepolia.basescan.org"]
+          }]
+        });
+        return true;
+      } catch { return false; }
+    }
+    return false;
+  }
+}
+
 async function connectWallet() {
-  if (!window.ethereum) { log("error","MetaMask not detected."); return; }
+  if (!window.ethereum) { log("error","MetaMask not detected. Please install MetaMask."); return; }
   try {
     await window.ethereum.request({ method: "eth_requestAccounts" });
     provider = new ethers.providers.Web3Provider(window.ethereum);
+    let network = await provider.getNetwork();
+
+    if (network.chainId !== BASE_SEPOLIA_CHAIN_ID) {
+      log("warn", "Wrong network — switching to Base Sepolia...");
+      const switched = await switchToBaseSepolia();
+      if (!switched) { log("error", "Please switch to Base Sepolia manually."); return; }
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      network = await provider.getNetwork();
+    }
+
     signer = provider.getSigner();
-    const network = await provider.getNetwork();
-    const chainId = network.chainId;
     const addr = await signer.getAddress();
     const short = addr.slice(0,6)+"..."+addr.slice(-4);
+
     document.getElementById("connectBtn").textContent = short;
     document.getElementById("connectBtn").className = "connect-btn connected";
-    if (chainId === BASE_SEPOLIA_CHAIN_ID) {
-      document.getElementById("networkBadge").textContent = "BASE SEPOLIA";
-      document.getElementById("chainPill").textContent = "● BASE SEPOLIA";
-      document.getElementById("addrText").innerHTML = `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
-    } else if (chainId === LOCAL_CHAIN_ID) {
-      document.getElementById("networkBadge").textContent = "LOCAL HARDHAT";
-    } else {
-      document.getElementById("networkBadge").textContent = `CHAIN ${chainId}`;
-    }
+    document.getElementById("networkBadge").textContent = "BASE SEPOLIA";
+    document.getElementById("networkBadge").className = "network-badge on-network";
+    document.getElementById("chainPill").textContent = "● BASE SEPOLIA";
+    document.getElementById("addrText").innerHTML = `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
+    document.getElementById("walletPrompt").style.display = "none";
+
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
     setDot("statusDot","live"); setDot("logDot","live");
+    clearLog();
     log("success", `✓ Wallet connected: ${short}`);
-    log("info", `Network: Chain ${chainId} · Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
+    log("info", `Network: Base Sepolia (${network.chainId}) · Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
     sep();
     await refreshState();
     enableButtons();
     listenForEvents();
   } catch(err) { log("error","Connection failed: "+(err.message||err)); }
 }
+
 function listenForEvents() {
   contract.on("PositionOpened",(posId,trader,notional,margin,leverage,isLong,riskTier)=>{
     log("event",`📋 PositionOpened #${posId} · ${leverage}× · ${isLong?"LONG":"SHORT"} · ${TIERS[riskTier]} · ${ethers.utils.formatEther(margin).slice(0,8)} ETH margin`);
@@ -358,6 +438,7 @@ function listenForEvents() {
     refreshState();
   });
 }
+
 async function openTestPositions() {
   if (!contract) return;
   disableButtons(); setDot("statusDot","pending");
@@ -380,6 +461,7 @@ async function openTestPositions() {
     document.getElementById("openBtn").disabled = true;
   } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); enableButtons(); }
 }
+
 async function closeMarket() {
   if (!contract) return;
   setDot("statusDot","pending");
@@ -396,6 +478,7 @@ async function closeMarket() {
     await refreshState();
   } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); }
 }
+
 async function triggerReopen() {
   if (!contract) return;
   setDot("statusDot","pending");
@@ -413,6 +496,7 @@ async function triggerReopen() {
     document.getElementById("reopenBtn").disabled = true;
   } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); }
 }
+
 async function refreshState() {
   if (!contract) return;
   try {
@@ -436,6 +520,7 @@ async function refreshState() {
     setText("s-solvent",badDebt.eq(0)?"YES":"NO",badDebt.eq(0)?"var(--green)":"var(--red)");
   } catch(e) {}
 }
+
 function formatOI(bn) {
   const n = Number(ethers.utils.formatUnits(bn,6));
   if (n>=1000000) return "$"+(n/1000000).toFixed(1)+"M";
@@ -460,10 +545,16 @@ function enableButtons() {
 function disableButtons() {
   ["openBtn","closeBtn","reopenBtn"].forEach(id=>document.getElementById(id).disabled=true);
 }
-window.addEventListener("load",()=>{
+
+window.addEventListener("load", async () => {
   if (window.ethereum) {
-    window.ethereum.on("accountsChanged",()=>location.reload());
-    window.ethereum.on("chainChanged",()=>location.reload());
+    window.ethereum.on("accountsChanged", () => location.reload());
+    window.ethereum.on("chainChanged", () => location.reload());
+    // Auto-connect if wallet was previously authorized
+    const accounts = await window.ethereum.request({ method: "eth_accounts" });
+    if (accounts.length > 0) {
+      connectWallet();
+    }
   }
 });
 </script>
