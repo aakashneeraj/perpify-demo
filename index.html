@@ -13,148 +13,147 @@
   --surface: #0e0e18;
   --card: #141422;
   --border: #1e1e30;
-  --border-bright: #282840;
+  --border-bright: #2a2a42;
   --blue: #5b9fff;
-  --blue-dim: rgba(91,159,255,0.10);
   --green: #00e87a;
   --red: #ff4444;
   --yellow: #ffbe00;
   --white: #ffffff;
   --off-white: #eeeef8;
-  --label: #b8b8d8;
+  --label: #c0c0dc;
   --muted: #7878a8;
   --dim: #252540;
 }
 body { background: var(--bg); color: var(--white); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
-body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(91,159,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(91,159,255,0.015) 1px, transparent 1px); background-size: 64px 64px; pointer-events: none; z-index: 0; }
-body::after { content: ''; position: fixed; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(91,159,255,0.06) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(91,159,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(91,159,255,0.012) 1px, transparent 1px); background-size: 64px 64px; pointer-events: none; z-index: 0; }
 .wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 0 40px; }
 
-/* Header */
-header { padding: 24px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-bright); }
+/* ─── Header ─── */
+header { padding: 22px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-bright); }
 .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 4px; color: var(--white); }
 .logo span { color: var(--blue); }
-.header-right { display: flex; align-items: center; gap: 12px; }
-.network-badge { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: var(--label); padding: 7px 16px; border: 1px solid var(--border-bright); border-radius: 100px; }
-.network-badge.on-network { color: var(--green); border-color: rgba(0,232,122,0.3); background: rgba(0,232,122,0.06); }
-.connect-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: #000; background: var(--blue); border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; font-weight: 500; }
-.connect-btn:hover { filter: brightness(1.12); box-shadow: 0 4px 16px rgba(91,159,255,0.35); }
-.connect-btn.connected { background: var(--green); color: #000; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.network-badge { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--label); padding: 7px 14px; border: 1px solid var(--border-bright); border-radius: 100px; }
+.network-badge.ok { color: var(--green); border-color: rgba(0,232,122,0.35); background: rgba(0,232,122,0.07); }
+.connect-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: #000; background: var(--blue); border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; text-transform: uppercase; font-weight: 500; }
+.connect-btn:hover { opacity: 0.88; }
+.connect-btn.connected { background: var(--green); }
+.owner-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--yellow); padding: 5px 12px; border: 1px solid rgba(255,190,0,0.3); border-radius: 100px; background: rgba(255,190,0,0.07); display: none; }
+.owner-badge.show { display: block; }
 
-/* Hero */
-.hero { padding: 72px 0 56px; border-bottom: 1px solid var(--border-bright); }
-.hero-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--blue); margin-bottom: 24px; text-transform: uppercase; }
-.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 11vw, 118px); line-height: 0.9; color: var(--white); margin-bottom: 32px; }
+/* ─── Hero ─── */
+.hero { padding: 68px 0 52px; border-bottom: 1px solid var(--border-bright); }
+.hero-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--blue); margin-bottom: 22px; text-transform: uppercase; }
+.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(58px, 10.5vw, 116px); line-height: 0.9; color: var(--white); margin-bottom: 28px; }
 .hero h1 .blue { color: var(--blue); }
-.hero h1 .white { color: #ffffff; }
 .hero-sub { font-size: 16px; color: var(--off-white); font-weight: 400; max-width: 520px; line-height: 1.8; }
 
-/* Contract strip */
-.contract-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); padding: 16px 0; }
+/* ─── Contract strip ─── */
+.contract-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); padding: 14px 0; }
 .contract-inner { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.contract-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
+.contract-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
 .contract-addr { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); }
 .contract-addr a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(91,159,255,0.35); }
-.chain-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; padding: 5px 14px; border-radius: 100px; background: rgba(0,232,122,0.08); border: 1px solid rgba(0,232,122,0.25); color: var(--green); flex-shrink: 0; }
+.chain-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 5px 12px; border-radius: 100px; background: rgba(0,232,122,0.08); border: 1px solid rgba(0,232,122,0.25); color: var(--green); flex-shrink: 0; }
 
-/* Metrics */
+/* ─── Metrics ─── */
 .metrics-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); }
 .metrics-inner { display: grid; grid-template-columns: repeat(4, 1fr); }
-.metric-cell { padding: 24px 28px; border-right: 1px solid var(--border-bright); }
+.metric-cell { padding: 22px 26px; border-right: 1px solid var(--border-bright); }
 .metric-cell:last-child { border-right: none; }
 .metric-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; margin-bottom: 8px; }
-.metric-val { font-family: 'Bebas Neue', sans-serif; font-size: 34px; line-height: 1; color: var(--white); transition: color 0.3s; }
+.metric-val { font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1; color: var(--muted); transition: color 0.3s; }
 
-/* Main grid */
+/* ─── Main grid ─── */
 .main-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border-bright); max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
-.panel { padding: 36px; }
+.panel { padding: 34px; }
 .panel:first-child { border-right: 1px solid var(--border-bright); }
-.panel-title { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2.5px; color: var(--off-white); font-weight: 500; text-transform: uppercase; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border-bright); display: flex; align-items: center; gap: 8px; }
+.panel-title { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--off-white); text-transform: uppercase; margin-bottom: 26px; padding-bottom: 14px; border-bottom: 1px solid var(--border-bright); display: flex; align-items: center; gap: 8px; }
 
-/* Controls */
-.control-group { margin-bottom: 20px; }
-.control-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: var(--label); text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+/* ─── Controls ─── */
+.control-group { margin-bottom: 18px; }
+.control-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--label); text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 .control-label span { color: var(--white); font-weight: 700; font-size: 14px; letter-spacing: 0; }
 input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--dim); border-radius: 2px; outline: none; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--blue); border-radius: 50%; cursor: pointer; border: 2px solid #09090f; box-shadow: 0 0 0 3px rgba(91,159,255,0.25); }
-input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 3px rgba(255,68,68,0.25); }
-input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 3px rgba(255,190,0,0.25); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--blue); border-radius: 50%; cursor: pointer; border: 2px solid #09090f; box-shadow: 0 0 0 3px rgba(91,159,255,0.22); }
+input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 3px rgba(255,68,68,0.22); }
+input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 3px rgba(255,190,0,0.22); }
 
-/* Steps */
-.steps-header { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 24px 0 12px; }
+/* ─── Action buttons ─── */
+.steps-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 22px 0 10px; }
 .action-row { display: flex; flex-direction: column; gap: 8px; }
-.action-btn { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; padding: 15px 20px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: all 0.2s; font-weight: 500; text-align: left; display: flex; align-items: center; gap: 12px; }
-.step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; flex-shrink: 0; }
-.action-btn.primary { background: rgba(91,159,255,0.12); border-color: rgba(91,159,255,0.4); color: var(--blue); }
-.action-btn.primary:not(:disabled):hover { background: rgba(91,159,255,0.2); border-color: var(--blue); }
-.action-btn.primary .step-num { background: var(--blue); color: #000; }
-.action-btn.trigger { background: rgba(0,232,122,0.08); border-color: rgba(0,232,122,0.35); color: var(--green); }
-.action-btn.trigger:not(:disabled):hover { background: rgba(0,232,122,0.15); border-color: var(--green); }
-.action-btn.trigger .step-num { background: var(--green); color: #000; }
-.action-btn.step2 { background: rgba(255,190,0,0.07); border-color: rgba(255,190,0,0.3); color: var(--yellow); }
-.action-btn.step2:not(:disabled):hover { background: rgba(255,190,0,0.14); border-color: var(--yellow); }
-.action-btn.step2 .step-num { background: var(--yellow); color: #000; }
-.action-btn:disabled { opacity: 0.28; cursor: not-allowed; }
-.action-btn:disabled:hover { filter: none; }
+.action-btn { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 14px 18px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: opacity 0.18s; font-weight: 500; text-align: left; display: flex; align-items: center; gap: 12px; }
+.step-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; flex-shrink: 0; font-weight: 700; }
+.btn-open  { background: rgba(91,159,255,0.10); border-color: rgba(91,159,255,0.35); color: #90c4ff; }
+.btn-open  .step-badge { background: var(--blue); color: #000; }
+.btn-close { background: rgba(255,190,0,0.08); border-color: rgba(255,190,0,0.28); color: #ffd060; }
+.btn-close .step-badge { background: var(--yellow); color: #000; }
+.btn-reopen { background: rgba(0,232,122,0.08); border-color: rgba(0,232,122,0.3); color: #60eeaa; }
+.btn-reopen .step-badge { background: var(--green); color: #000; }
+.action-btn:not(:disabled):hover { opacity: 0.78; }
+.action-btn:disabled { opacity: 0.22; cursor: not-allowed; }
 
-/* Shield */
-.shield-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border-bright); }
-.shield-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+/* ─── Owner notice ─── */
+.owner-notice { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--yellow); background: rgba(255,190,0,0.07); border: 1px solid rgba(255,190,0,0.2); border-radius: 8px; padding: 11px 14px; margin-top: 10px; line-height: 1.6; display: none; }
+.owner-notice.show { display: block; }
+.faucet-link { color: var(--blue); text-decoration: underline; cursor: pointer; }
+
+/* ─── Shield ─── */
+.shield-section { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border-bright); }
+.shield-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .shield-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; }
-.shield-pct { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--white); transition: color 0.3s; }
+.shield-pct { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); transition: color 0.3s; }
 .shield-track { height: 8px; background: var(--dim); border-radius: 4px; overflow: hidden; }
 .shield-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
 .shield-labels { display: flex; justify-content: space-between; margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
 .shield-labels span:last-child { color: var(--red); }
 
-/* State display */
-.state-display { margin-top: 20px; background: var(--card); border: 1px solid var(--border-bright); border-radius: 10px; overflow: hidden; }
-.state-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+/* ─── State display ─── */
+.state-display { margin-top: 18px; background: var(--card); border: 1px solid var(--border-bright); border-radius: 10px; overflow: hidden; }
+.state-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--border); }
 .state-row:last-child { border-bottom: none; }
-.state-key { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--label); text-transform: uppercase; }
+.state-key { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.5px; color: var(--label); text-transform: uppercase; }
 .state-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; color: var(--white); transition: color 0.3s; }
-.verdict-box { margin-top: 20px; padding: 16px 20px; border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-align: center; font-weight: 500; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; text-transform: uppercase; }
+.verdict-box { margin-top: 18px; padding: 14px 18px; border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-align: center; font-weight: 600; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; text-transform: uppercase; }
 .verdict-box.show { opacity: 1; transform: translateY(0); }
 .verdict-box.insolvent { background: rgba(255,68,68,0.10); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
 .verdict-box.solvent { background: rgba(0,232,122,0.08); color: var(--green); border: 1px solid rgba(0,232,122,0.25); }
 
-/* Log */
+/* ─── Log ─── */
 .log-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-.event-log { height: 580px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 16px; }
+.event-log { height: 590px; overflow-y: auto; display: flex; flex-direction: column; gap: 1px; margin-top: 14px; }
 .event-log::-webkit-scrollbar { width: 3px; }
 .event-log::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
-.log-item { font-family: 'DM Mono', monospace; font-size: 11.5px; padding: 8px 12px; border-radius: 5px; line-height: 1.5; animation: logIn 0.2s ease forwards; flex-shrink: 0; }
+.log-item { font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 12px; border-radius: 5px; line-height: 1.55; animation: logIn 0.2s ease forwards; flex-shrink: 0; }
 @keyframes logIn { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: translateX(0); } }
-.log-item.info { color: var(--off-white); }
-.log-item.tx { color: #90c4ff; background: rgba(91,159,255,0.06); }
-.log-item.event { color: var(--white); background: rgba(255,255,255,0.04); border-left: 2px solid var(--blue); }
+.log-item.info    { color: var(--off-white); }
+.log-item.tx      { color: #90c4ff; background: rgba(91,159,255,0.06); }
+.log-item.event   { color: var(--white); background: rgba(255,255,255,0.04); border-left: 2px solid var(--blue); }
 .log-item.success { color: var(--green); background: rgba(0,232,122,0.06); border-left: 2px solid var(--green); }
-.log-item.error { color: var(--red); background: rgba(255,68,68,0.07); border-left: 2px solid var(--red); }
-.log-item.warn { color: var(--yellow); background: rgba(255,190,0,0.06); }
-.log-item.critical { color: var(--red); background: rgba(255,68,68,0.12); font-weight: 700; border: 1px solid rgba(255,68,68,0.25); }
+.log-item.error   { color: var(--red); background: rgba(255,68,68,0.08); border-left: 2px solid var(--red); }
+.log-item.warn    { color: var(--yellow); background: rgba(255,190,0,0.06); }
+.log-item.critical{ color: var(--red); background: rgba(255,68,68,0.12); font-weight: 700; border: 1px solid rgba(255,68,68,0.25); }
 .log-item.separator { color: var(--dim); text-align: center; letter-spacing: 4px; font-size: 10px; }
-.log-clear { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--muted); cursor: pointer; background: none; border: none; transition: color 0.2s; text-transform: uppercase; }
+.log-clear { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--muted); cursor: pointer; background: none; border: none; transition: color 0.2s; text-transform: uppercase; }
 .log-clear:hover { color: var(--red); }
 .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
-.status-dot.live { background: var(--green); animation: blink 2s ease infinite; }
+.status-dot.live    { background: var(--green); animation: blink 2s ease infinite; }
 .status-dot.pending { background: var(--yellow); animation: blink 0.8s ease infinite; }
-.status-dot.error-dot { background: var(--red); }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.status-dot.err     { background: var(--red); }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
-/* Proof section */
-.proof-section { padding: 72px 0; border-bottom: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 72px; align-items: center; }
-.proof-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 13vw, 140px); line-height: 0.9; white-space: nowrap; color: var(--white); }
+/* ─── Proof section ─── */
+.proof-section { padding: 68px 0; border-bottom: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 64px; align-items: center; }
+.proof-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px,13vw,140px); line-height: 0.9; white-space: nowrap; color: var(--white); }
 .proof-num .slash { color: var(--blue); }
 .proof-num .denom { color: var(--label); }
 .proof-copy h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; line-height: 1.35; color: var(--white); }
 .proof-copy p { font-size: 15px; color: var(--off-white); line-height: 1.85; margin-bottom: 14px; }
 .proof-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--green); padding: 9px 20px; border: 1px solid rgba(0,232,122,0.25); border-radius: 100px; background: rgba(0,232,122,0.07); }
-footer { padding: 24px 0; display: flex; justify-content: space-between; align-items: center; }
+
+footer { padding: 22px 0; display: flex; justify-content: space-between; align-items: center; }
 .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--label); }
 .footer-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; line-height: 2; }
-
-/* Wallet prompt banner */
-.wallet-prompt { background: rgba(91,159,255,0.07); border: 1px solid rgba(91,159,255,0.2); border-radius: 10px; padding: 14px 20px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); text-align: center; letter-spacing: 1px; margin-bottom: 20px; }
 
 @media (max-width: 768px) {
   .wrap { padding: 0 20px; }
@@ -172,6 +171,7 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
   <header>
     <div class="logo">PERP<span>IFY</span></div>
     <div class="header-right">
+      <div class="owner-badge" id="ownerBadge">★ DEPLOYER</div>
       <div class="network-badge" id="networkBadge">NOT CONNECTED</div>
       <button class="connect-btn" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
     </div>
@@ -181,7 +181,7 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
 <div class="wrap">
   <div class="hero">
     <div class="hero-tag">Live Testnet Demo · Base Sepolia · PerpifyReopen.sol</div>
-    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br><span class="white">We Fixed It.</span></h1>
+    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br>We Fixed It.</h1>
     <p class="hero-sub">Connect your wallet and trigger a real reopen event on-chain. Watch sequenced clearing execute — not a simulation. A live contract call on Base Sepolia.</p>
   </div>
 </div>
@@ -191,7 +191,7 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
     <div class="contract-inner">
       <div class="contract-label">Contract</div>
       <div class="contract-addr"><span id="addrText">0xF6FbB4be6844588A68704607f84bE6127F246A45</span></div>
-      <div class="chain-pill" id="chainPill">● BASE SEPOLIA</div>
+      <div class="chain-pill">● BASE SEPOLIA</div>
     </div>
   </div>
 </div>
@@ -199,10 +199,10 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
 <div class="metrics-strip">
   <div class="wrap">
     <div class="metrics-inner">
-      <div class="metric-cell"><div class="metric-label">Market State</div><div class="metric-val" id="m-state" style="font-size:22px;color:var(--muted)">—</div></div>
-      <div class="metric-cell"><div class="metric-label">Total OI</div><div class="metric-val" id="m-oi" style="color:var(--muted)">—</div></div>
-      <div class="metric-cell"><div class="metric-label">Shield Fund</div><div class="metric-val" id="m-shield" style="color:var(--muted)">—</div></div>
-      <div class="metric-cell"><div class="metric-label">Bad Debt</div><div class="metric-val" id="m-debt" style="color:var(--muted)">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Market State</div><div class="metric-val" id="m-state" style="font-size:20px">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Total OI</div><div class="metric-val" id="m-oi">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Shield Fund</div><div class="metric-val" id="m-shield">—</div></div>
+      <div class="metric-cell"><div class="metric-label">Bad Debt</div><div class="metric-val" id="m-debt">—</div></div>
     </div>
   </div>
 </div>
@@ -211,32 +211,40 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
   <div class="panel">
     <div class="panel-title"><span class="status-dot" id="statusDot"></span>&nbsp; Simulation Controls</div>
 
-    <div id="walletPrompt" class="wallet-prompt">Connect your wallet above to start the demo</div>
-
     <div class="control-group">
       <div class="control-label">Gap Size (down) <span id="gapVal">−3.2%</span></div>
-      <input type="range" class="red-range" id="gapSlider" min="10" max="120" value="32" oninput="document.getElementById('gapVal').textContent='−'+(this.value/10).toFixed(1)+'%'">
+      <input type="range" class="red-range" id="gapSlider" min="10" max="120" value="32"
+        oninput="document.getElementById('gapVal').textContent='−'+(this.value/10).toFixed(1)+'%'">
     </div>
     <div class="control-group">
       <div class="control-label">S&P 500 Close Price <span id="priceVal">$4,800</span></div>
-      <input type="range" class="yellow-range" id="priceSlider" min="3000" max="6000" value="4800" oninput="document.getElementById('priceVal').textContent='$'+parseInt(this.value).toLocaleString()">
+      <input type="range" class="yellow-range" id="priceSlider" min="3000" max="6000" value="4800"
+        oninput="document.getElementById('priceVal').textContent='$'+parseInt(this.value).toLocaleString()">
     </div>
     <div class="control-group">
       <div class="control-label">Max Leverage <span id="levVal">6×</span></div>
-      <input type="range" id="levSlider" min="1" max="6" value="6" oninput="document.getElementById('levVal').textContent=this.value+'×'">
+      <input type="range" id="levSlider" min="1" max="6" value="6"
+        oninput="document.getElementById('levVal').textContent=this.value+'×'">
     </div>
 
-    <div class="steps-header">Execute in order →</div>
+    <div class="steps-label">Execute in sequence →</div>
     <div class="action-row">
-      <button class="action-btn primary" id="openBtn" onclick="openTestPositions()" disabled>
-        <span class="step-num">1</span> Open Test Positions
+      <button class="action-btn btn-open" id="openBtn" onclick="openTestPositions()" disabled>
+        <span class="step-badge">1</span> Open Test Positions (~0.033 ETH)
       </button>
-      <button class="action-btn step2" id="closeBtn" onclick="closeMarket()" disabled>
-        <span class="step-num">2</span> Close Market (Friday 16:00)
+      <button class="action-btn btn-close" id="closeBtn" onclick="closeMarket()" disabled>
+        <span class="step-badge">2</span> Close Market (Friday 16:00)
       </button>
-      <button class="action-btn trigger" id="reopenBtn" onclick="triggerReopen()" disabled>
-        <span class="step-num">3</span> Trigger Reopen Gap (Monday 09:30)
+      <button class="action-btn btn-reopen" id="reopenBtn" onclick="triggerReopen()" disabled>
+        <span class="step-badge">3</span> Trigger Reopen Gap (Monday 09:30)
       </button>
+    </div>
+
+    <div class="owner-notice" id="ownerNotice">
+      ⚠ Steps 2 &amp; 3 require the deployer wallet.<br>
+      Need Base Sepolia ETH? →
+      <a class="faucet-link" href="https://faucet.quicknode.com/base/sepolia" target="_blank">QuickNode Faucet</a> ·
+      <a class="faucet-link" href="https://www.alchemy.com/faucets/base-sepolia" target="_blank">Alchemy Faucet</a>
     </div>
 
     <div class="shield-section">
@@ -247,6 +255,7 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
       <div class="shield-track"><div class="shield-fill" id="shieldFill" style="background:var(--blue)"></div></div>
       <div class="shield-labels"><span>0%</span><span>50%</span><span>100% = INSOLVENT</span></div>
     </div>
+
     <div class="state-display">
       <div class="state-row"><div class="state-key">Open Positions</div><div class="state-val" id="s-poscount">—</div></div>
       <div class="state-row"><div class="state-key">Shield Fund</div><div class="state-val" id="s-shield">—</div></div>
@@ -254,6 +263,7 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
       <div class="state-row"><div class="state-key">Shield Used</div><div class="state-val" id="s-shieldpct">—</div></div>
       <div class="state-row"><div class="state-key">Protocol Solvent</div><div class="state-val" id="s-solvent">—</div></div>
     </div>
+
     <div class="verdict-box" id="verdictBox"></div>
   </div>
 
@@ -266,15 +276,14 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
     </div>
     <div class="event-log" id="eventLog">
       <div class="log-item info">Connect your wallet to begin. MetaMask required.</div>
-      <div class="log-item separator">────────────────────────</div>
-      <div class="log-item info">This demo executes real on-chain transactions.</div>
-      <div class="log-item info">Events are emitted live by the deployed contract.</div>
-      <div class="log-item info">All transactions visible on BaseScan.</div>
-      <div class="log-item separator">────────────────────────</div>
-      <div class="log-item warn">Step 1 — Connect wallet</div>
+      <div class="log-item separator">────────────────────────────</div>
+      <div class="log-item info">Real on-chain transactions on Base Sepolia.</div>
+      <div class="log-item info">Events emitted live by the deployed contract.</div>
+      <div class="log-item separator">────────────────────────────</div>
+      <div class="log-item warn">Step 1 — Connect wallet (need ~0.05 ETH on Base Sepolia)</div>
       <div class="log-item warn">Step 2 — Open test positions</div>
-      <div class="log-item warn">Step 3 — Close the market (Friday 16:00)</div>
-      <div class="log-item warn">Step 4 — Trigger reopen gap (Monday 09:30)</div>
+      <div class="log-item warn">Step 3 — Close the market (deployer wallet required)</div>
+      <div class="log-item warn">Step 4 — Trigger reopen gap (deployer wallet required)</div>
     </div>
   </div>
 </div>
@@ -297,8 +306,11 @@ footer { padding: 24px 0; display: flex; justify-content: space-between; align-i
 
 <script>
 const CONTRACT_ADDRESS = "0xF6FbB4be6844588A68704607f84bE6127F246A45";
+const OWNER_ADDRESS    = "0xe387c40a8664f034c7bd214ec8e6350123488c98";
 const BASE_SEPOLIA_CHAIN_ID = 84532;
 const BASE_SEPOLIA_HEX = "0x14a34";
+const PUBLIC_RPC = "https://sepolia.base.org";
+
 const ABI = [
   "function openPosition(uint256 notionalUSD, uint256 leverage, bool isLong, uint8 riskTier) payable returns (uint256)",
   "function closeMarket() external",
@@ -317,21 +329,92 @@ const ABI = [
   "event PositionCleared(uint256 indexed posId, address indexed trader, uint256 payout, uint256 badDebtGenerated)",
   "event ReopenComplete(uint256 totalPositionsCleared, uint256 totalBadDebt, uint256 shieldUsed, uint256 shieldUsedBps, bool protocolSolvent)"
 ];
-let provider, signer, contract;
-const STATES = ["OPEN","DARK","REOPEN"];
-const TIERS = ["LOW","MEDIUM","HIGH"];
 
+let provider, signer, contract, isOwner = false;
+const STATES = ["OPEN", "DARK", "REOPEN"];
+const TIERS  = ["LOW", "MEDIUM", "HIGH"];
+
+/* ─── Logging ─── */
 function log(type, msg) {
   const el = document.getElementById("eventLog");
   const item = document.createElement("div");
-  item.className = `log-item ${type}`;
+  item.className = "log-item " + type;
   item.textContent = msg;
   el.appendChild(item);
   el.scrollTop = el.scrollHeight;
 }
 function clearLog() { document.getElementById("eventLog").innerHTML = ""; }
-function sep() { log("separator","────────────────────────"); }
+function sep() { log("separator", "────────────────────────────"); }
 
+/* ─── Dot helpers ─── */
+function setDot(id, s) { const e = document.getElementById(id); if (e) e.className = "status-dot " + s; }
+
+/* ─── setText ─── */
+function setText(id, val, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  if (color) el.style.color = color;
+}
+
+/* ─── Public RPC read on load ─── */
+async function loadPublicState() {
+  try {
+    const rp = new ethers.providers.JsonRpcProvider(PUBLIC_RPC);
+    const rc = new ethers.Contract(CONTRACT_ADDRESS, ABI, rp);
+    const [stateRaw, posCount, totalOI, shieldFund, badDebt] = await Promise.all([
+      rc.marketState(), rc.getOpenPositionCount(),
+      rc.totalOI(), rc.shieldFund(), rc.badDebt()
+    ]);
+    applyState(stateRaw, posCount, totalOI, shieldFund, badDebt);
+  } catch (e) { /* silent — metrics stay at — */ }
+}
+
+/* ─── Apply state to UI ─── */
+function applyState(stateRaw, posCount, totalOI, shieldFund, badDebt) {
+  const state = STATES[stateRaw] || "UNKNOWN";
+  const stateColor = { OPEN: "var(--green)", DARK: "var(--yellow)", REOPEN: "var(--blue)" };
+  setText("m-state", state, stateColor[state] || "var(--white)");
+  setText("m-oi", formatOI(totalOI), "var(--white)");
+  setText("m-shield", fmtEth(shieldFund) + " ETH", "var(--blue)");
+  setText("m-debt", fmtEth(badDebt) + " ETH", badDebt.gt(0) ? "var(--red)" : "var(--white)");
+  setText("s-poscount", posCount.toString(), "var(--white)");
+  setText("s-shield", fmtEth(shieldFund) + " ETH", "var(--white)");
+  setText("s-debt", fmtEth(badDebt) + " ETH", badDebt.gt(0) ? "var(--red)" : "var(--white)");
+  const shieldInit = totalOI.mul(500).div(10000);
+  let pctNum = 0;
+  if (badDebt.gt(0) && shieldInit.gt(0))
+    pctNum = Math.min(badDebt.mul(10000).div(shieldInit).toNumber() / 100, 200);
+  setText("s-shieldpct", pctNum.toFixed(2) + "%", pctNum > 100 ? "var(--red)" : pctNum > 50 ? "var(--yellow)" : "var(--white)");
+  setText("s-solvent", badDebt.eq(0) ? "YES" : "NO", badDebt.eq(0) ? "var(--green)" : "var(--red)");
+
+  /* Sync buttons to actual contract state if wallet connected */
+  if (contract) syncButtons(stateRaw, posCount);
+}
+
+/* ─── Sync buttons to contract state ─── */
+function syncButtons(stateRaw, posCount) {
+  const ob = document.getElementById("openBtn");
+  const cb = document.getElementById("closeBtn");
+  const rb = document.getElementById("reopenBtn");
+  ob.disabled = true; cb.disabled = true; rb.disabled = true;
+
+  if (stateRaw === 0) {
+    // OPEN: can open more positions, or close if positions exist
+    if (posCount.eq(0)) {
+      ob.disabled = false;
+    } else {
+      cb.disabled = !isOwner; // close requires owner
+      ob.disabled = false;    // still allow more positions
+    }
+  } else if (stateRaw === 1) {
+    // DARK: market closed, can trigger reopen
+    rb.disabled = !isOwner;
+  }
+  // REOPEN: all disabled — demo complete
+}
+
+/* ─── Network switch ─── */
 async function switchToBaseSepolia() {
   try {
     await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: BASE_SEPOLIA_HEX }] });
@@ -356,8 +439,12 @@ async function switchToBaseSepolia() {
   }
 }
 
+/* ─── Connect wallet ─── */
 async function connectWallet() {
-  if (!window.ethereum) { log("error","MetaMask not detected. Please install MetaMask."); return; }
+  if (!window.ethereum) {
+    alert("MetaMask not detected. Please install MetaMask.");
+    return;
+  }
   try {
     await window.ethereum.request({ method: "eth_requestAccounts" });
     provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -366,195 +453,223 @@ async function connectWallet() {
     if (network.chainId !== BASE_SEPOLIA_CHAIN_ID) {
       log("warn", "Wrong network — switching to Base Sepolia...");
       const switched = await switchToBaseSepolia();
-      if (!switched) { log("error", "Please switch to Base Sepolia manually."); return; }
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      network = await provider.getNetwork();
+      if (!switched) { log("error", "Please switch to Base Sepolia in MetaMask manually."); return; }
+      /* chainChanged fires → page reloads → auto-connect handles the rest */
+      return;
     }
 
     signer = provider.getSigner();
     const addr = await signer.getAddress();
-    const short = addr.slice(0,6)+"..."+addr.slice(-4);
+    const short = addr.slice(0, 6) + "..." + addr.slice(-4);
+    isOwner = addr.toLowerCase() === OWNER_ADDRESS.toLowerCase();
 
+    /* Header UI */
     document.getElementById("connectBtn").textContent = short;
     document.getElementById("connectBtn").className = "connect-btn connected";
     document.getElementById("networkBadge").textContent = "BASE SEPOLIA";
-    document.getElementById("networkBadge").className = "network-badge on-network";
-    document.getElementById("chainPill").textContent = "● BASE SEPOLIA";
-    document.getElementById("addrText").innerHTML = `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
-    document.getElementById("walletPrompt").style.display = "none";
+    document.getElementById("networkBadge").className = "network-badge ok";
+    document.getElementById("addrText").innerHTML =
+      `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
+
+    if (isOwner) {
+      document.getElementById("ownerBadge").className = "owner-badge show";
+    } else {
+      document.getElementById("ownerNotice").className = "owner-notice show";
+    }
 
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-    setDot("statusDot","live"); setDot("logDot","live");
+    setDot("statusDot", "live"); setDot("logDot", "live");
     clearLog();
-    log("success", `✓ Wallet connected: ${short}`);
-    log("info", `Network: Base Sepolia (${network.chainId}) · Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
+    log("success", "✓ Wallet connected: " + short + (isOwner ? " (deployer)" : ""));
+    log("info", "Network: Base Sepolia · Contract: " + CONTRACT_ADDRESS.slice(0, 14) + "...");
     sep();
     await refreshState();
-    enableButtons();
     listenForEvents();
-  } catch(err) { log("error","Connection failed: "+(err.message||err)); }
+  } catch (err) {
+    log("error", "Connection failed: " + (err.message || err));
+  }
 }
 
-function listenForEvents() {
-  contract.on("PositionOpened",(posId,trader,notional,margin,leverage,isLong,riskTier)=>{
-    log("event",`📋 PositionOpened #${posId} · ${leverage}× · ${isLong?"LONG":"SHORT"} · ${TIERS[riskTier]} · ${ethers.utils.formatEther(margin).slice(0,8)} ETH margin`);
-    refreshState();
-  });
-  contract.on("MarketClosed",(totalOI,shieldFund)=>{
-    log("event",`🔒 MarketClosed · OI: ${ethers.utils.formatUnits(totalOI,6)} · Shield: ${ethers.utils.formatEther(shieldFund).slice(0,8)} ETH`);
-    refreshState();
-  });
-  contract.on("GapAwareMarginApplied",(posId,oldMargin,newRequired,riskTier)=>{
-    log("event",`🔵 GapAwareMargin #${posId} · ${TIERS[riskTier]} · Required: ${ethers.utils.formatEther(newRequired).slice(0,8)} ETH`);
-  });
-  contract.on("ReopenInitiated",(gapBps,reopenPrice)=>{
-    log("warn",`⚡ ReopenInitiated · Gap: ${(Number(gapBps)/100).toFixed(2)}% · Price: $${ethers.utils.formatUnits(reopenPrice,6)}`);
-  });
-  contract.on("PositionSequenced",(posId,riskTier,loss,coveredByMargin,shieldUsed)=>{
-    const covered = coveredByMargin?"margin absorbed":`shield: ${ethers.utils.formatEther(shieldUsed).slice(0,8)} ETH`;
-    log("event",`→ Sequenced #${posId} [${TIERS[riskTier]}] · Loss: ${ethers.utils.formatEther(loss).slice(0,8)} ETH · ${covered}`);
-  });
-  contract.on("PositionCleared",(posId,trader,payout,badDebtGen)=>{
-    const hasDebt = badDebtGen.gt(0);
-    log(hasDebt?"critical":"success", hasDebt?`💀 Cleared #${posId} · BAD DEBT: ${ethers.utils.formatEther(badDebtGen).slice(0,8)} ETH`:`✓ Cleared #${posId} · Payout: ${ethers.utils.formatEther(payout).slice(0,8)} ETH`);
-  });
-  contract.on("ReopenComplete",(cleared,totalBadDebt,shieldUsed,shieldUsedBps,solvent)=>{
-    sep();
-    log("success","═══ REOPEN COMPLETE ═══");
-    log("success",`Positions cleared: ${cleared}`);
-    log(totalBadDebt.gt(0)?"critical":"success",`Total bad debt: ${ethers.utils.formatEther(totalBadDebt)} ETH`);
-    log("success",`Shield used: ${(Number(shieldUsedBps)/100).toFixed(2)}%`);
-    log(solvent?"success":"critical",`Protocol solvent: ${solvent?"YES ✓":"NO — INSOLVENT ✗"}`);
-    sep();
-    const pct = Number(shieldUsedBps)/100;
-    const fill = document.getElementById("shieldFill");
-    const pctEl = document.getElementById("shieldPct");
-    fill.style.width = Math.min(pct,100)+"%";
-    const col = pct>100?"var(--red)":pct>70?"var(--yellow)":"var(--blue)";
-    fill.style.background = col; pctEl.style.color = col; pctEl.textContent = pct.toFixed(2)+"%";
-    const box = document.getElementById("verdictBox");
-    box.textContent = solvent?"✓ Zero Insolvencies — Engine Stable":"⚠ Shield Breached — Protocol Insolvent";
-    box.className = `verdict-box ${solvent?"solvent":"insolvent"} show`;
-    refreshState();
-  });
-}
-
-async function openTestPositions() {
-  if (!contract) return;
-  disableButtons(); setDot("statusDot","pending");
-  try {
-    sep(); log("info","Opening 3 positions across risk tiers...");
-    const lev = document.getElementById("levSlider").value;
-    const positions = [
-      {notional:1000000000,leverage:lev,isLong:true,tier:2,margin:"0.015",label:"HIGH"},
-      {notional:800000000,leverage:Math.min(lev,4),isLong:true,tier:1,margin:"0.01",label:"MEDIUM"},
-      {notional:600000000,leverage:Math.min(lev,3),isLong:false,tier:0,margin:"0.008",label:"LOW"},
-    ];
-    for (const pos of positions) {
-      log("tx",`Sending: openPosition (${pos.label} risk, ${pos.leverage}×)...`);
-      const tx = await contract.openPosition(pos.notional,pos.leverage,pos.isLong,pos.tier,{value:ethers.utils.parseEther(pos.margin)});
-      log("tx",`TX: ${tx.hash.slice(0,22)}... pending`);
-      await tx.wait(); log("success","✓ Confirmed");
-    }
-    setDot("statusDot","live");
-    document.getElementById("closeBtn").disabled = false;
-    document.getElementById("openBtn").disabled = true;
-  } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); enableButtons(); }
-}
-
-async function closeMarket() {
-  if (!contract) return;
-  setDot("statusDot","pending");
-  try {
-    sep(); log("info","FRIDAY 16:00 — Closing market, applying gap-aware margins...");
-    log("tx","Sending: closeMarket()...");
-    const tx = await contract.closeMarket();
-    log("tx",`TX: ${tx.hash.slice(0,22)}... pending`);
-    await tx.wait();
-    log("success","✓ Market closed. Gap-aware margins locked on HIGH & MEDIUM positions.");
-    setDot("statusDot","live");
-    document.getElementById("reopenBtn").disabled = false;
-    document.getElementById("closeBtn").disabled = true;
-    await refreshState();
-  } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); }
-}
-
-async function triggerReopen() {
-  if (!contract) return;
-  setDot("statusDot","pending");
-  try {
-    const gapBps = -parseInt(document.getElementById("gapSlider").value);
-    const basePrice = parseInt(document.getElementById("priceSlider").value)*1000000;
-    sep();
-    log("info",`MONDAY 09:30 — Triggering reopen: ${(gapBps/10).toFixed(1)}% gap`);
-    log("info","Sequenced clearing: HIGH → MEDIUM → LOW");
-    log("tx","Sending: triggerReopen()...");
-    const tx = await contract.triggerReopen(gapBps,basePrice);
-    log("tx",`TX: ${tx.hash.slice(0,22)}... pending`);
-    await tx.wait();
-    setDot("statusDot","live");
-    document.getElementById("reopenBtn").disabled = true;
-  } catch(err) { log("error","Error: "+(err.reason||err.message||err)); setDot("statusDot","error-dot"); }
-}
-
+/* ─── Refresh state via wallet provider ─── */
 async function refreshState() {
   if (!contract) return;
   try {
-    const [stateRaw,posCount,totalOI,shieldFund,badDebt] = await Promise.all([
-      contract.marketState(),contract.getOpenPositionCount(),
-      contract.totalOI(),contract.shieldFund(),contract.badDebt(),
+    const [stateRaw, posCount, totalOI, shieldFund, badDebt] = await Promise.all([
+      contract.marketState(), contract.getOpenPositionCount(),
+      contract.totalOI(), contract.shieldFund(), contract.badDebt()
     ]);
-    const state = STATES[stateRaw]||"UNKNOWN";
-    const stateColors = {OPEN:"var(--green)",DARK:"var(--yellow)",REOPEN:"var(--blue)"};
-    setText("m-state",state,stateColors[state]);
-    setText("m-oi",formatOI(totalOI),"var(--white)");
-    setText("m-shield",ethers.utils.formatEther(shieldFund).slice(0,8)+" ETH","var(--blue)");
-    setText("m-debt",ethers.utils.formatEther(badDebt).slice(0,8)+" ETH",badDebt.gt(0)?"var(--red)":"var(--white)");
-    setText("s-poscount",posCount.toString(),"var(--white)");
-    setText("s-shield",ethers.utils.formatEther(shieldFund).slice(0,8)+" ETH","var(--white)");
-    setText("s-debt",ethers.utils.formatEther(badDebt).slice(0,8)+" ETH",badDebt.gt(0)?"var(--red)":"var(--white)");
-    const shieldInitial = totalOI.mul(500).div(10000);
-    let pctNum = 0;
-    if (badDebt.gt(0)&&shieldInitial.gt(0)) pctNum = Math.min(badDebt.mul(10000).div(shieldInitial).toNumber()/100,200);
-    setText("s-shieldpct",pctNum.toFixed(2)+"%",pctNum>100?"var(--red)":pctNum>50?"var(--yellow)":"var(--white)");
-    setText("s-solvent",badDebt.eq(0)?"YES":"NO",badDebt.eq(0)?"var(--green)":"var(--red)");
-  } catch(e) {}
+    applyState(stateRaw, posCount, totalOI, shieldFund, badDebt);
+    log("info", "Contract state: " + (STATES[stateRaw] || "UNKNOWN") + " · Positions: " + posCount);
+  } catch (e) {
+    log("error", "State read failed: " + (e.message || e));
+  }
 }
+
+/* ─── Event listeners ─── */
+function listenForEvents() {
+  contract.on("PositionOpened", (posId, trader, notional, margin, leverage, isLong, riskTier) => {
+    log("event", `📋 PositionOpened #${posId} · ${leverage}× · ${isLong ? "LONG" : "SHORT"} · ${TIERS[riskTier]} · ${fmtEth(margin)} ETH margin`);
+    refreshState();
+  });
+  contract.on("MarketClosed", (totalOI, shieldFund) => {
+    log("event", `🔒 MarketClosed · OI: ${ethers.utils.formatUnits(totalOI, 6)} · Shield: ${fmtEth(shieldFund)} ETH`);
+    refreshState();
+  });
+  contract.on("GapAwareMarginApplied", (posId, oldMargin, newRequired, riskTier) => {
+    log("event", `🔵 GapAwareMargin #${posId} · ${TIERS[riskTier]} · Required: ${fmtEth(newRequired)} ETH`);
+  });
+  contract.on("ReopenInitiated", (gapBps, reopenPrice) => {
+    log("warn", `⚡ ReopenInitiated · Gap: ${(Number(gapBps) / 100).toFixed(2)}% · Price: $${ethers.utils.formatUnits(reopenPrice, 6)}`);
+  });
+  contract.on("PositionSequenced", (posId, riskTier, loss, coveredByMargin, shieldUsed) => {
+    const covered = coveredByMargin ? "margin absorbed" : `shield: ${fmtEth(shieldUsed)} ETH`;
+    log("event", `→ Sequenced #${posId} [${TIERS[riskTier]}] · Loss: ${fmtEth(loss)} ETH · ${covered}`);
+  });
+  contract.on("PositionCleared", (posId, trader, payout, badDebtGen) => {
+    const hasDebt = badDebtGen.gt(0);
+    log(hasDebt ? "critical" : "success",
+      hasDebt
+        ? `💀 Cleared #${posId} · BAD DEBT: ${fmtEth(badDebtGen)} ETH`
+        : `✓ Cleared #${posId} · Payout: ${fmtEth(payout)} ETH`);
+  });
+  contract.on("ReopenComplete", (cleared, totalBadDebt, shieldUsed, shieldUsedBps, solvent) => {
+    sep();
+    log("success", "═══ REOPEN COMPLETE ═══");
+    log("success", `Positions cleared: ${cleared}`);
+    log(totalBadDebt.gt(0) ? "critical" : "success", `Total bad debt: ${fmtEth(totalBadDebt)} ETH`);
+    log("success", `Shield used: ${(Number(shieldUsedBps) / 100).toFixed(2)}%`);
+    log(solvent ? "success" : "critical", `Protocol solvent: ${solvent ? "YES ✓" : "NO — INSOLVENT ✗"}`);
+    sep();
+    const pct = Number(shieldUsedBps) / 100;
+    const fill = document.getElementById("shieldFill");
+    const pctEl = document.getElementById("shieldPct");
+    fill.style.width = Math.min(pct, 100) + "%";
+    const col = pct > 100 ? "var(--red)" : pct > 70 ? "var(--yellow)" : "var(--blue)";
+    fill.style.background = col;
+    pctEl.style.color = col;
+    pctEl.textContent = pct.toFixed(2) + "%";
+    const box = document.getElementById("verdictBox");
+    box.textContent = solvent ? "✓ Zero Insolvencies — Engine Stable" : "⚠ Shield Breached — Protocol Insolvent";
+    box.className = "verdict-box " + (solvent ? "solvent" : "insolvent") + " show";
+    refreshState();
+  });
+}
+
+/* ─── Step 1: Open positions ─── */
+async function openTestPositions() {
+  if (!contract) return;
+  setBtn("openBtn", true); setDot("statusDot", "pending");
+  try {
+    sep(); log("info", "Opening 3 positions across risk tiers...");
+    const lev = parseInt(document.getElementById("levSlider").value);
+    const positions = [
+      { notional: 1000000000, leverage: lev,              isLong: true,  tier: 2, margin: "0.015", label: "HIGH" },
+      { notional: 800000000,  leverage: Math.min(lev, 4), isLong: true,  tier: 1, margin: "0.01",  label: "MEDIUM" },
+      { notional: 600000000,  leverage: Math.min(lev, 3), isLong: false, tier: 0, margin: "0.008", label: "LOW" },
+    ];
+    for (const pos of positions) {
+      log("tx", `Sending: openPosition (${pos.label}, ${pos.leverage}×, ${pos.margin} ETH margin)...`);
+      const tx = await contract.openPosition(
+        pos.notional, pos.leverage, pos.isLong, pos.tier,
+        { value: ethers.utils.parseEther(pos.margin) }
+      );
+      log("tx", `TX: ${tx.hash.slice(0, 24)}... pending`);
+      await tx.wait();
+      log("success", "✓ Confirmed");
+    }
+    setDot("statusDot", "live");
+    setBtn("openBtn", false);
+    setBtn("closeBtn", !isOwner);
+    if (!isOwner) log("warn", "Steps 2 & 3 require the deployer wallet. Switch to deployer to continue.");
+  } catch (err) {
+    log("error", parseErr(err));
+    setDot("statusDot", "err");
+    setBtn("openBtn", false);
+  }
+}
+
+/* ─── Step 2: Close market ─── */
+async function closeMarket() {
+  if (!contract) return;
+  setBtn("closeBtn", true); setDot("statusDot", "pending");
+  try {
+    sep(); log("info", "FRIDAY 16:00 — Closing market, applying gap-aware margins...");
+    log("tx", "Sending: closeMarket()...");
+    const tx = await contract.closeMarket();
+    log("tx", `TX: ${tx.hash.slice(0, 24)}... pending`);
+    await tx.wait();
+    log("success", "✓ Market closed. Gap-aware margins locked on HIGH & MEDIUM positions.");
+    setDot("statusDot", "live");
+    setBtn("reopenBtn", false);
+    await refreshState();
+  } catch (err) {
+    log("error", parseErr(err));
+    setDot("statusDot", "err");
+    setBtn("closeBtn", false);
+  }
+}
+
+/* ─── Step 3: Trigger reopen ─── */
+async function triggerReopen() {
+  if (!contract) return;
+  setBtn("reopenBtn", true); setDot("statusDot", "pending");
+  try {
+    const gapBps  = -parseInt(document.getElementById("gapSlider").value);
+    const basePrice = parseInt(document.getElementById("priceSlider").value) * 1000000;
+    sep();
+    log("info", `MONDAY 09:30 — Triggering reopen: ${(Math.abs(gapBps) / 10).toFixed(1)}% gap down`);
+    log("info", "Sequenced clearing: HIGH → MEDIUM → LOW");
+    log("tx", "Sending: triggerReopen()...");
+    const tx = await contract.triggerReopen(gapBps, basePrice);
+    log("tx", `TX: ${tx.hash.slice(0, 24)}... pending`);
+    await tx.wait();
+    setDot("statusDot", "live");
+  } catch (err) {
+    log("error", parseErr(err));
+    setDot("statusDot", "err");
+    setBtn("reopenBtn", false);
+  }
+}
+
+/* ─── Helpers ─── */
+function setBtn(id, disabled) {
+  const el = document.getElementById(id);
+  if (el) el.disabled = disabled;
+}
+
+function parseErr(err) {
+  const msg = err.reason || err.data?.message || err.message || String(err);
+  if (msg.includes("Not owner") || msg.includes("not owner"))
+    return "Error: This function requires the deployer wallet.";
+  if (msg.includes("insufficient funds"))
+    return "Error: Insufficient Base Sepolia ETH. Get some at faucet.quicknode.com/base/sepolia";
+  if (msg.includes("Wrong market state") || msg.includes("wrong market state"))
+    return "Error: Wrong market state. Check current state and use the right step.";
+  if (msg.includes("user rejected"))
+    return "Cancelled by user.";
+  return "Error: " + msg.slice(0, 120);
+}
+
+function fmtEth(bn) { return ethers.utils.formatEther(bn).slice(0, 8); }
 
 function formatOI(bn) {
-  const n = Number(ethers.utils.formatUnits(bn,6));
-  if (n>=1000000) return "$"+(n/1000000).toFixed(1)+"M";
-  if (n>=1000) return "$"+(n/1000).toFixed(0)+"K";
-  return "$"+n;
-}
-function setText(id,val,color) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = val;
-  if (color) el.style.color = color;
-}
-function setDot(id,state) {
-  const el = document.getElementById(id);
-  if (el) el.className = "status-dot "+state;
-}
-function enableButtons() {
-  document.getElementById("openBtn").disabled = false;
-  document.getElementById("closeBtn").disabled = true;
-  document.getElementById("reopenBtn").disabled = true;
-}
-function disableButtons() {
-  ["openBtn","closeBtn","reopenBtn"].forEach(id=>document.getElementById(id).disabled=true);
+  const n = Number(ethers.utils.formatUnits(bn, 6));
+  if (n >= 1000000) return "$" + (n / 1000000).toFixed(1) + "M";
+  if (n >= 1000)    return "$" + (n / 1000).toFixed(0) + "K";
+  return n > 0 ? "$" + n : "—";
 }
 
+/* ─── Boot ─── */
 window.addEventListener("load", async () => {
+  loadPublicState(); // show metrics without wallet
+
   if (window.ethereum) {
     window.ethereum.on("accountsChanged", () => location.reload());
     window.ethereum.on("chainChanged", () => location.reload());
-    // Auto-connect if wallet was previously authorized
+
+    // Auto-connect if previously authorized
     const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    if (accounts.length > 0) {
-      connectWallet();
-    }
+    if (accounts.length > 0) connectWallet();
   }
 });
 </script>
