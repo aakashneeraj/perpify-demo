@@ -865,11 +865,13 @@ footer {
 
 <!-- ════ TAB: WALLET ════ -->
 <div id="tab-wallet" class="tab-content">
+  <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
   <div class="wrap">
     <div class="wallet">
       <h2>Touch the contract yourself.</h2>
-      <p class="wallet-sub">The contract is deployed on Base Sepolia. Connect MetaMask and execute the reopen sequence on-chain. Every transaction is visible on BaseScan.</p>
+      <p class="wallet-sub">This is the real contract on Base Sepolia. Every button below sends an actual on-chain transaction. Watch the events fire live — not simulated.</p>
 
+      <!-- Contract info -->
       <div class="ctr-row">
         <div class="ctr-key">Contract</div>
         <div class="ctr-addr">
@@ -877,23 +879,92 @@ footer {
             0xF6FbB4be6844588A68704607f84bE6127F246A45
           </a>
         </div>
-        <div class="ctr-badge">● BASE SEPOLIA</div>
+        <div class="ctr-badge" id="w-chainbadge">● NOT CONNECTED</div>
       </div>
 
-      <div class="wallet-grid">
+      <!-- Step buttons -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+
+        <!-- Connect -->
         <div class="w-card">
-          <h3>Connect Wallet</h3>
-          <p>Connect MetaMask on Base Sepolia network. You need a small amount of testnet ETH for gas — get it free from the Superchain faucet at app.optimism.io/faucet.</p>
-          <button class="wbtn green" id="wBtn" onclick="connectWallet()">Connect MetaMask</button>
-          <div id="wStatus" style="margin-top:10px;font-size:12px;color:var(--gray2);text-align:center;min-height:18px;"></div>
+          <h3>Step 0 — Connect Wallet</h3>
+          <p>Connect MetaMask on Base Sepolia. Get free testnet ETH at <a href="https://app.optimism.io/faucet" target="_blank" style="color:var(--green)">app.optimism.io/faucet</a>.</p>
+          <button class="wbtn green" id="wConnectBtn" onclick="wConnect()">Connect MetaMask</button>
+          <div id="wConnectStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
         </div>
+
+        <!-- Open positions -->
         <div class="w-card">
-          <h3>View on BaseScan</h3>
-          <p>Read the contract source, verify the ABI, and inspect every on-chain transaction. The contract is open and verifiable by anyone.</p>
-          <a class="wbtn outline" href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank">
-            Open BaseScan ↗
-          </a>
+          <h3>Step 1 — Open Positions</h3>
+          <p>Opens 3 test positions across HIGH, MEDIUM, and LOW risk tiers. This seeds the book and funds the loss buffer.</p>
+          <button class="wbtn outline" id="wOpenBtn" onclick="wOpenPositions()" disabled>Open 3 Test Positions</button>
+          <div id="wOpenStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
         </div>
+
+        <!-- Close market -->
+        <div class="w-card">
+          <h3>Step 2 — Close Market</h3>
+          <p>Simulates Friday 16:00 close. Perpify applies gap-aware margin tightening to HIGH and MEDIUM risk positions before the gap fires.</p>
+          <button class="wbtn outline" id="wCloseBtn" onclick="wCloseMarket()" disabled>Close Market (Friday)</button>
+          <div id="wCloseStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+        </div>
+
+        <!-- Trigger reopen -->
+        <div class="w-card">
+          <h3>Step 3 — Trigger Reopen</h3>
+          <p>Fires a −3.2% gap. Sequenced clearing runs on-chain: HIGH risk first, then MEDIUM, then LOW. Watch the events below.</p>
+          <button class="wbtn green" id="wReopenBtn" onclick="wTriggerReopen()" disabled style="background:var(--green);color:#000;">Trigger Reopen Gap</button>
+          <div id="wReopenStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+        </div>
+
+      </div>
+
+      <!-- Live state + event log -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+        <!-- Chain state -->
+        <div class="w-card">
+          <h3 style="margin-bottom:16px;">Live Chain State</h3>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Market State</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-state">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Open Positions</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-pos">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Loss Buffer</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-shield">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Losses Not Covered</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-debt">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
+              <span style="color:var(--gray2);">Venue Survives Reopen</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:700;" id="ws-solvent">—</span>
+            </div>
+          </div>
+          <div style="margin-top:20px;">
+            <a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank" class="wbtn outline" style="font-size:12px;padding:10px;">View All Transactions on BaseScan ↗</a>
+          </div>
+        </div>
+
+        <!-- Event log -->
+        <div class="w-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3>On-Chain Event Stream</h3>
+            <button onclick="document.getElementById('w-log').innerHTML=''" style="font-size:11px;color:var(--gray3);background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;">CLEAR</button>
+          </div>
+          <div id="w-log" style="height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;font-family:'DM Mono',monospace;">
+            <div class="ev info">Connect wallet to begin.</div>
+            <div class="ev info">Each button sends a real transaction.</div>
+            <div class="ev info">Events emit from the deployed contract.</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1136,18 +1207,219 @@ function runSim() {
   later(() => { running = false; btn.disabled = false; btn.textContent = '↺  Run Again'; }, done + 900);
 }
 
-// WALLET
-async function connectWallet() {
-  if (!window.ethereum) { document.getElementById('wStatus').textContent = 'MetaMask not detected.'; return; }
+// ════ WALLET — FULL ON-CHAIN ════
+const CONTRACT_ADDRESS = '0xF6FbB4be6844588A68704607f84bE6127F246A45';
+const ABI = [
+  "function openPosition(uint256 notionalUSD, uint256 leverage, bool isLong, uint8 riskTier) payable returns (uint256)",
+  "function closeMarket() external",
+  "function triggerReopen(int256 gapBps, uint256 basePrice) external",
+  "function fundShield() payable external",
+  "function getOpenPositionCount() view returns (uint256)",
+  "function totalOI() view returns (uint256)",
+  "function marketState() view returns (uint8)",
+  "function shieldFund() view returns (uint256)",
+  "function badDebt() view returns (uint256)",
+  "event PositionOpened(uint256 indexed posId, address indexed trader, uint256 notional, uint256 margin, uint256 leverage, bool isLong, uint8 riskTier)",
+  "event MarketClosed(uint256 totalOI, uint256 shieldFund, uint256 timestamp)",
+  "event GapAwareMarginApplied(uint256 indexed posId, uint256 oldMargin, uint256 newMarginRequired, uint8 riskTier)",
+  "event ReopenInitiated(int256 gapBps, uint256 reopenPrice, uint256 timestamp)",
+  "event PositionSequenced(uint256 indexed posId, uint8 riskTier, uint256 loss, bool coveredByMargin, uint256 shieldUsed)",
+  "event PositionCleared(uint256 indexed posId, address indexed trader, uint256 payout, uint256 badDebtGenerated)",
+  "event ReopenComplete(uint256 totalPositionsCleared, uint256 totalBadDebt, uint256 shieldUsed, uint256 shieldUsedBps, bool protocolSolvent)"
+];
+
+const STATES = ['OPEN', 'DARK', 'REOPEN'];
+const TIERS = ['LOW', 'MEDIUM', 'HIGH'];
+let wprovider, wsigner, wcontract;
+
+function wlog(type, msg) {
+  const log = document.getElementById('w-log');
+  if (!log) return;
+  const el = document.createElement('div');
+  el.className = 'ev ' + type;
+  el.textContent = msg;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+function wsetStatus(id, msg, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  if (color) el.style.color = color;
+}
+
+function wsetVal(id, val, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  if (color) el.style.color = color;
+}
+
+async function wRefreshState() {
+  if (!wcontract) return;
+  try {
+    const [state, posCount, shieldFund, badDebt] = await Promise.all([
+      wcontract.marketState(),
+      wcontract.getOpenPositionCount(),
+      wcontract.shieldFund(),
+      wcontract.badDebt(),
+    ]);
+    const stateColors = { OPEN: 'var(--green)', DARK: 'var(--yellow)', REOPEN: 'var(--blue)' };
+    const stateStr = STATES[state] || 'UNKNOWN';
+    wsetVal('ws-state', stateStr, stateColors[stateStr] || 'var(--white)');
+    wsetVal('ws-pos', posCount.toString(), 'var(--white)');
+    wsetVal('ws-shield', ethers.utils.formatEther(shieldFund).slice(0,8) + ' ETH', 'var(--green)');
+    wsetVal('ws-debt', ethers.utils.formatEther(badDebt).slice(0,8) + ' ETH', badDebt.gt(0) ? 'var(--red)' : 'var(--white)');
+    wsetVal('ws-solvent', badDebt.eq(0) ? 'YES ✓' : 'NO ✗', badDebt.eq(0) ? 'var(--green)' : 'var(--red)');
+  } catch(e) {}
+}
+
+function wListenEvents() {
+  wcontract.on('PositionOpened', (posId, trader, notional, margin, leverage, isLong, riskTier) => {
+    wlog('margin', `📋 Position #${posId} opened · ${leverage}× · ${isLong?'LONG':'SHORT'} · ${TIERS[riskTier]} risk · ${ethers.utils.formatEther(margin).slice(0,8)} ETH margin`);
+    wRefreshState();
+  });
+  wcontract.on('MarketClosed', (totalOI, shieldFund) => {
+    wlog('margin', `🔒 Market closed · Shield locked: ${ethers.utils.formatEther(shieldFund).slice(0,8)} ETH`);
+    wRefreshState();
+  });
+  wcontract.on('GapAwareMarginApplied', (posId, oldMargin, newRequired, riskTier) => {
+    wlog('margin', `🔵 Gap margin applied to #${posId} [${TIERS[riskTier]}] · Required: ${ethers.utils.formatEther(newRequired).slice(0,8)} ETH`);
+  });
+  wcontract.on('ReopenInitiated', (gapBps, reopenPrice) => {
+    wlog('warn', `⚡ Reopen initiated · Gap: ${(Number(gapBps)/100).toFixed(2)}% · Price: $${ethers.utils.formatUnits(reopenPrice,6)}`);
+  });
+  wcontract.on('PositionSequenced', (posId, riskTier, loss, coveredByMargin, shieldUsed) => {
+    const covered = coveredByMargin ? 'margin absorbed' : `buffer used: ${ethers.utils.formatEther(shieldUsed).slice(0,8)} ETH`;
+    wlog('ok', `→ Cleared #${posId} [${TIERS[riskTier]}] · Loss: ${ethers.utils.formatEther(loss).slice(0,8)} ETH · ${covered}`);
+  });
+  wcontract.on('PositionCleared', (posId, trader, payout, badDebtGen) => {
+    if (badDebtGen.gt(0)) wlog('critical', `💀 #${posId} bad debt: ${ethers.utils.formatEther(badDebtGen).slice(0,8)} ETH`);
+    else wlog('ok', `✓ #${posId} payout: ${ethers.utils.formatEther(payout).slice(0,8)} ETH`);
+  });
+  wcontract.on('ReopenComplete', (cleared, totalBadDebt, shieldUsed, shieldUsedBps, solvent) => {
+    wlog('ok', `═══ REOPEN COMPLETE ═══`);
+    wlog('ok', `Positions cleared: ${cleared}`);
+    wlog(totalBadDebt.gt(0)?'critical':'ok', `Total bad debt: ${ethers.utils.formatEther(totalBadDebt)} ETH`);
+    wlog('ok', `Buffer used: ${(Number(shieldUsedBps)/100).toFixed(2)}%`);
+    wlog(solvent?'ok':'critical', `Venue survives: ${solvent ? 'YES ✓' : 'NO — INSOLVENT ✗'}`);
+    wRefreshState();
+    document.getElementById('wReopenBtn').disabled = true;
+  });
+}
+
+async function wConnect() {
+  if (!window.ethereum) { wsetStatus('wConnectStatus', 'MetaMask not detected. Please install it.', 'var(--red)'); return; }
   try {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
-    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-    const short = accounts[0].slice(0,6) + '...' + accounts[0].slice(-4);
-    const btn = document.getElementById('wBtn');
+    wprovider = new ethers.providers.Web3Provider(window.ethereum);
+    wsigner = wprovider.getSigner();
+    const network = await wprovider.getNetwork();
+    const addr = await wsigner.getAddress();
+    const short = addr.slice(0,6) + '...' + addr.slice(-4);
+
+    wcontract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wsigner);
+
+    const btn = document.getElementById('wConnectBtn');
     btn.textContent = short + ' — Connected';
-    btn.style.background = '#4f8eff';
-    document.getElementById('wStatus').innerHTML = `<a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank" style="color:var(--green)">View contract on BaseScan ↗</a>`;
-  } catch(e) { document.getElementById('wStatus').textContent = 'Connection cancelled.'; }
+    btn.style.background = 'var(--green)';
+
+    if (network.chainId === 84532) {
+      document.getElementById('w-chainbadge').textContent = '● BASE SEPOLIA';
+      wsetStatus('wConnectStatus', 'Connected on Base Sepolia ✓', 'var(--green)');
+    } else {
+      wsetStatus('wConnectStatus', `Wrong network (chain ${network.chainId}) — switch to Base Sepolia`, 'var(--red)');
+      return;
+    }
+
+    document.getElementById('wOpenBtn').disabled = false;
+    wlog('ok', `✓ Connected: ${short}`);
+    wlog('ok', `Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
+    wListenEvents();
+    await wRefreshState();
+
+    window.ethereum.on('accountsChanged', () => location.reload());
+    window.ethereum.on('chainChanged', () => location.reload());
+
+  } catch(e) { wsetStatus('wConnectStatus', 'Connection cancelled.', 'var(--gray2)'); }
+}
+
+async function wOpenPositions() {
+  if (!wcontract) return;
+  document.getElementById('wOpenBtn').disabled = true;
+  wsetStatus('wOpenStatus', 'Sending transactions...', 'var(--yellow)');
+
+  try {
+    const positions = [
+      { notional: 1000000000, leverage: 6, isLong: true,  tier: 2, margin: '0.015', label: 'HIGH' },
+      { notional: 800000000,  leverage: 4, isLong: true,  tier: 1, margin: '0.01',  label: 'MEDIUM' },
+      { notional: 600000000,  leverage: 3, isLong: false, tier: 0, margin: '0.008', label: 'LOW' },
+    ];
+
+    for (const pos of positions) {
+      wlog('margin', `Sending: openPosition (${pos.label} risk, ${pos.leverage}×)...`);
+      const tx = await wcontract.openPosition(pos.notional, pos.leverage, pos.isLong, pos.tier, {
+        value: ethers.utils.parseEther(pos.margin)
+      });
+      wlog('margin', `TX: ${tx.hash.slice(0,22)}... pending`);
+      await tx.wait();
+      wlog('ok', `✓ Confirmed on-chain`);
+    }
+
+    wsetStatus('wOpenStatus', '3 positions opened ✓', 'var(--green)');
+    document.getElementById('wCloseBtn').disabled = false;
+    await wRefreshState();
+
+  } catch(e) {
+    wlog('critical', 'Error: ' + (e.reason || e.message || e));
+    wsetStatus('wOpenStatus', 'Failed — see event log', 'var(--red)');
+    document.getElementById('wOpenBtn').disabled = false;
+  }
+}
+
+async function wCloseMarket() {
+  if (!wcontract) return;
+  document.getElementById('wCloseBtn').disabled = true;
+  wsetStatus('wCloseStatus', 'Sending transaction...', 'var(--yellow)');
+
+  try {
+    wlog('margin', 'Sending: closeMarket() — Friday 16:00...');
+    const tx = await wcontract.closeMarket();
+    wlog('margin', `TX: ${tx.hash.slice(0,22)}... pending`);
+    await tx.wait();
+    wlog('ok', '✓ Market closed. Gap-aware margins locked.');
+    wsetStatus('wCloseStatus', 'Market closed ✓', 'var(--green)');
+    document.getElementById('wReopenBtn').disabled = false;
+    await wRefreshState();
+
+  } catch(e) {
+    wlog('critical', 'Error: ' + (e.reason || e.message || e));
+    wsetStatus('wCloseStatus', 'Failed — see event log', 'var(--red)');
+    document.getElementById('wCloseBtn').disabled = false;
+  }
+}
+
+async function wTriggerReopen() {
+  if (!wcontract) return;
+  document.getElementById('wReopenBtn').disabled = true;
+  wsetStatus('wReopenStatus', 'Sending transaction...', 'var(--yellow)');
+
+  try {
+    const gapBps = -320; // -3.2%
+    const basePrice = 4800 * 1000000;
+    wlog('warn', 'Sending: triggerReopen(−3.2%, $4800)...');
+    const tx = await wcontract.triggerReopen(gapBps, basePrice);
+    wlog('warn', `TX: ${tx.hash.slice(0,22)}... pending`);
+    await tx.wait();
+    wsetStatus('wReopenStatus', 'Reopen complete — see event log', 'var(--green)');
+    await wRefreshState();
+
+  } catch(e) {
+    wlog('critical', 'Error: ' + (e.reason || e.message || e));
+    wsetStatus('wReopenStatus', 'Failed — see event log', 'var(--red)');
+    document.getElementById('wReopenBtn').disabled = false;
+  }
 }
 </script>
 </body>
