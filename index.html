@@ -889,7 +889,7 @@ footer {
         <div class="w-card">
           <h3>Step 0 — Connect Wallet</h3>
           <p>Connect MetaMask on Base Sepolia. Get free testnet ETH at <a href="https://app.optimism.io/faucet" target="_blank" style="color:var(--green)">app.optimism.io/faucet</a>.</p>
-          <button class="wbtn green" id="wConnectBtn" onclick="wConnect()">Connect MetaMask</button>
+          <button class="wbtn green" id="wConnectBtn" onclick="wConnect(false)">Connect MetaMask</button>
           <div id="wConnectStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
         </div>
 
@@ -1309,10 +1309,10 @@ function wListenEvents() {
   });
 }
 
-async function wConnect() {
-  if (!window.ethereum) { wsetStatus('wConnectStatus', 'MetaMask not detected. Please install it.', 'var(--red)'); return; }
+async function wConnect(silent) {
+  if (!window.ethereum) { if (!silent) wsetStatus('wConnectStatus', 'MetaMask not detected. Please install it.', 'var(--red)'); return; }
   try {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (!silent) await window.ethereum.request({ method: 'eth_requestAccounts' });
     wprovider = new ethers.providers.Web3Provider(window.ethereum);
     wsigner = wprovider.getSigner();
     const network = await wprovider.getNetwork();
@@ -1342,8 +1342,19 @@ async function wConnect() {
     window.ethereum.on('accountsChanged', () => location.reload());
     window.ethereum.on('chainChanged', () => location.reload());
 
-  } catch(e) { wsetStatus('wConnectStatus', 'Connection cancelled.', 'var(--gray2)'); }
+  } catch(e) { if (!silent) wsetStatus('wConnectStatus', 'Connection cancelled.', 'var(--gray2)'); }
 }
+
+// Auto-detect existing connection on page load
+window.addEventListener('load', async () => {
+  setPhase(0);
+  if (window.ethereum) {
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      if (accounts && accounts.length > 0) await wConnect(true);
+    } catch(e) {}
+  }
+});
 
 async function wOpenPositions() {
   if (!wcontract) return;
