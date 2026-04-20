@@ -1310,10 +1310,14 @@ function wListenEvents() {
 }
 
 async function wConnect(silent) {
-  if (!window.ethereum) { if (!silent) wsetStatus('wConnectStatus', 'MetaMask not detected. Please install it.', 'var(--red)'); return; }
+  if (!window.ethereum) {
+    if (!silent) wsetStatus('wConnectStatus', 'MetaMask not detected. Please install it.', 'var(--red)');
+    return;
+  }
   try {
     const existing = await window.ethereum.request({ method: 'eth_accounts' });
     if (!existing || existing.length === 0) {
+      if (!silent) wsetStatus('wConnectStatus', 'Opening MetaMask — check the extension popup…', 'var(--gray2)');
       await window.ethereum.request({ method: 'eth_requestAccounts' });
     }
     wprovider = new ethers.providers.Web3Provider(window.ethereum);
@@ -1327,12 +1331,16 @@ async function wConnect(silent) {
     const btn = document.getElementById('wConnectBtn');
     btn.textContent = short + ' — Connected';
     btn.style.background = 'var(--green)';
+    wsetStatus('wConnectStatus', '', '');
 
     if (network.chainId === 84532) {
       document.getElementById('w-chainbadge').textContent = '● BASE SEPOLIA';
-      wsetStatus('wConnectStatus', 'Connected on Base Sepolia ✓', 'var(--green)');
     } else {
-      wsetStatus('wConnectStatus', `Wrong network (chain ${network.chainId}) — switch to Base Sepolia`, 'var(--red)');
+      wsetStatus('wConnectStatus', `Wrong network — please switch to Base Sepolia in MetaMask`, 'var(--red)');
+      try {
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x14a34' }] });
+        location.reload();
+      } catch(se) {}
       return;
     }
 
@@ -1345,7 +1353,17 @@ async function wConnect(silent) {
     window.ethereum.on('accountsChanged', () => location.reload());
     window.ethereum.on('chainChanged', () => location.reload());
 
-  } catch(e) { if (!silent) wsetStatus('wConnectStatus', 'Connection cancelled.', 'var(--gray2)'); }
+  } catch(e) {
+    if (silent) return;
+    const code = e.code || (e.data && e.data.code);
+    if (code === 4001) {
+      wsetStatus('wConnectStatus', 'Rejected — please approve the connection in MetaMask.', 'var(--red)');
+    } else if (code === -32002) {
+      wsetStatus('wConnectStatus', 'MetaMask has a pending request — click the MetaMask icon in your browser toolbar to approve it.', 'var(--yellow)');
+    } else {
+      wsetStatus('wConnectStatus', `Error: ${e.message || e} — try clicking the MetaMask extension icon.`, 'var(--red)');
+    }
+  }
 }
 
 // Auto-detect existing connection on page load
