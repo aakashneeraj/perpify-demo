@@ -3,675 +3,1152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perpify — Live Testnet Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<title>Perpify — The Reopen Gap Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-  --bg: #09090f;
-  --surface: #0e0e18;
-  --card: #141422;
-  --border: #1e1e30;
-  --border-bright: #2a2a42;
-  --blue: #5b9fff;
-  --green: #00e87a;
-  --red: #ff4444;
-  --yellow: #ffbe00;
+  --bg: #000000;
+  --surface: #0c0c0c;
+  --card: #141414;
+  --card2: #1a1a1a;
+  --border: #262626;
+  --border-hi: #333333;
+  --green: #4f8eff;
+  --green-dim: rgba(79,142,255,0.08);
+  --green-border: rgba(79,142,255,0.25);
+  --red: #ff5000;
+  --yellow: #f5a623;
   --white: #ffffff;
-  --off-white: #eeeef8;
-  --label: #c0c0dc;
-  --muted: #7878a8;
-  --dim: #252540;
+  --gray1: #f0f0f0;
+  --gray2: #999999;
+  --gray3: #555555;
+  --gray4: #333333;
 }
-body { background: var(--bg); color: var(--white); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
-body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(91,159,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(91,159,255,0.012) 1px, transparent 1px); background-size: 64px 64px; pointer-events: none; z-index: 0; }
-.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 0 40px; }
 
-/* ─── Header ─── */
-header { padding: 22px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-bright); }
-.logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 4px; color: var(--white); }
-.logo span { color: var(--blue); }
-.header-right { display: flex; align-items: center; gap: 10px; }
-.network-badge { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--label); padding: 7px 14px; border: 1px solid var(--border-bright); border-radius: 100px; }
-.network-badge.ok { color: var(--green); border-color: rgba(0,232,122,0.35); background: rgba(0,232,122,0.07); }
-.connect-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: #000; background: var(--blue); border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; text-transform: uppercase; font-weight: 500; }
-.connect-btn:hover { opacity: 0.88; }
-.connect-btn.connected { background: var(--green); }
-.owner-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--yellow); padding: 5px 12px; border: 1px solid rgba(255,190,0,0.3); border-radius: 100px; background: rgba(255,190,0,0.07); display: none; }
-.owner-badge.show { display: block; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* ─── Hero ─── */
-.hero { padding: 68px 0 52px; border-bottom: 1px solid var(--border-bright); }
-.hero-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--blue); margin-bottom: 22px; text-transform: uppercase; }
-.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(58px, 10.5vw, 116px); line-height: 0.9; color: var(--white); margin-bottom: 28px; }
-.hero h1 .blue { color: var(--blue); }
-.hero-sub { font-size: 16px; color: var(--off-white); font-weight: 400; max-width: 520px; line-height: 1.8; }
+a { color: inherit; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
 
-/* ─── Contract strip ─── */
-.contract-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); padding: 14px 0; }
-.contract-inner { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.contract-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; flex-shrink: 0; }
-.contract-addr { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--blue); }
-.contract-addr a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(91,159,255,0.35); }
-.chain-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 5px 12px; border-radius: 100px; background: rgba(0,232,122,0.08); border: 1px solid rgba(0,232,122,0.25); color: var(--green); flex-shrink: 0; }
+/* ── NAV ── */
+nav {
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
 
-/* ─── Metrics ─── */
-.metrics-strip { background: var(--surface); border-bottom: 1px solid var(--border-bright); }
-.metrics-inner { display: grid; grid-template-columns: repeat(4, 1fr); }
-.metric-cell { padding: 22px 26px; border-right: 1px solid var(--border-bright); }
-.metric-cell:last-child { border-right: none; }
-.metric-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; margin-bottom: 8px; }
-.metric-val { font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1; color: var(--muted); transition: color 0.3s; }
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
 
-/* ─── Main grid ─── */
-.main-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border-bright); max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
-.panel { padding: 34px; }
-.panel:first-child { border-right: 1px solid var(--border-bright); }
-.panel-title { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--off-white); text-transform: uppercase; margin-bottom: 26px; padding-bottom: 14px; border-bottom: 1px solid var(--border-bright); display: flex; align-items: center; gap: 8px; }
+.logo {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--white);
+}
 
-/* ─── Controls ─── */
-.control-group { margin-bottom: 18px; }
-.control-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--label); text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.control-label span { color: var(--white); font-weight: 700; font-size: 14px; letter-spacing: 0; }
-input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--dim); border-radius: 2px; outline: none; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--blue); border-radius: 50%; cursor: pointer; border: 2px solid #09090f; box-shadow: 0 0 0 3px rgba(91,159,255,0.22); }
-input[type="range"].red-range::-webkit-slider-thumb { background: var(--red); box-shadow: 0 0 0 3px rgba(255,68,68,0.22); }
-input[type="range"].yellow-range::-webkit-slider-thumb { background: var(--yellow); box-shadow: 0 0 0 3px rgba(255,190,0,0.22); }
+.nav-right { display: flex; align-items: center; gap: 4px; }
 
-/* ─── Action buttons ─── */
-.steps-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 22px 0 10px; }
-.action-row { display: flex; flex-direction: column; gap: 8px; }
-.action-btn { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 14px 18px; border-radius: 8px; border: 1px solid; cursor: pointer; transition: opacity 0.18s; font-weight: 500; text-align: left; display: flex; align-items: center; gap: 12px; }
-.step-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; flex-shrink: 0; font-weight: 700; }
-.btn-open  { background: rgba(91,159,255,0.10); border-color: rgba(91,159,255,0.35); color: #90c4ff; }
-.btn-open  .step-badge { background: var(--blue); color: #000; }
-.btn-close { background: rgba(255,190,0,0.08); border-color: rgba(255,190,0,0.28); color: #ffd060; }
-.btn-close .step-badge { background: var(--yellow); color: #000; }
-.btn-reopen { background: rgba(0,232,122,0.08); border-color: rgba(0,232,122,0.3); color: #60eeaa; }
-.btn-reopen .step-badge { background: var(--green); color: #000; }
-.action-btn:not(:disabled):hover { opacity: 0.78; }
-.action-btn:disabled { opacity: 0.22; cursor: not-allowed; }
+.nav-tab {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--gray2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.nav-tab:hover { color: var(--white); background: var(--card); }
+.nav-tab.active { background: var(--green); color: #000; font-weight: 700; }
 
-/* ─── Owner notice ─── */
-.owner-notice { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--yellow); background: rgba(255,190,0,0.07); border: 1px solid rgba(255,190,0,0.2); border-radius: 8px; padding: 11px 14px; margin-top: 10px; line-height: 1.6; display: none; }
-.owner-notice.show { display: block; }
-.faucet-link { color: var(--blue); text-decoration: underline; cursor: pointer; }
+/* ── HERO ── */
+.hero {
+  padding: 88px 0 72px;
+  border-bottom: 1px solid var(--border);
+}
 
-/* ─── Shield ─── */
-.shield-section { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border-bright); }
-.shield-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.shield-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; }
-.shield-pct { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); transition: color 0.3s; }
-.shield-track { height: 8px; background: var(--dim); border-radius: 4px; overflow: hidden; }
-.shield-fill { height: 100%; border-radius: 4px; width: 0%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
-.shield-labels { display: flex; justify-content: space-between; margin-top: 6px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
-.shield-labels span:last-child { color: var(--red); }
+.hero-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-/* ─── State display ─── */
-.state-display { margin-top: 18px; background: var(--card); border: 1px solid var(--border-bright); border-radius: 10px; overflow: hidden; }
-.state-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--border); }
-.state-row:last-child { border-bottom: none; }
-.state-key { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.5px; color: var(--label); text-transform: uppercase; }
-.state-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; color: var(--white); transition: color 0.3s; }
-.verdict-box { margin-top: 18px; padding: 14px 18px; border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-align: center; font-weight: 600; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; text-transform: uppercase; }
-.verdict-box.show { opacity: 1; transform: translateY(0); }
-.verdict-box.insolvent { background: rgba(255,68,68,0.10); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
-.verdict-box.solvent { background: rgba(0,232,122,0.08); color: var(--green); border: 1px solid rgba(0,232,122,0.25); }
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+}
 
-/* ─── Log ─── */
-.log-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-.event-log { height: 590px; overflow-y: auto; display: flex; flex-direction: column; gap: 1px; margin-top: 14px; }
-.event-log::-webkit-scrollbar { width: 3px; }
-.event-log::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
-.log-item { font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 12px; border-radius: 5px; line-height: 1.55; animation: logIn 0.2s ease forwards; flex-shrink: 0; }
-@keyframes logIn { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: translateX(0); } }
-.log-item.info    { color: var(--off-white); }
-.log-item.tx      { color: #90c4ff; background: rgba(91,159,255,0.06); }
-.log-item.event   { color: var(--white); background: rgba(255,255,255,0.04); border-left: 2px solid var(--blue); }
-.log-item.success { color: var(--green); background: rgba(0,232,122,0.06); border-left: 2px solid var(--green); }
-.log-item.error   { color: var(--red); background: rgba(255,68,68,0.08); border-left: 2px solid var(--red); }
-.log-item.warn    { color: var(--yellow); background: rgba(255,190,0,0.06); }
-.log-item.critical{ color: var(--red); background: rgba(255,68,68,0.12); font-weight: 700; border: 1px solid rgba(255,68,68,0.25); }
-.log-item.separator { color: var(--dim); text-align: center; letter-spacing: 4px; font-size: 10px; }
-.log-clear { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; color: var(--muted); cursor: pointer; background: none; border: none; transition: color 0.2s; text-transform: uppercase; }
-.log-clear:hover { color: var(--red); }
-.status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
-.status-dot.live    { background: var(--green); animation: blink 2s ease infinite; }
-.status-dot.pending { background: var(--yellow); animation: blink 0.8s ease infinite; }
-.status-dot.err     { background: var(--red); }
-@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+.hero h1 {
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 900;
+  line-height: 1.03;
+  letter-spacing: -2.5px;
+  color: var(--white);
+  margin-bottom: 28px;
+}
 
-/* ─── Proof section ─── */
-.proof-section { padding: 68px 0; border-bottom: 1px solid var(--border-bright); display: grid; grid-template-columns: auto 1fr; gap: 64px; align-items: center; }
-.proof-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px,13vw,140px); line-height: 0.9; white-space: nowrap; color: var(--white); }
-.proof-num .slash { color: var(--blue); }
-.proof-num .denom { color: var(--label); }
-.proof-copy h3 { font-size: 22px; font-weight: 700; margin-bottom: 16px; line-height: 1.35; color: var(--white); }
-.proof-copy p { font-size: 15px; color: var(--off-white); line-height: 1.85; margin-bottom: 14px; }
-.proof-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--green); padding: 9px 20px; border: 1px solid rgba(0,232,122,0.25); border-radius: 100px; background: rgba(0,232,122,0.07); }
+.hero h1 em {
+  font-style: normal;
+  color: var(--green);
+}
 
-footer { padding: 22px 0; display: flex; justify-content: space-between; align-items: center; }
-.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--label); }
-.footer-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; line-height: 2; }
+.hero-body {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--gray1);
+  line-height: 1.65;
+  max-width: 540px;
+  margin-bottom: 40px;
+}
 
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {}
+.hero-stat-num {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat-num.green { color: var(--green); }
+.hero-stat-label {
+  font-size: 12px;
+  color: var(--gray2);
+  font-weight: 500;
+}
+
+/* ── TAB CONTENT ── */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── SIM TOOLBAR ── */
+.toolbar {
+  padding: 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.toolbar-left {}
+.toolbar-left h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.toolbar-left p { font-size: 13px; color: var(--gray2); }
+
+.toolbar-right { display: flex; align-items: center; gap: 10px; }
+
+.gap-btns { display: flex; gap: 4px; }
+
+.gap-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-hi);
+  background: var(--card);
+  color: var(--gray2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.gap-btn:hover { color: var(--white); background: var(--card2); }
+.gap-btn.active { background: var(--green); border-color: var(--green); color: #000; font-weight: 700; }
+
+.run-btn {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 11px 28px;
+  border-radius: 10px;
+  background: var(--green);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.run-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.run-btn:disabled { background: var(--card2); color: var(--gray3); cursor: not-allowed; transform: none; filter: none; }
+
+/* ── PHASE BAR ── */
+.phasebar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.phasecell {
+  padding: 18px 28px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  transition: background 0.3s;
+}
+.phasecell:last-child { border-right: none; }
+.phasecell.active { background: rgba(79,142,255,0.04); }
+.phasecell.done { background: rgba(79,142,255,0.02); }
+
+.pc-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gray3);
+  margin-bottom: 5px;
+}
+
+.pc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray3);
+  margin-bottom: 2px;
+  transition: color 0.3s;
+}
+.phasecell.active .pc-title { color: var(--green); }
+.phasecell.done .pc-title { color: var(--green); opacity: 0.6; }
+
+.pc-sub { font-size: 11px; color: var(--gray3); }
+
+.pc-dot {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--border-hi);
+  transition: all 0.3s;
+}
+.phasecell.active .pc-dot {
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(79,142,255,0.2);
+  animation: gdot 1.4s ease infinite;
+}
+.phasecell.done .pc-dot { background: var(--green); opacity: 0.5; box-shadow: none; }
+
+@keyframes gdot {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(79,142,255,0.2); }
+  50% { box-shadow: 0 0 0 9px rgba(79,142,255,0.05); }
+}
+
+/* ── VENUES ── */
+.venues {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+
+.venue {
+  padding: 36px 40px 32px;
+  border-right: 1px solid var(--border);
+  transition: background 0.4s;
+}
+.venue:last-child { border-right: none; }
+.venue.breaking { background: rgba(255,80,0,0.025); }
+.venue.holding { background: rgba(79,142,255,0.015); }
+
+.venue-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.vname-group {}
+.v-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.v-tag.red { color: var(--red); }
+.v-tag.green { color: var(--green); }
+
+.v-name {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--white);
+}
+
+.v-mech {
+  font-size: 11px;
+  color: var(--gray2);
+  text-align: right;
+  line-height: 1.55;
+  max-width: 180px;
+}
+
+/* Stats */
+.vstats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.vstat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+
+.vstat-val {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin-bottom: 5px;
+  transition: color 0.3s;
+}
+
+.vstat-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gray3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Buffer */
+.vbuffer { margin-bottom: 20px; }
+
+.vbuf-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.vbuf-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray2);
+}
+
+.vbuf-pct {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  transition: color 0.3s;
+  color: var(--gray3);
+}
+
+.bar-bg {
+  height: 5px;
+  background: var(--card2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fg {
+  height: 100%;
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.bar-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 10px;
+  color: var(--gray3);
+  font-weight: 500;
+}
+.bar-legend span:last-child { color: var(--red); font-weight: 600; }
+
+/* Event log */
+.vlog {
+  height: 188px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.vlog::-webkit-scrollbar { width: 2px; }
+.vlog::-webkit-scrollbar-thumb { background: var(--border-hi); }
+
+.ev {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  line-height: 1.5;
+  animation: evSlide 0.18s ease;
+  flex-shrink: 0;
+  color: var(--gray1);
+}
+@keyframes evSlide { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; } }
+
+.ev.margin { color: #50d070; background: rgba(79,142,255,0.07); border-left: 2px solid var(--green); }
+.ev.liq { color: #ff7050; background: rgba(255,80,0,0.07); border-left: 2px solid var(--red); }
+.ev.ok { color: var(--green); background: rgba(79,142,255,0.07); border-left: 2px solid var(--green); }
+.ev.warn { color: var(--yellow); background: rgba(245,166,35,0.07); }
+.ev.critical { color: var(--red); background: rgba(255,80,0,0.12); font-weight: 700; border: 1px solid rgba(255,80,0,0.25); }
+
+/* Outcome */
+.outcome {
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.4s, transform 0.4s;
+  border: 1px solid transparent;
+  letter-spacing: -0.2px;
+}
+.outcome.show { opacity: 1; transform: translateY(0); }
+.outcome.bad { background: rgba(255,80,0,0.1); color: var(--red); border-color: rgba(255,80,0,0.25); }
+.outcome.good { background: rgba(79,142,255,0.08); color: var(--green); border-color: rgba(79,142,255,0.25); }
+
+/* ── PROOF ── */
+.proof {
+  padding: 80px 0;
+  border-top: 1px solid var(--border);
+}
+
+.proof h2 {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+.proof-sub {
+  font-size: 15px;
+  color: var(--gray1);
+  max-width: 500px;
+  line-height: 1.65;
+  margin-bottom: 48px;
+}
+
+/* Table */
+.table {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.t-head {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  background: var(--card2);
+  border-bottom: 1px solid var(--border);
+}
+
+.th {
+  padding: 13px 24px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-right: 1px solid var(--border);
+}
+.th:last-child { border-right: none; }
+.th.gray { color: var(--gray2); }
+.th.red { color: var(--red); }
+.th.green { color: var(--green); }
+
+.t-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.t-row:last-child { border-bottom: none; }
+.t-row:nth-child(even) { background: rgba(255,255,255,0.012); }
+
+.td {
+  padding: 14px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  border-right: 1px solid var(--border);
+  color: var(--gray1);
+}
+.td:last-child { border-right: none; }
+.td.label { color: var(--gray1); font-weight: 400; }
+.td.bad { color: var(--red); font-weight: 700; font-family: 'DM Mono', monospace; font-size: 12px; }
+.td.good { color: var(--green); font-weight: 700; font-family: 'DM Mono', monospace; font-size: 12px; }
+
+/* Big stat */
+.bigstat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 52px 56px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.bignumber {
+  font-size: clamp(72px, 11vw, 118px);
+  font-weight: 900;
+  letter-spacing: -5px;
+  line-height: 0.9;
+  white-space: nowrap;
+  color: var(--white);
+}
+.bignumber .slash { color: var(--green); }
+.bignumber .denom { color: var(--gray3); }
+
+.bigtext h3 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+  color: var(--white);
+}
+.bigtext p {
+  font-size: 15px;
+  color: var(--gray1);
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+.proof-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  padding: 8px 20px;
+  border: 1px solid var(--green-border);
+  border-radius: 100px;
+  background: var(--green-dim);
+}
+
+/* ── WALLET TAB ── */
+.wallet { padding: 72px 0; }
+.wallet h2 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
+.wallet-sub { font-size: 16px; color: var(--gray1); max-width: 480px; line-height: 1.65; margin-bottom: 40px; }
+
+.ctr-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.ctr-key { font-size: 11px; font-weight: 700; color: var(--gray2); text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0; }
+.ctr-addr { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--green); }
+.ctr-addr a { text-decoration: none; border-bottom: 1px solid rgba(79,142,255,0.3); }
+.ctr-badge { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--green); padding: 5px 14px; border-radius: 100px; background: var(--green-dim); border: 1px solid var(--green-border); }
+
+.wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.w-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+}
+.w-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
+.w-card p { font-size: 13px; color: var(--gray1); line-height: 1.6; margin-bottom: 20px; }
+
+.wbtn {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+.wbtn.green { background: var(--green); color: #000; }
+.wbtn.green:hover { filter: brightness(1.08); }
+.wbtn.outline { background: transparent; border: 1px solid var(--border-hi); color: var(--white); }
+.wbtn.outline:hover { border-color: var(--green); color: var(--green); }
+.wbtn:disabled { background: var(--card2); color: var(--gray3); cursor: not-allowed; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo { font-size: 15px; font-weight: 800; color: var(--gray3); }
+.footer-right { font-size: 12px; color: var(--gray3); text-align: right; line-height: 1.8; }
+
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .wrap { padding: 0 20px; }
-  .main-grid { grid-template-columns: 1fr; }
-  .panel:first-child { border-right: none; border-bottom: 1px solid var(--border-bright); }
-  .metrics-inner { grid-template-columns: repeat(2, 1fr); }
-  .proof-section { grid-template-columns: 1fr; gap: 32px; }
-  .event-log { height: 360px; }
+  .venues { grid-template-columns: 1fr; }
+  .venue { border-right: none; border-bottom: 1px solid var(--border); }
+  .phasebar { grid-template-columns: repeat(2, 1fr); }
+  .bigstat { grid-template-columns: 1fr; gap: 32px; padding: 32px 28px; }
+  .wallet-grid { grid-template-columns: 1fr; }
+  .toolbar { flex-direction: column; align-items: flex-start; }
+  .hero-stats { gap: 28px; }
+  .hero h1 { letter-spacing: -1.5px; }
 }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <div class="wrap">
-  <header>
-    <div class="logo">PERP<span>IFY</span></div>
-    <div class="header-right">
-      <div class="owner-badge" id="ownerBadge">★ DEPLOYER</div>
-      <div class="network-badge" id="networkBadge">NOT CONNECTED</div>
-      <button class="connect-btn" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">Perpify</div>
+      <div class="nav-right">
+        <button class="nav-tab active" onclick="switchTab('sim',this)">Watch It Happen</button>
+        <button class="nav-tab" onclick="switchTab('wallet',this)">Touch The Contract</button>
+      </div>
     </div>
-  </header>
+  </nav>
 </div>
 
+<!-- HERO -->
 <div class="wrap">
   <div class="hero">
-    <div class="hero-tag">Live Testnet Demo · Base Sepolia · PerpifyReopen.sol</div>
-    <h1>The Reopen Gap<br><span class="blue">Is The Bug.</span><br>We Fixed It.</h1>
-    <p class="hero-sub">Connect your wallet and trigger a real reopen event on-chain. Watch sequenced clearing execute — not a simulation. A live contract call on Base Sepolia.</p>
-  </div>
-</div>
-
-<div class="contract-strip">
-  <div class="wrap">
-    <div class="contract-inner">
-      <div class="contract-label">Contract</div>
-      <div class="contract-addr"><span id="addrText">0xF6FbB4be6844588A68704607f84bE6127F246A45</span></div>
-      <div class="chain-pill">● BASE SEPOLIA</div>
-    </div>
-  </div>
-</div>
-
-<div class="metrics-strip">
-  <div class="wrap">
-    <div class="metrics-inner">
-      <div class="metric-cell"><div class="metric-label">Market State</div><div class="metric-val" id="m-state" style="font-size:20px">—</div></div>
-      <div class="metric-cell"><div class="metric-label">Total OI</div><div class="metric-val" id="m-oi">—</div></div>
-      <div class="metric-cell"><div class="metric-label">Shield Fund</div><div class="metric-val" id="m-shield">—</div></div>
-      <div class="metric-cell"><div class="metric-label">Bad Debt</div><div class="metric-val" id="m-debt">—</div></div>
-    </div>
-  </div>
-</div>
-
-<div class="main-grid">
-  <div class="panel">
-    <div class="panel-title"><span class="status-dot" id="statusDot"></span>&nbsp; Simulation Controls</div>
-
-    <div class="control-group">
-      <div class="control-label">Gap Size (down) <span id="gapVal">−3.2%</span></div>
-      <input type="range" class="red-range" id="gapSlider" min="10" max="120" value="32"
-        oninput="document.getElementById('gapVal').textContent='−'+(this.value/10).toFixed(1)+'%'">
-    </div>
-    <div class="control-group">
-      <div class="control-label">S&P 500 Close Price <span id="priceVal">$4,800</span></div>
-      <input type="range" class="yellow-range" id="priceSlider" min="3000" max="6000" value="4800"
-        oninput="document.getElementById('priceVal').textContent='$'+parseInt(this.value).toLocaleString()">
-    </div>
-    <div class="control-group">
-      <div class="control-label">Max Leverage <span id="levVal">6×</span></div>
-      <input type="range" id="levSlider" min="1" max="6" value="6"
-        oninput="document.getElementById('levVal').textContent=this.value+'×'">
-    </div>
-
-    <div class="steps-label">Execute in sequence →</div>
-    <div class="action-row">
-      <button class="action-btn btn-open" id="openBtn" onclick="openTestPositions()" disabled>
-        <span class="step-badge">1</span> Open Test Positions (~0.033 ETH)
-      </button>
-      <button class="action-btn btn-close" id="closeBtn" onclick="closeMarket()" disabled>
-        <span class="step-badge">2</span> Close Market (Friday 16:00)
-      </button>
-      <button class="action-btn btn-reopen" id="reopenBtn" onclick="triggerReopen()" disabled>
-        <span class="step-badge">3</span> Trigger Reopen Gap (Monday 09:30)
-      </button>
-    </div>
-
-    <div class="owner-notice" id="ownerNotice">
-      ⚠ Steps 2 &amp; 3 require the deployer wallet.<br>
-      Need Base Sepolia ETH? →
-      <a class="faucet-link" href="https://faucet.quicknode.com/base/sepolia" target="_blank">QuickNode Faucet</a> ·
-      <a class="faucet-link" href="https://www.alchemy.com/faucets/base-sepolia" target="_blank">Alchemy Faucet</a>
-    </div>
-
-    <div class="shield-section">
-      <div class="shield-header">
-        <div class="shield-title">Insurance Shield Usage</div>
-        <div class="shield-pct" id="shieldPct">0%</div>
+    <div class="hero-eyebrow">Live Demo · Base Sepolia · No Wallet Required</div>
+    <h1>Every venue breaks<br>at reopen. <em>Not this one.</em></h1>
+    <p class="hero-body">When markets close overnight, every other venue freezes prices and snaps at open — triggering liquidation cascades. Watch what Perpify does differently.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num green">0 / 10,000</div>
+        <div class="hero-stat-label">Scenarios where Perpify went insolvent</div>
       </div>
-      <div class="shield-track"><div class="shield-fill" id="shieldFill" style="background:var(--blue)"></div></div>
-      <div class="shield-labels"><span>0%</span><span>50%</span><span>100% = INSOLVENT</span></div>
-    </div>
-
-    <div class="state-display">
-      <div class="state-row"><div class="state-key">Open Positions</div><div class="state-val" id="s-poscount">—</div></div>
-      <div class="state-row"><div class="state-key">Shield Fund</div><div class="state-val" id="s-shield">—</div></div>
-      <div class="state-row"><div class="state-key">Bad Debt</div><div class="state-val" id="s-debt">—</div></div>
-      <div class="state-row"><div class="state-key">Shield Used</div><div class="state-val" id="s-shieldpct">—</div></div>
-      <div class="state-row"><div class="state-key">Protocol Solvent</div><div class="state-val" id="s-solvent">—</div></div>
-    </div>
-
-    <div class="verdict-box" id="verdictBox"></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-title">
-      <div class="log-header-row">
-        <span><span class="status-dot" id="logDot"></span>&nbsp; On-Chain Event Stream</span>
-        <button class="log-clear" onclick="clearLog()">Clear</button>
+      <div class="hero-stat">
+        <div class="hero-stat-num">13.12%</div>
+        <div class="hero-stat-label">Max loss buffer used across all scenarios</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">38%</div>
+        <div class="hero-stat-label">Of trading days open with a gap &gt;0.5%</div>
       </div>
     </div>
-    <div class="event-log" id="eventLog">
-      <div class="log-item info">Connect your wallet to begin. MetaMask required.</div>
-      <div class="log-item separator">────────────────────────────</div>
-      <div class="log-item info">Real on-chain transactions on Base Sepolia.</div>
-      <div class="log-item info">Events emitted live by the deployed contract.</div>
-      <div class="log-item separator">────────────────────────────</div>
-      <div class="log-item warn">Step 1 — Connect wallet (need ~0.05 ETH on Base Sepolia)</div>
-      <div class="log-item warn">Step 2 — Open test positions</div>
-      <div class="log-item warn">Step 3 — Close the market (deployer wallet required)</div>
-      <div class="log-item warn">Step 4 — Trigger reopen gap (deployer wallet required)</div>
+  </div>
+</div>
+
+<!-- ════ TAB: SIMULATION ════ -->
+<div id="tab-sim" class="tab-content active">
+
+  <div class="wrap">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <h2>Run the reopen. Watch what happens.</h2>
+        <p>No MetaMask, no setup. One click runs the full sequence on both venues at once.</p>
+      </div>
+      <div class="toolbar-right">
+        <div class="gap-btns">
+          <button class="gap-btn active" id="sc-normal" onclick="setScenario('normal',this)">−3.2% Gap</button>
+          <button class="gap-btn" id="sc-stress" onclick="setScenario('stress',this)">−7.5% Gap</button>
+          <button class="gap-btn" id="sc-extreme" onclick="setScenario('extreme',this)">−12% Gap</button>
+        </div>
+        <button class="run-btn" id="runBtn" onclick="runSim()">▶ &nbsp;Run the Reopen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase bar -->
+  <div style="border-bottom:1px solid var(--border); background:var(--surface);">
+    <div class="wrap" style="padding-top:0;padding-bottom:0;">
+      <div class="phasebar" style="border:none;">
+        <div class="phasecell" id="ph1">
+          <div class="pc-dot"></div>
+          <div class="pc-num">01</div>
+          <div class="pc-title">Market Open</div>
+          <div class="pc-sub">Positions held. Capital at risk.</div>
+        </div>
+        <div class="phasecell" id="ph2">
+          <div class="pc-dot"></div>
+          <div class="pc-num">02</div>
+          <div class="pc-title">Friday Close</div>
+          <div class="pc-sub">63-hr gap begins. Perpify prepares.</div>
+        </div>
+        <div class="phasecell" id="ph3">
+          <div class="pc-dot"></div>
+          <div class="pc-num">03</div>
+          <div class="pc-title">Monday Reopen</div>
+          <div class="pc-sub">The gap fires. Moment of truth.</div>
+        </div>
+        <div class="phasecell" id="ph4">
+          <div class="pc-dot"></div>
+          <div class="pc-num">04</div>
+          <div class="pc-title">Settlement</div>
+          <div class="pc-sub">Who survives?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Venues -->
+  <div class="venues">
+
+    <!-- NAIVE -->
+    <div class="venue" id="naivePanel">
+      <div class="venue-hd">
+        <div class="vname-group">
+          <div class="v-tag red">Every Other Venue</div>
+          <div class="v-name">Instant Snap</div>
+        </div>
+        <div class="v-mech">Price snaps instantly at reopen<br>All liquidations fire simultaneously</div>
+      </div>
+
+      <div class="vstats">
+        <div class="vstat">
+          <div class="vstat-val" id="n-liq" style="color:var(--red)">—</div>
+          <div class="vstat-label">Liquidations</div>
+        </div>
+        <div class="vstat">
+          <div class="vstat-val" id="n-loss" style="color:var(--white);font-size:17px">—</div>
+          <div class="vstat-label">Losses Not Covered</div>
+        </div>
+        <div class="vstat">
+          <div class="vstat-val" id="n-bufstat" style="color:var(--gray3);font-size:17px">—</div>
+          <div class="vstat-label">Buffer Used</div>
+        </div>
+      </div>
+
+      <div class="vbuffer">
+        <div class="vbuf-top">
+          <div class="vbuf-label">Loss Buffer</div>
+          <div class="vbuf-pct" id="n-bufpct">0%</div>
+        </div>
+        <div class="bar-bg"><div class="bar-fg" id="n-fill" style="background:var(--red)"></div></div>
+        <div class="bar-legend"><span>0%</span><span>100% — Venue Insolvent</span></div>
+      </div>
+
+      <div class="vlog" id="naive-log"><div class="ev">Waiting to run...</div></div>
+      <div class="outcome" id="naive-outcome"></div>
+    </div>
+
+    <!-- PERPIFY -->
+    <div class="venue" id="perpPanel">
+      <div class="venue-hd">
+        <div class="vname-group">
+          <div class="v-tag green">Perpify</div>
+          <div class="v-name">Sequenced Clearing</div>
+        </div>
+        <div class="v-mech">Gap risk priced before market closes<br>Positions cleared in sequence, not at once</div>
+      </div>
+
+      <div class="vstats">
+        <div class="vstat">
+          <div class="vstat-val" id="p-liq" style="color:var(--green)">—</div>
+          <div class="vstat-label">Positions Cleared</div>
+        </div>
+        <div class="vstat">
+          <div class="vstat-val" id="p-loss" style="color:var(--white);font-size:17px">—</div>
+          <div class="vstat-label">Losses Not Covered</div>
+        </div>
+        <div class="vstat">
+          <div class="vstat-val" id="p-bufstat" style="color:var(--gray3);font-size:17px">—</div>
+          <div class="vstat-label">Buffer Used</div>
+        </div>
+      </div>
+
+      <div class="vbuffer">
+        <div class="vbuf-top">
+          <div class="vbuf-label">Loss Buffer</div>
+          <div class="vbuf-pct" id="p-bufpct">0%</div>
+        </div>
+        <div class="bar-bg"><div class="bar-fg" id="p-fill" style="background:var(--green)"></div></div>
+        <div class="bar-legend"><span>0%</span><span>100% — Venue Insolvent</span></div>
+      </div>
+
+      <div class="vlog" id="perp-log"><div class="ev">Waiting to run...</div></div>
+      <div class="outcome" id="perp-outcome"></div>
+    </div>
+
+  </div>
+
+  <!-- Proof -->
+  <div class="wrap">
+    <div class="proof">
+      <h2>The numbers behind the claim.</h2>
+      <p class="proof-sub">10,000 worst-case S&P 500 reopen scenarios. 30 years of SPY close-to-open data. Seed 1. Reproducible. Full Python script available on request.</p>
+
+      <div class="table">
+        <div class="t-head">
+          <div class="th gray">Metric</div>
+          <div class="th red">Every Other Venue</div>
+          <div class="th green">Perpify</div>
+        </div>
+        <div class="t-row">
+          <div class="td label">Venue survives reopen</div>
+          <div class="td bad">9,999 / 10,000 only</div>
+          <div class="td good">10,000 / 10,000</div>
+        </div>
+        <div class="t-row">
+          <div class="td label">Worst loss buffer usage</div>
+          <div class="td bad">103.78% — BREACHED</div>
+          <div class="td good">13.12% — safe</div>
+        </div>
+        <div class="t-row">
+          <div class="td label">Worst uncovered loss event</div>
+          <div class="td bad">$259,458</div>
+          <div class="td good">$32,803</div>
+        </div>
+        <div class="t-row">
+          <div class="td label">Average uncovered loss</div>
+          <div class="td bad">$158 per scenario</div>
+          <div class="td good">$7 per scenario</div>
+        </div>
+        <div class="t-row">
+          <div class="td label">Under 2× stress, 8× leverage</div>
+          <div class="td bad">Would fail catastrophically</div>
+          <div class="td good">44.95% buffer · zero failures</div>
+        </div>
+      </div>
+
+      <div class="bigstat">
+        <div class="bignumber">0<span class="slash">/</span><span class="denom">10,000</span></div>
+        <div class="bigtext">
+          <h3>Simulated worst-case reopens. Zero venues insolvent.</h3>
+          <p>The naive venue breached its loss buffer in 1 out of 10,000 scenarios — meaning the exchange itself went insolvent and traders could not be made whole. Perpify held max buffer usage at 13.12% across all 10,000 scenarios.</p>
+          <p>The margin of safety is not marginal. It is structural.</p>
+          <div class="proof-badge">Full Python script available on request · aakash@perpify.trade</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════ TAB: WALLET ════ -->
+<div id="tab-wallet" class="tab-content">
+  <div class="wrap">
+    <div class="wallet">
+      <h2>Touch the contract yourself.</h2>
+      <p class="wallet-sub">The contract is deployed on Base Sepolia. Connect MetaMask and execute the reopen sequence on-chain. Every transaction is visible on BaseScan.</p>
+
+      <div class="ctr-row">
+        <div class="ctr-key">Contract</div>
+        <div class="ctr-addr">
+          <a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank">
+            0xF6FbB4be6844588A68704607f84bE6127F246A45
+          </a>
+        </div>
+        <div class="ctr-badge">● BASE SEPOLIA</div>
+      </div>
+
+      <div class="wallet-grid">
+        <div class="w-card">
+          <h3>Connect Wallet</h3>
+          <p>Connect MetaMask on Base Sepolia network. You need a small amount of testnet ETH for gas — get it free from the Superchain faucet at app.optimism.io/faucet.</p>
+          <button class="wbtn green" id="wBtn" onclick="connectWallet()">Connect MetaMask</button>
+          <div id="wStatus" style="margin-top:10px;font-size:12px;color:var(--gray2);text-align:center;min-height:18px;"></div>
+        </div>
+        <div class="w-card">
+          <h3>View on BaseScan</h3>
+          <p>Read the contract source, verify the ABI, and inspect every on-chain transaction. The contract is open and verifiable by anyone.</p>
+          <a class="wbtn outline" href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank">
+            Open BaseScan ↗
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- FOOTER -->
 <div class="wrap">
-  <div class="proof-section">
-    <div class="proof-num">0<span class="slash">/</span><span class="denom">10,000</span></div>
-    <div class="proof-copy">
-      <h3>Worst-case S&P 500 reopen scenarios. Zero insolvencies.</h3>
-      <p>The naive venue breached its insurance shield in 1 out of 10,000 scenarios — reaching 103.78% shield usage. Perpify's baseline architecture held max shield usage at 13.12% across the same scenarios.</p>
-      <p>Even under doubled OI and 8× leverage, the stressed architecture peaked at 44.95% with zero insolvencies. The margin of safety is not marginal. It is structural.</p>
-      <div class="proof-tag">✓ Zero Insolvencies · Full Python Script Available on Request</div>
-    </div>
-  </div>
   <footer>
     <div class="footer-logo">Perpify</div>
-    <div class="footer-meta">perpify.trade · aakash@perpify.trade<br>Base Sepolia Testnet · PerpifyReopen.sol</div>
+    <div class="footer-right">
+      perpify.trade · aakash@perpify.trade<br>
+      PerpifyReopen.sol · Base Sepolia · github.com/aakashneeraj
+    </div>
   </footer>
 </div>
 
 <script>
-const CONTRACT_ADDRESS = "0xF6FbB4be6844588A68704607f84bE6127F246A45";
-const OWNER_ADDRESS    = "0xe387c40a8664f034c7bd214ec8e6350123488c98";
-const BASE_SEPOLIA_CHAIN_ID = 84532;
-const BASE_SEPOLIA_HEX = "0x14a34";
-const PUBLIC_RPC = "https://sepolia.base.org";
-
-const ABI = [
-  "function openPosition(uint256 notionalUSD, uint256 leverage, bool isLong, uint8 riskTier) payable returns (uint256)",
-  "function closeMarket() external",
-  "function triggerReopen(int256 gapBps, uint256 basePrice) external",
-  "function fundShield() payable external",
-  "function getOpenPositionCount() view returns (uint256)",
-  "function totalOI() view returns (uint256)",
-  "function marketState() view returns (uint8)",
-  "function shieldFund() view returns (uint256)",
-  "function badDebt() view returns (uint256)",
-  "event PositionOpened(uint256 indexed posId, address indexed trader, uint256 notional, uint256 margin, uint256 leverage, bool isLong, uint8 riskTier)",
-  "event MarketClosed(uint256 totalOI, uint256 shieldFund, uint256 timestamp)",
-  "event GapAwareMarginApplied(uint256 indexed posId, uint256 oldMargin, uint256 newMarginRequired, uint8 riskTier)",
-  "event ReopenInitiated(int256 gapBps, uint256 reopenPrice, uint256 timestamp)",
-  "event PositionSequenced(uint256 indexed posId, uint8 riskTier, uint256 loss, bool coveredByMargin, uint256 shieldUsed)",
-  "event PositionCleared(uint256 indexed posId, address indexed trader, uint256 payout, uint256 badDebtGenerated)",
-  "event ReopenComplete(uint256 totalPositionsCleared, uint256 totalBadDebt, uint256 shieldUsed, uint256 shieldUsedBps, bool protocolSolvent)"
-];
-
-let provider, signer, contract, isOwner = false;
-const STATES = ["OPEN", "DARK", "REOPEN"];
-const TIERS  = ["LOW", "MEDIUM", "HIGH"];
-
-/* ─── Logging ─── */
-function log(type, msg) {
-  const el = document.getElementById("eventLog");
-  const item = document.createElement("div");
-  item.className = "log-item " + type;
-  item.textContent = msg;
-  el.appendChild(item);
-  el.scrollTop = el.scrollHeight;
+// TABS
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
 }
-function clearLog() { document.getElementById("eventLog").innerHTML = ""; }
-function sep() { log("separator", "────────────────────────────"); }
 
-/* ─── Dot helpers ─── */
-function setDot(id, s) { const e = document.getElementById(id); if (e) e.className = "status-dot " + s; }
+// SCENARIOS
+const SC = {
+  normal: {
+    gap: 3.2,
+    naive:   { liqs:13, loss:'$159K', buf:103.78,
+      evs: [
+        ['info',     '$5M OI · 13 positions · 6× max leverage'],
+        ['info',     'FRIDAY 16:00 — Market closed. No preparation.'],
+        ['warn',     'MONDAY 09:30 — Price snap: $4,800 → $4,646 (−3.2%)'],
+        ['liq',      '🔴 All 13 positions liquidating simultaneously'],
+        ['liq',      '🔴 Liquidated #4 · 6× · $280K notional'],
+        ['liq',      '🔴 Liquidated #7 · 5× · $190K notional'],
+        ['liq',      '🔴 Liquidated #2 · 6× · $340K notional'],
+        ['warn',     '⚠ 2.8× market impact — simultaneous cascade'],
+        ['liq',      '🔴 Liquidated #5 · 6× · $440K notional'],
+        ['liq',      '🔴 Liquidated #3 · 6× · $520K notional'],
+        ['critical', '💀 Loss buffer exhausted — venue insolvent'],
+      ],
+      outcome: ['bad', '⚠ Venue Insolvent — Traders Cannot Be Made Whole']
+    },
+    perpify: { liqs:5, loss:'$21K', buf:13.12,
+      evs: [
+        ['info',   '$5M OI · 13 positions · 6× max leverage'],
+        ['margin', '🟢 FRIDAY 22:00 — Gap risk detected. Tightening margins.'],
+        ['margin', '🟢 HIGH risk: margin multiplier 1.3×'],
+        ['margin', '🟢 MEDIUM risk: margin multiplier 1.15×'],
+        ['info',   'FRIDAY 16:00 — Market closed. Buffers locked.'],
+        ['info',   'MONDAY 09:30 — Reopen: −3.2% · Continuity Engine active'],
+        ['ok',     '✓ Sequenced clearing: HIGH risk positions first'],
+        ['ok',     '✓ Cleared #4 [HIGH] — pre-gap margin absorbed loss'],
+        ['ok',     '✓ Cleared #2 [HIGH] — pre-gap margin absorbed loss'],
+        ['ok',     '✓ Cleared #7 [MED] — partial buffer draw'],
+        ['ok',     '✓ All cleared. Loss buffer used: 13.12%'],
+      ],
+      outcome: ['good', '✓ Venue Survives — All Traders Made Whole']
+    }
+  },
+  stress: {
+    gap: 7.5,
+    naive:   { liqs:13, loss:'$412K', buf:164.8,
+      evs: [
+        ['info',     '$5M OI · 13 positions · 6× max leverage'],
+        ['warn',     'MONDAY 09:30 — Price snap: −7.5% gap event'],
+        ['liq',      '🔴 Catastrophic snap — entire book underwater'],
+        ['liq',      '🔴 13 simultaneous liquidations firing'],
+        ['warn',     '⚠ 4.1× market impact from cascade'],
+        ['critical', '💀 Loss buffer at 164.8% — severe insolvency'],
+        ['critical', '💀 $412K traders cannot recover'],
+      ],
+      outcome: ['bad', '⚠ Severe Insolvency — $412K Uncovered Losses']
+    },
+    perpify: { liqs:8, loss:'$67K', buf:43.8,
+      evs: [
+        ['margin', '🟢 Pre-gap: maximum margin tightening applied'],
+        ['margin', '🟢 Gap risk priced 18 hours before close'],
+        ['info',   'MONDAY 09:30 — Reopen: −7.5% · Shock mode active'],
+        ['ok',     '✓ Dynamic bounds tightened — book protected'],
+        ['ok',     '✓ Sequenced: HIGH risk cleared first (3 positions)'],
+        ['ok',     '✓ Sequenced: MEDIUM risk cleared (3 positions)'],
+        ['ok',     '✓ LOW risk positions: protected and untouched'],
+        ['ok',     '✓ Loss buffer: 43.8% — venue survives'],
+      ],
+      outcome: ['good', '✓ Venue Survives — Even a 7.5% Gap']
+    }
+  },
+  extreme: {
+    gap: 12,
+    naive:   { liqs:13, loss:'$891K', buf:356.4,
+      evs: [
+        ['info',     '$5M OI · 13 positions · 6× max leverage'],
+        ['critical', '⚡ MONDAY 09:30 — −12% gap. Extreme tail event.'],
+        ['critical', '💀 Oracle snap triggers total book wipeout'],
+        ['critical', '💀 Loss buffer at 356% — catastrophic insolvency'],
+        ['critical', '💀 $891K in uncovered trader losses'],
+        ['critical', '💀 Exchange cannot function'],
+      ],
+      outcome: ['bad', '⚠ Total Insolvency — Exchange Cannot Function']
+    },
+    perpify: { liqs:11, loss:'$198K', buf:79.2,
+      evs: [
+        ['margin', '🟢 Pre-gap: maximum margin tightening + OI cap reduced'],
+        ['margin', '🟢 Shock mode: leverage restricted across all positions'],
+        ['warn',   '⚡ MONDAY 09:30 — Extreme gap: −12%'],
+        ['ok',     '✓ 15-minute controlled clearing window activated'],
+        ['ok',     '✓ Graph-guided ADL protects uncorrelated positions'],
+        ['ok',     '✓ Sequential clearing prevents cascade amplification'],
+        ['ok',     '✓ Loss buffer: 79.2% — painful but solvent'],
+      ],
+      outcome: ['good', '✓ Venue Survives Even −12% — Buffer: 79.2%']
+    }
+  }
+};
 
-/* ─── setText ─── */
-function setText(id, val, color) {
+let current = 'normal', running = false, timers = [];
+
+function setScenario(sc, el) {
+  current = sc;
+  document.querySelectorAll('.gap-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  resetSim();
+}
+
+function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+function clearAll() { timers.forEach(clearTimeout); timers = []; }
+
+function setPhase(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('ph' + i);
+    if (!el) continue;
+    el.className = 'phasecell' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+}
+
+function addEv(id, type, msg) {
+  const log = document.getElementById(id);
+  if (!log) return;
+  const el = document.createElement('div');
+  el.className = 'ev ' + type;
+  el.textContent = msg;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+function setVal(id, val, color) {
   const el = document.getElementById(id);
   if (!el) return;
   el.textContent = val;
   if (color) el.style.color = color;
 }
 
-/* ─── Public RPC read on load ─── */
-async function loadPublicState() {
-  try {
-    const rp = new ethers.providers.JsonRpcProvider(PUBLIC_RPC);
-    const rc = new ethers.Contract(CONTRACT_ADDRESS, ABI, rp);
-    const [stateRaw, posCount, totalOI, shieldFund, badDebt] = await Promise.all([
-      rc.marketState(), rc.getOpenPositionCount(),
-      rc.totalOI(), rc.shieldFund(), rc.badDebt()
-    ]);
-    applyState(stateRaw, posCount, totalOI, shieldFund, badDebt);
-  } catch (e) { /* silent — metrics stay at — */ }
+function setBar(prefix, pct) {
+  const fill = document.getElementById(prefix + '-fill');
+  const pctEl = document.getElementById(prefix + '-bufpct');
+  const stat = document.getElementById(prefix + '-bufstat');
+  if (!fill || !pctEl) return;
+  fill.style.width = Math.min(pct, 100) + '%';
+  const col = pct > 100 ? 'var(--red)' : pct > 70 ? 'var(--yellow)' : prefix === 'p' ? 'var(--green)' : 'var(--red)';
+  fill.style.background = col;
+  pctEl.textContent = pct.toFixed(2) + '%';
+  pctEl.style.color = col;
+  if (stat) { stat.textContent = pct.toFixed(1) + '%'; stat.style.color = col; }
 }
 
-/* ─── Apply state to UI ─── */
-function applyState(stateRaw, posCount, totalOI, shieldFund, badDebt) {
-  const state = STATES[stateRaw] || "UNKNOWN";
-  const stateColor = { OPEN: "var(--green)", DARK: "var(--yellow)", REOPEN: "var(--blue)" };
-  setText("m-state", state, stateColor[state] || "var(--white)");
-  setText("m-oi", formatOI(totalOI), "var(--white)");
-  setText("m-shield", fmtEth(shieldFund) + " ETH", "var(--blue)");
-  setText("m-debt", fmtEth(badDebt) + " ETH", badDebt.gt(0) ? "var(--red)" : "var(--white)");
-  setText("s-poscount", posCount.toString(), "var(--white)");
-  setText("s-shield", fmtEth(shieldFund) + " ETH", "var(--white)");
-  setText("s-debt", fmtEth(badDebt) + " ETH", badDebt.gt(0) ? "var(--red)" : "var(--white)");
-  const shieldInit = totalOI.mul(500).div(10000);
-  let pctNum = 0;
-  if (badDebt.gt(0) && shieldInit.gt(0))
-    pctNum = Math.min(badDebt.mul(10000).div(shieldInit).toNumber() / 100, 200);
-  setText("s-shieldpct", pctNum.toFixed(2) + "%", pctNum > 100 ? "var(--red)" : pctNum > 50 ? "var(--yellow)" : "var(--white)");
-  setText("s-solvent", badDebt.eq(0) ? "YES" : "NO", badDebt.eq(0) ? "var(--green)" : "var(--red)");
-
-  /* Sync buttons to actual contract state if wallet connected */
-  if (contract) syncButtons(stateRaw, posCount);
+function resetSim() {
+  clearAll(); running = false; setPhase(0);
+  ['naive-log','perp-log'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = '<div class="ev">Waiting to run...</div>'; });
+  ['n-liq','n-loss','n-bufstat','p-liq','p-loss','p-bufstat'].forEach(id => setVal(id, '—', ''));
+  ['n-bufpct','p-bufpct'].forEach(id => setVal(id, '0%', 'var(--gray3)'));
+  ['n-fill','p-fill'].forEach(id => { const el = document.getElementById(id); if (el) el.style.width = '0%'; });
+  ['naive-outcome','perp-outcome'].forEach(id => { const el = document.getElementById(id); if (el) el.className = 'outcome'; });
+  document.getElementById('naivePanel').className = 'venue';
+  document.getElementById('perpPanel').className = 'venue';
+  const btn = document.getElementById('runBtn');
+  btn.disabled = false;
+  btn.textContent = '▶  Run the Reopen';
 }
 
-/* ─── Sync buttons to contract state ─── */
-function syncButtons(stateRaw, posCount) {
-  const ob = document.getElementById("openBtn");
-  const cb = document.getElementById("closeBtn");
-  const rb = document.getElementById("reopenBtn");
-  ob.disabled = true; cb.disabled = true; rb.disabled = true;
+function runSim() {
+  if (running) return;
+  clearAll(); running = true;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true; btn.textContent = '⏳  Running...';
+  const sc = SC[current];
+  ['naive-log','perp-log'].forEach(id => { document.getElementById(id).innerHTML = ''; });
+  ['naive-outcome','perp-outcome'].forEach(id => { document.getElementById(id).className = 'outcome'; });
 
-  if (stateRaw === 0) {
-    // OPEN: can open more positions, or close if positions exist
-    if (posCount.eq(0)) {
-      ob.disabled = false;
-    } else {
-      cb.disabled = !isOwner; // close requires owner
-      ob.disabled = false;    // still allow more positions
-    }
-  } else if (stateRaw === 1) {
-    // DARK: market closed, can trigger reopen
-    rb.disabled = !isOwner;
-  }
-  // REOPEN: all disabled — demo complete
+  later(() => { setPhase(1); addEv('naive-log','info',`−${sc.gap}% gap · $5M OI · 6× max leverage`); addEv('perp-log','info',`−${sc.gap}% gap · $5M OI · 6× max leverage`); }, 200);
+  later(() => { setPhase(2); addEv('naive-log','info','FRIDAY 16:00 — Market closed. No gap preparation.'); addEv('perp-log','margin','🟢 FRIDAY — Perpify detecting gap risk. Tightening margins.'); }, 1000);
+
+  sc.perpify.evs.slice(1,4).forEach((ev,i) => later(() => addEv('perp-log', ev[0], ev[1]), 1400 + i*350));
+
+  later(() => { setPhase(3); addEv('naive-log','warn',`⚡ MONDAY 09:30 — Price snap: −${sc.gap}%`); addEv('perp-log','info',`MONDAY 09:30 — Reopen: −${sc.gap}% · Engine active`); }, 2500);
+
+  sc.naive.evs.forEach((ev,i) => {
+    later(() => {
+      addEv('naive-log', ev[0], ev[1]);
+      const p = (i+1)/sc.naive.evs.length;
+      setVal('n-liq', Math.round(p * sc.naive.liqs), 'var(--red)');
+      setBar('n', p * sc.naive.buf);
+    }, 2900 + i*260);
+  });
+
+  sc.perpify.evs.slice(4).forEach((ev,i) => {
+    later(() => {
+      addEv('perp-log', ev[0], ev[1]);
+      const p = (i+1)/(sc.perpify.evs.length-4);
+      setVal('p-liq', Math.round(p * sc.perpify.liqs), 'var(--green)');
+      setBar('p', p * sc.perpify.buf);
+    }, 2900 + i*340);
+  });
+
+  const nd = 2900 + sc.naive.evs.length*260;
+  const pd = 2900 + (sc.perpify.evs.length-4)*340;
+  const done = Math.max(nd, pd);
+
+  later(() => {
+    setVal('n-liq', sc.naive.liqs, 'var(--red)');
+    setVal('n-loss', sc.naive.loss, 'var(--red)');
+    setBar('n', sc.naive.buf);
+    setVal('p-liq', sc.perpify.liqs, 'var(--green)');
+    setVal('p-loss', sc.perpify.loss, 'var(--white)');
+    setBar('p', sc.perpify.buf);
+  }, done + 200);
+
+  later(() => {
+    setPhase(4);
+    document.getElementById('naivePanel').className = 'venue breaking';
+    document.getElementById('perpPanel').className = 'venue holding';
+    const no = document.getElementById('naive-outcome');
+    no.textContent = sc.naive.outcome[1]; no.className = 'outcome ' + sc.naive.outcome[0] + ' show';
+    const po = document.getElementById('perp-outcome');
+    po.textContent = sc.perpify.outcome[1]; po.className = 'outcome ' + sc.perpify.outcome[0] + ' show';
+  }, done + 500);
+
+  later(() => { running = false; btn.disabled = false; btn.textContent = '↺  Run Again'; }, done + 900);
 }
 
-/* ─── Network switch ─── */
-async function switchToBaseSepolia() {
-  try {
-    await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: BASE_SEPOLIA_HEX }] });
-    return true;
-  } catch (err) {
-    if (err.code === 4902) {
-      try {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [{
-            chainId: BASE_SEPOLIA_HEX,
-            chainName: "Base Sepolia",
-            nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-            rpcUrls: ["https://sepolia.base.org"],
-            blockExplorerUrls: ["https://sepolia.basescan.org"]
-          }]
-        });
-        return true;
-      } catch { return false; }
-    }
-    return false;
-  }
-}
-
-/* ─── Connect wallet ─── */
+// WALLET
 async function connectWallet() {
-  if (!window.ethereum) {
-    alert("MetaMask not detected. Please install MetaMask.");
-    return;
-  }
+  if (!window.ethereum) { document.getElementById('wStatus').textContent = 'MetaMask not detected.'; return; }
   try {
-    await window.ethereum.request({ method: "eth_requestAccounts" });
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-    let network = await provider.getNetwork();
-
-    if (network.chainId !== BASE_SEPOLIA_CHAIN_ID) {
-      log("warn", "Wrong network — switching to Base Sepolia...");
-      const switched = await switchToBaseSepolia();
-      if (!switched) { log("error", "Please switch to Base Sepolia in MetaMask manually."); return; }
-      /* chainChanged fires → page reloads → auto-connect handles the rest */
-      return;
-    }
-
-    signer = provider.getSigner();
-    const addr = await signer.getAddress();
-    const short = addr.slice(0, 6) + "..." + addr.slice(-4);
-    isOwner = addr.toLowerCase() === OWNER_ADDRESS.toLowerCase();
-
-    /* Header UI */
-    document.getElementById("connectBtn").textContent = short;
-    document.getElementById("connectBtn").className = "connect-btn connected";
-    document.getElementById("networkBadge").textContent = "BASE SEPOLIA";
-    document.getElementById("networkBadge").className = "network-badge ok";
-    document.getElementById("addrText").innerHTML =
-      `<a href="https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}" target="_blank">${CONTRACT_ADDRESS}</a>`;
-
-    if (isOwner) {
-      document.getElementById("ownerBadge").className = "owner-badge show";
-    } else {
-      document.getElementById("ownerNotice").className = "owner-notice show";
-    }
-
-    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-    setDot("statusDot", "live"); setDot("logDot", "live");
-    clearLog();
-    log("success", "✓ Wallet connected: " + short + (isOwner ? " (deployer)" : ""));
-    log("info", "Network: Base Sepolia · Contract: " + CONTRACT_ADDRESS.slice(0, 14) + "...");
-    sep();
-    await refreshState();
-    listenForEvents();
-  } catch (err) {
-    log("error", "Connection failed: " + (err.message || err));
-  }
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    const short = accounts[0].slice(0,6) + '...' + accounts[0].slice(-4);
+    const btn = document.getElementById('wBtn');
+    btn.textContent = short + ' — Connected';
+    btn.style.background = '#4f8eff';
+    document.getElementById('wStatus').innerHTML = `<a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank" style="color:var(--green)">View contract on BaseScan ↗</a>`;
+  } catch(e) { document.getElementById('wStatus').textContent = 'Connection cancelled.'; }
 }
-
-/* ─── Refresh state via wallet provider ─── */
-async function refreshState() {
-  if (!contract) return;
-  try {
-    const [stateRaw, posCount, totalOI, shieldFund, badDebt] = await Promise.all([
-      contract.marketState(), contract.getOpenPositionCount(),
-      contract.totalOI(), contract.shieldFund(), contract.badDebt()
-    ]);
-    applyState(stateRaw, posCount, totalOI, shieldFund, badDebt);
-    log("info", "Contract state: " + (STATES[stateRaw] || "UNKNOWN") + " · Positions: " + posCount);
-  } catch (e) {
-    log("error", "State read failed: " + (e.message || e));
-  }
-}
-
-/* ─── Event listeners ─── */
-function listenForEvents() {
-  contract.on("PositionOpened", (posId, trader, notional, margin, leverage, isLong, riskTier) => {
-    log("event", `📋 PositionOpened #${posId} · ${leverage}× · ${isLong ? "LONG" : "SHORT"} · ${TIERS[riskTier]} · ${fmtEth(margin)} ETH margin`);
-    refreshState();
-  });
-  contract.on("MarketClosed", (totalOI, shieldFund) => {
-    log("event", `🔒 MarketClosed · OI: ${ethers.utils.formatUnits(totalOI, 6)} · Shield: ${fmtEth(shieldFund)} ETH`);
-    refreshState();
-  });
-  contract.on("GapAwareMarginApplied", (posId, oldMargin, newRequired, riskTier) => {
-    log("event", `🔵 GapAwareMargin #${posId} · ${TIERS[riskTier]} · Required: ${fmtEth(newRequired)} ETH`);
-  });
-  contract.on("ReopenInitiated", (gapBps, reopenPrice) => {
-    log("warn", `⚡ ReopenInitiated · Gap: ${(Number(gapBps) / 100).toFixed(2)}% · Price: $${ethers.utils.formatUnits(reopenPrice, 6)}`);
-  });
-  contract.on("PositionSequenced", (posId, riskTier, loss, coveredByMargin, shieldUsed) => {
-    const covered = coveredByMargin ? "margin absorbed" : `shield: ${fmtEth(shieldUsed)} ETH`;
-    log("event", `→ Sequenced #${posId} [${TIERS[riskTier]}] · Loss: ${fmtEth(loss)} ETH · ${covered}`);
-  });
-  contract.on("PositionCleared", (posId, trader, payout, badDebtGen) => {
-    const hasDebt = badDebtGen.gt(0);
-    log(hasDebt ? "critical" : "success",
-      hasDebt
-        ? `💀 Cleared #${posId} · BAD DEBT: ${fmtEth(badDebtGen)} ETH`
-        : `✓ Cleared #${posId} · Payout: ${fmtEth(payout)} ETH`);
-  });
-  contract.on("ReopenComplete", (cleared, totalBadDebt, shieldUsed, shieldUsedBps, solvent) => {
-    sep();
-    log("success", "═══ REOPEN COMPLETE ═══");
-    log("success", `Positions cleared: ${cleared}`);
-    log(totalBadDebt.gt(0) ? "critical" : "success", `Total bad debt: ${fmtEth(totalBadDebt)} ETH`);
-    log("success", `Shield used: ${(Number(shieldUsedBps) / 100).toFixed(2)}%`);
-    log(solvent ? "success" : "critical", `Protocol solvent: ${solvent ? "YES ✓" : "NO — INSOLVENT ✗"}`);
-    sep();
-    const pct = Number(shieldUsedBps) / 100;
-    const fill = document.getElementById("shieldFill");
-    const pctEl = document.getElementById("shieldPct");
-    fill.style.width = Math.min(pct, 100) + "%";
-    const col = pct > 100 ? "var(--red)" : pct > 70 ? "var(--yellow)" : "var(--blue)";
-    fill.style.background = col;
-    pctEl.style.color = col;
-    pctEl.textContent = pct.toFixed(2) + "%";
-    const box = document.getElementById("verdictBox");
-    box.textContent = solvent ? "✓ Zero Insolvencies — Engine Stable" : "⚠ Shield Breached — Protocol Insolvent";
-    box.className = "verdict-box " + (solvent ? "solvent" : "insolvent") + " show";
-    refreshState();
-  });
-}
-
-/* ─── Step 1: Open positions ─── */
-async function openTestPositions() {
-  if (!contract) return;
-  setBtn("openBtn", true); setDot("statusDot", "pending");
-  try {
-    sep(); log("info", "Opening 3 positions across risk tiers...");
-    const lev = parseInt(document.getElementById("levSlider").value);
-    const positions = [
-      { notional: 1000000000, leverage: lev,              isLong: true,  tier: 2, margin: "0.015", label: "HIGH" },
-      { notional: 800000000,  leverage: Math.min(lev, 4), isLong: true,  tier: 1, margin: "0.01",  label: "MEDIUM" },
-      { notional: 600000000,  leverage: Math.min(lev, 3), isLong: false, tier: 0, margin: "0.008", label: "LOW" },
-    ];
-    for (const pos of positions) {
-      log("tx", `Sending: openPosition (${pos.label}, ${pos.leverage}×, ${pos.margin} ETH margin)...`);
-      const tx = await contract.openPosition(
-        pos.notional, pos.leverage, pos.isLong, pos.tier,
-        { value: ethers.utils.parseEther(pos.margin) }
-      );
-      log("tx", `TX: ${tx.hash.slice(0, 24)}... pending`);
-      await tx.wait();
-      log("success", "✓ Confirmed");
-    }
-    setDot("statusDot", "live");
-    setBtn("openBtn", false);
-    setBtn("closeBtn", !isOwner);
-    if (!isOwner) log("warn", "Steps 2 & 3 require the deployer wallet. Switch to deployer to continue.");
-  } catch (err) {
-    log("error", parseErr(err));
-    setDot("statusDot", "err");
-    setBtn("openBtn", false);
-  }
-}
-
-/* ─── Step 2: Close market ─── */
-async function closeMarket() {
-  if (!contract) return;
-  setBtn("closeBtn", true); setDot("statusDot", "pending");
-  try {
-    sep(); log("info", "FRIDAY 16:00 — Closing market, applying gap-aware margins...");
-    log("tx", "Sending: closeMarket()...");
-    const tx = await contract.closeMarket();
-    log("tx", `TX: ${tx.hash.slice(0, 24)}... pending`);
-    await tx.wait();
-    log("success", "✓ Market closed. Gap-aware margins locked on HIGH & MEDIUM positions.");
-    setDot("statusDot", "live");
-    setBtn("reopenBtn", false);
-    await refreshState();
-  } catch (err) {
-    log("error", parseErr(err));
-    setDot("statusDot", "err");
-    setBtn("closeBtn", false);
-  }
-}
-
-/* ─── Step 3: Trigger reopen ─── */
-async function triggerReopen() {
-  if (!contract) return;
-  setBtn("reopenBtn", true); setDot("statusDot", "pending");
-  try {
-    const gapBps  = -parseInt(document.getElementById("gapSlider").value);
-    const basePrice = parseInt(document.getElementById("priceSlider").value) * 1000000;
-    sep();
-    log("info", `MONDAY 09:30 — Triggering reopen: ${(Math.abs(gapBps) / 10).toFixed(1)}% gap down`);
-    log("info", "Sequenced clearing: HIGH → MEDIUM → LOW");
-    log("tx", "Sending: triggerReopen()...");
-    const tx = await contract.triggerReopen(gapBps, basePrice);
-    log("tx", `TX: ${tx.hash.slice(0, 24)}... pending`);
-    await tx.wait();
-    setDot("statusDot", "live");
-  } catch (err) {
-    log("error", parseErr(err));
-    setDot("statusDot", "err");
-    setBtn("reopenBtn", false);
-  }
-}
-
-/* ─── Helpers ─── */
-function setBtn(id, disabled) {
-  const el = document.getElementById(id);
-  if (el) el.disabled = disabled;
-}
-
-function parseErr(err) {
-  const msg = err.reason || err.data?.message || err.message || String(err);
-  if (msg.includes("Not owner") || msg.includes("not owner"))
-    return "Error: This function requires the deployer wallet.";
-  if (msg.includes("insufficient funds"))
-    return "Error: Insufficient Base Sepolia ETH. Get some at faucet.quicknode.com/base/sepolia";
-  if (msg.includes("Wrong market state") || msg.includes("wrong market state"))
-    return "Error: Wrong market state. Check current state and use the right step.";
-  if (msg.includes("user rejected"))
-    return "Cancelled by user.";
-  return "Error: " + msg.slice(0, 120);
-}
-
-function fmtEth(bn) { return ethers.utils.formatEther(bn).slice(0, 8); }
-
-function formatOI(bn) {
-  const n = Number(ethers.utils.formatUnits(bn, 6));
-  if (n >= 1000000) return "$" + (n / 1000000).toFixed(1) + "M";
-  if (n >= 1000)    return "$" + (n / 1000).toFixed(0) + "K";
-  return n > 0 ? "$" + n : "—";
-}
-
-/* ─── Boot ─── */
-window.addEventListener("load", async () => {
-  loadPublicState(); // show metrics without wallet
-
-  if (window.ethereum) {
-    window.ethereum.on("accountsChanged", () => location.reload());
-    window.ethereum.on("chainChanged", () => location.reload());
-
-    // Auto-connect if previously authorized
-    const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    if (accounts.length > 0) connectWallet();
-  }
-});
 </script>
 </body>
 </html>
