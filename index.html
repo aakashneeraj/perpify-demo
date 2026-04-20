@@ -866,106 +866,318 @@ footer {
 <!-- ════ TAB: WALLET ════ -->
 <div id="tab-wallet" class="tab-content">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+  <style>
+    .wallet { padding: 48px 0 80px; }
+    .wallet-hero { margin-bottom: 40px; }
+    .wallet-hero h2 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
+    .wallet-hero p { font-size: 15px; color: var(--gray2); max-width: 560px; line-height: 1.6; }
+    .ctr-row { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px; margin-bottom: 36px; flex-wrap: wrap; }
+    .ctr-key { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray3); }
+    .ctr-addr { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--green); flex: 1; }
+    .ctr-addr a { text-decoration: none; border-bottom: 1px solid rgba(79,142,255,0.3); }
+    .ctr-badge { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600; padding: 5px 14px; border-radius: 100px; background: var(--card2); color: var(--gray3); border: 1px solid var(--border-hi); }
+    .ctr-badge.live { background: rgba(79,142,255,0.1); color: var(--green); border-color: rgba(79,142,255,0.3); }
+
+    /* Step wrapper */
+    .w-step { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .w-step-hd { display: flex; align-items: center; gap: 14px; padding: 18px 24px; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .w-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border-hi); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--gray3); flex-shrink: 0; }
+    .w-step-num.active { background: var(--green); border-color: var(--green); color: #000; }
+    .w-step-num.done { background: rgba(79,142,255,0.15); border-color: rgba(79,142,255,0.3); color: var(--green); }
+    .w-step-title { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+    .w-step-sub { font-size: 12px; color: var(--gray2); margin-left: auto; }
+    .w-step-body { padding: 24px; background: var(--bg); }
+
+    /* Connect step */
+    .w-connect-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+    .w-connect-info { font-size: 13px; color: var(--gray2); line-height: 1.6; }
+    .w-connect-info a { color: var(--green); }
+
+    /* Trade cards */
+    .trade-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .trade-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; position: relative; }
+    .trade-card.recommended { border-color: rgba(79,142,255,0.35); }
+    .tc-tier { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+    .tc-tier .red  { color: var(--red); }
+    .tc-tier .yellow { color: var(--yellow); }
+    .tc-tier .gray  { color: var(--gray2); }
+    .rec-tag { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--green); background: rgba(79,142,255,0.1); border: 1px solid rgba(79,142,255,0.25); padding: 2px 8px; border-radius: 100px; }
+
+    /* Direction toggle */
+    .tc-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray3); margin-bottom: 6px; }
+    .dir-toggle { display: flex; gap: 4px; margin-bottom: 14px; }
+    .dir-btn { flex: 1; padding: 7px 0; border-radius: 7px; border: 1px solid var(--border-hi); background: var(--card2); font-size: 12px; font-weight: 700; color: var(--gray3); cursor: pointer; transition: all 0.12s; text-align: center; }
+    .dir-btn.long.on  { background: rgba(79,142,255,0.15); border-color: var(--green); color: var(--green); }
+    .dir-btn.short.on { background: rgba(255,80,0,0.12); border-color: var(--red); color: var(--red); }
+
+    /* Leverage buttons */
+    .lev-btns { display: flex; gap: 4px; margin-bottom: 16px; }
+    .lev-btn { flex: 1; padding: 7px 0; border-radius: 7px; border: 1px solid var(--border-hi); background: var(--card2); font-size: 12px; font-weight: 700; color: var(--gray3); cursor: pointer; transition: all 0.12s; text-align: center; }
+    .lev-btn.on { background: var(--green); border-color: var(--green); color: #000; }
+
+    /* Trade cost */
+    .tc-cost { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray2); border-top: 1px solid var(--border); padding-top: 12px; }
+    .tc-cost span { font-family: 'DM Mono', monospace; color: var(--white); font-weight: 600; }
+
+    /* Total cost bar */
+    .open-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; }
+    .open-cost-info { font-size: 13px; color: var(--gray2); }
+    .open-cost-info strong { color: var(--white); font-family: 'DM Mono', monospace; }
+    .open-btns { display: flex; gap: 8px; align-items: center; }
+    .rec-reset { font-size: 12px; font-weight: 600; color: var(--green); background: rgba(79,142,255,0.08); border: 1px solid rgba(79,142,255,0.2); padding: 8px 16px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+    .rec-reset:hover { background: rgba(79,142,255,0.15); }
+
+    /* Gap configurator */
+    .gap-config { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .gc-block { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .gc-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray3); margin-bottom: 12px; }
+    .gc-val { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; font-family: 'DM Mono', monospace; }
+    .gc-val.red { color: var(--red); }
+    .gc-val.white { color: var(--white); }
+    input[type=range].gap-slider { -webkit-appearance: none; width: 100%; height: 4px; background: var(--border-hi); border-radius: 2px; outline: none; }
+    input[type=range].gap-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--red); cursor: pointer; border: 2px solid #000; box-shadow: 0 0 0 3px rgba(255,80,0,0.2); }
+    input[type=range].price-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); cursor: pointer; border: 2px solid #000; }
+    input[type=range].price-slider { -webkit-appearance: none; width: 100%; height: 4px; background: var(--border-hi); border-radius: 2px; outline: none; }
+    .gc-hint { font-size: 11px; color: var(--gray3); margin-top: 10px; line-height: 1.5; }
+
+    /* Gap preview */
+    .gap-preview { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .gp-item { flex: 1; min-width: 120px; }
+    .gp-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray3); margin-bottom: 4px; }
+    .gp-val { font-size: 18px; font-weight: 900; font-family: 'DM Mono', monospace; }
+
+    /* Buttons */
+    .wbtn { display: block; width: 100%; padding: 13px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; text-align: center; }
+    .wbtn.green { background: var(--green); color: #000; }
+    .wbtn.green:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+    .wbtn.outline { background: transparent; border: 1px solid var(--border-hi); color: var(--gray2); }
+    .wbtn.outline:not(:disabled):hover { border-color: var(--green); color: var(--white); background: var(--card); }
+    .wbtn:disabled { opacity: 0.28; cursor: not-allowed; transform: none !important; filter: none !important; }
+    .wbtn.fire { background: var(--red); color: #fff; }
+    .wbtn.fire:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* State + log */
+    .w-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+    .w-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .wc-title { font-size: 13px; font-weight: 800; letter-spacing: -0.2px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .wstate-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .wstate-row:last-child { border-bottom: none; }
+    .wstate-key { color: var(--gray2); }
+    .wstate-val { font-family: 'DM Mono', monospace; font-weight: 600; }
+    .w-status { margin-top: 8px; font-size: 11px; font-family: 'DM Mono', monospace; min-height: 16px; }
+  </style>
+
   <div class="wrap">
     <div class="wallet">
-      <h2>Touch the contract yourself.</h2>
-      <p class="wallet-sub">This is the real contract on Base Sepolia. Every button below sends an actual on-chain transaction. Watch the events fire live — not simulated.</p>
 
-      <!-- Contract info -->
+      <div class="wallet-hero">
+        <h2>Touch the contract yourself.</h2>
+        <p>Configure real trades, set the gap, fire the reopen — every action below sends an actual on-chain transaction to Base Sepolia. You're running the show.</p>
+      </div>
+
       <div class="ctr-row">
         <div class="ctr-key">Contract</div>
-        <div class="ctr-addr">
-          <a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank">
-            0xF6FbB4be6844588A68704607f84bE6127F246A45
-          </a>
-        </div>
+        <div class="ctr-addr"><a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank">0xF6FbB4be6844588A68704607f84bE6127F246A45</a></div>
         <div class="ctr-badge" id="w-chainbadge">● NOT CONNECTED</div>
       </div>
 
-      <!-- Step buttons -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-
-        <!-- Connect -->
-        <div class="w-card">
-          <h3>Step 0 — Connect Wallet</h3>
-          <p>Connect MetaMask on Base Sepolia. Get free testnet ETH at <a href="https://app.optimism.io/faucet" target="_blank" style="color:var(--green)">app.optimism.io/faucet</a>.</p>
-          <button class="wbtn green" id="wConnectBtn" onclick="wConnect(false)">Connect MetaMask</button>
-          <div id="wConnectStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+      <!-- ── STEP 0: Connect ── -->
+      <div class="w-step" id="wstep0">
+        <div class="w-step-hd">
+          <div class="w-step-num active" id="wnum0">0</div>
+          <div class="w-step-title">Connect Wallet</div>
+          <div class="w-step-sub">MetaMask on Base Sepolia</div>
         </div>
-
-        <!-- Open positions -->
-        <div class="w-card">
-          <h3>Step 1 — Open Positions</h3>
-          <p>Opens 3 test positions across HIGH, MEDIUM, and LOW risk tiers. This seeds the book and funds the loss buffer.</p>
-          <button class="wbtn outline" id="wOpenBtn" onclick="wOpenPositions()" disabled>Open 3 Test Positions</button>
-          <div id="wOpenStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+        <div class="w-step-body">
+          <div class="w-connect-grid">
+            <div class="w-connect-info">
+              Connect MetaMask to Base Sepolia. Need testnet ETH?
+              <a href="https://faucet.quicknode.com/base/sepolia" target="_blank">QuickNode faucet</a> or
+              <a href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia" target="_blank">Google faucet → bridge via superbridge.app</a>.
+              You need ~0.05 ETH.
+            </div>
+            <div style="min-width:220px;">
+              <button class="wbtn green" id="wConnectBtn" onclick="wConnect(false)">Connect MetaMask</button>
+              <div id="wConnectStatus" class="w-status"></div>
+            </div>
+          </div>
         </div>
-
-        <!-- Close market -->
-        <div class="w-card">
-          <h3>Step 2 — Close Market</h3>
-          <p>Simulates Friday 16:00 close. Perpify applies gap-aware margin tightening to HIGH and MEDIUM risk positions before the gap fires.</p>
-          <button class="wbtn outline" id="wCloseBtn" onclick="wCloseMarket()" disabled>Close Market (Friday)</button>
-          <div id="wCloseStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
-        </div>
-
-        <!-- Trigger reopen -->
-        <div class="w-card">
-          <h3>Step 3 — Trigger Reopen</h3>
-          <p>Fires a −3.2% gap. Sequenced clearing runs on-chain: HIGH risk first, then MEDIUM, then LOW. Watch the events below.</p>
-          <button class="wbtn green" id="wReopenBtn" onclick="wTriggerReopen()" disabled style="background:var(--green);color:#000;">Trigger Reopen Gap</button>
-          <div id="wReopenStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
-        </div>
-
       </div>
 
-      <!-- Live state + event log -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <!-- ── STEP 1: Configure & Open ── -->
+      <div class="w-step" id="wstep1">
+        <div class="w-step-hd">
+          <div class="w-step-num" id="wnum1">1</div>
+          <div class="w-step-title">Build Your Book</div>
+          <div class="w-step-sub">Set leverage &amp; direction for each trade</div>
+        </div>
+        <div class="w-step-body">
 
-        <!-- Chain state -->
-        <div class="w-card">
-          <h3 style="margin-bottom:16px;">Live Chain State</h3>
-          <div style="display:flex;flex-direction:column;gap:0;">
-            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-              <span style="color:var(--gray2);">Market State</span>
-              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-state">—</span>
+          <div class="trade-cards">
+
+            <!-- Trade A: HIGH -->
+            <div class="trade-card recommended" id="tcard-A">
+              <div class="tc-tier"><span class="red">HIGH RISK</span><span class="rec-tag">⚡ recommended</span></div>
+              <div class="tc-label">Direction</div>
+              <div class="dir-toggle">
+                <div class="dir-btn long on" id="dirA-long" onclick="setDir('A','long')">LONG ↑</div>
+                <div class="dir-btn short" id="dirA-short" onclick="setDir('A','short')">SHORT ↓</div>
+              </div>
+              <div class="tc-label">Leverage</div>
+              <div class="lev-btns">
+                <div class="lev-btn" onclick="setLev('A',2)" id="levA-2">2×</div>
+                <div class="lev-btn" onclick="setLev('A',3)" id="levA-3">3×</div>
+                <div class="lev-btn" onclick="setLev('A',4)" id="levA-4">4×</div>
+                <div class="lev-btn on" onclick="setLev('A',6)" id="levA-6">6×</div>
+              </div>
+              <div class="tc-cost">Margin cost <span id="costA">0.015 ETH</span></div>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-              <span style="color:var(--gray2);">Open Positions</span>
-              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-pos">—</span>
+
+            <!-- Trade B: MEDIUM -->
+            <div class="trade-card recommended" id="tcard-B">
+              <div class="tc-tier"><span class="yellow">MEDIUM RISK</span><span class="rec-tag">⚡ recommended</span></div>
+              <div class="tc-label">Direction</div>
+              <div class="dir-toggle">
+                <div class="dir-btn long on" id="dirB-long" onclick="setDir('B','long')">LONG ↑</div>
+                <div class="dir-btn short" id="dirB-short" onclick="setDir('B','short')">SHORT ↓</div>
+              </div>
+              <div class="tc-label">Leverage</div>
+              <div class="lev-btns">
+                <div class="lev-btn" onclick="setLev('B',2)" id="levB-2">2×</div>
+                <div class="lev-btn" onclick="setLev('B',3)" id="levB-3">3×</div>
+                <div class="lev-btn on" onclick="setLev('B',4)" id="levB-4">4×</div>
+                <div class="lev-btn" onclick="setLev('B',6)" id="levB-6">6×</div>
+              </div>
+              <div class="tc-cost">Margin cost <span id="costB">0.010 ETH</span></div>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-              <span style="color:var(--gray2);">Loss Buffer</span>
-              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-shield">—</span>
+
+            <!-- Trade C: LOW -->
+            <div class="trade-card" id="tcard-C">
+              <div class="tc-tier"><span class="gray">LOW RISK</span></div>
+              <div class="tc-label">Direction</div>
+              <div class="dir-toggle">
+                <div class="dir-btn long" id="dirC-long" onclick="setDir('C','long')">LONG ↑</div>
+                <div class="dir-btn short on" id="dirC-short" onclick="setDir('C','short')">SHORT ↓</div>
+              </div>
+              <div class="tc-label">Leverage</div>
+              <div class="lev-btns">
+                <div class="lev-btn" onclick="setLev('C',2)" id="levC-2">2×</div>
+                <div class="lev-btn on" onclick="setLev('C',3)" id="levC-3">3×</div>
+                <div class="lev-btn" onclick="setLev('C',4)" id="levC-4">4×</div>
+                <div class="lev-btn" onclick="setLev('C',6)" id="levC-6">6×</div>
+              </div>
+              <div class="tc-cost">Margin cost <span id="costC">0.008 ETH</span></div>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
-              <span style="color:var(--gray2);">Losses Not Covered</span>
-              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="ws-debt">—</span>
+
+          </div>
+
+          <div class="open-footer">
+            <div class="open-cost-info">
+              Total margin: <strong id="totalCost">0.033 ETH</strong> &nbsp;·&nbsp; 3 positions across all risk tiers
             </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
-              <span style="color:var(--gray2);">Venue Survives Reopen</span>
-              <span style="font-family:'DM Mono',monospace;font-weight:700;" id="ws-solvent">—</span>
+            <div class="open-btns">
+              <button class="rec-reset" onclick="resetRec()">↺ Reset to Recommended</button>
+              <button class="wbtn green" id="wOpenBtn" onclick="wOpenPositions()" disabled style="width:auto;padding:11px 28px;">Open These Positions →</button>
             </div>
           </div>
-          <div style="margin-top:20px;">
-            <a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank" class="wbtn outline" style="font-size:12px;padding:10px;">View All Transactions on BaseScan ↗</a>
+          <div id="wOpenStatus" class="w-status" style="margin-top:10px;"></div>
+
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Close Market ── -->
+      <div class="w-step" id="wstep2">
+        <div class="w-step-hd">
+          <div class="w-step-num" id="wnum2">2</div>
+          <div class="w-step-title">Close the Market</div>
+          <div class="w-step-sub">Friday 16:00 — locks gap-aware margins</div>
+        </div>
+        <div class="w-step-body" style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;">
+          <div style="font-size:13px;color:var(--gray2);line-height:1.7;">
+            Simulates the Friday close. Perpify detects gap risk and tightens margins on HIGH and MEDIUM positions <em style="color:var(--white);font-style:normal;">before</em> the weekend — so if a gap fires Monday, the book is already protected. LOW risk positions are unaffected.
+          </div>
+          <div style="min-width:220px;">
+            <button class="wbtn outline" id="wCloseBtn" onclick="wCloseMarket()" disabled>Close Market (Friday) →</button>
+            <div id="wCloseStatus" class="w-status"></div>
           </div>
         </div>
+      </div>
 
-        <!-- Event log -->
+      <!-- ── STEP 3: Fire the Gap ── -->
+      <div class="w-step" id="wstep3">
+        <div class="w-step-hd">
+          <div class="w-step-num" id="wnum3">3</div>
+          <div class="w-step-title">Fire the Monday Gap</div>
+          <div class="w-step-sub">You choose the gap — watch it clear on-chain</div>
+        </div>
+        <div class="w-step-body">
+
+          <div class="gap-config">
+            <div class="gc-block">
+              <div class="gc-label">Gap Size (Monday open vs Friday close)</div>
+              <div class="gc-val red" id="gapDisplay">−3.2%</div>
+              <input type="range" class="gap-slider" id="gapSlider" min="10" max="150" value="32"
+                oninput="updateGapDisplay()">
+              <div class="gc-hint">Drag right to stress-test. −5%+ shows Perpify's structural edge clearly.</div>
+            </div>
+            <div class="gc-block">
+              <div class="gc-label">Friday Close Price (S&amp;P 500)</div>
+              <div class="gc-val white" id="priceDisplay">$4,800</div>
+              <input type="range" class="price-slider" id="priceSlider" min="3000" max="6500" value="4800"
+                oninput="updatePriceDisplay()">
+              <div class="gc-hint">Monday open = close price × (1 − gap%). This seeds the on-chain reopen calculation.</div>
+            </div>
+          </div>
+
+          <div class="gap-preview">
+            <div class="gp-item">
+              <div class="gp-label">Friday Close</div>
+              <div class="gp-val" id="gp-close" style="color:var(--white);">$4,800</div>
+            </div>
+            <div style="font-size:24px;color:var(--gray3);">→</div>
+            <div class="gp-item">
+              <div class="gp-label">Monday Open</div>
+              <div class="gp-val" id="gp-open" style="color:var(--red);">$4,646</div>
+            </div>
+            <div style="font-size:24px;color:var(--gray3);">·</div>
+            <div class="gp-item">
+              <div class="gp-label">Gap Passed to Contract</div>
+              <div class="gp-val" id="gp-bps" style="color:var(--red);">−320 bps</div>
+            </div>
+            <div style="margin-left:auto;">
+              <button class="wbtn fire" id="wReopenBtn" onclick="wTriggerReopen()" disabled style="width:auto;padding:12px 28px;" id="wReopenBtn">Fire Reopen Gap →</button>
+              <div id="wReopenStatus" class="w-status" style="text-align:right;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Bottom: State + Log ── -->
+      <div class="w-bottom">
         <div class="w-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3>On-Chain Event Stream</h3>
+          <div class="wc-title">
+            Live Chain State
+            <a href="https://sepolia.basescan.org/address/0xF6FbB4be6844588A68704607f84bE6127F246A45" target="_blank" style="font-size:11px;font-weight:600;color:var(--green);text-decoration:none;">BaseScan ↗</a>
+          </div>
+          <div class="wstate-row"><span class="wstate-key">Market State</span><span class="wstate-val" id="ws-state">—</span></div>
+          <div class="wstate-row"><span class="wstate-key">Open Positions</span><span class="wstate-val" id="ws-pos">—</span></div>
+          <div class="wstate-row"><span class="wstate-key">Loss Buffer</span><span class="wstate-val" id="ws-shield">—</span></div>
+          <div class="wstate-row"><span class="wstate-key">Losses Not Covered</span><span class="wstate-val" id="ws-debt">—</span></div>
+          <div class="wstate-row"><span class="wstate-key">Venue Survives</span><span class="wstate-val" id="ws-solvent">—</span></div>
+        </div>
+        <div class="w-card">
+          <div class="wc-title">
+            On-Chain Event Stream
             <button onclick="document.getElementById('w-log').innerHTML=''" style="font-size:11px;color:var(--gray3);background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;">CLEAR</button>
           </div>
-          <div id="w-log" style="height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;font-family:'DM Mono',monospace;">
+          <div id="w-log" style="height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;font-family:'DM Mono',monospace;">
             <div class="ev info">Connect wallet to begin.</div>
             <div class="ev info">Each button sends a real transaction.</div>
-            <div class="ev info">Events emit from the deployed contract.</div>
           </div>
         </div>
-
       </div>
+
     </div>
   </div>
 </div>
@@ -1345,6 +1557,7 @@ async function wConnect(silent) {
     }
 
     document.getElementById('wOpenBtn').disabled = false;
+    markStep(0, 'done'); markStep(1, 'active');
     wlog('ok', `✓ Connected: ${short}`);
     wlog('ok', `Contract: ${CONTRACT_ADDRESS.slice(0,10)}...`);
     wListenEvents();
@@ -1369,6 +1582,7 @@ async function wConnect(silent) {
 // Auto-detect existing connection on page load
 window.addEventListener('load', async () => {
   setPhase(0);
+  updateGapPreview();
   if (window.ethereum) {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -1377,35 +1591,97 @@ window.addEventListener('load', async () => {
   }
 });
 
+// ── Trade configurator state ──
+const tradeState = {
+  A: { lev: 6, long: true,  notional: 1000000000, tier: 2, margin: 0.015 },
+  B: { lev: 4, long: true,  notional: 800000000,  tier: 1, margin: 0.010 },
+  C: { lev: 3, long: false, notional: 600000000,  tier: 0, margin: 0.008 },
+};
+
+function setDir(trade, dir) {
+  tradeState[trade].long = (dir === 'long');
+  document.getElementById('dir'+trade+'-long').className  = 'dir-btn long'  + (dir==='long'  ? ' on' : '');
+  document.getElementById('dir'+trade+'-short').className = 'dir-btn short' + (dir==='short' ? ' on' : '');
+}
+
+function setLev(trade, lev) {
+  tradeState[trade].lev = lev;
+  [2,3,4,6].forEach(l => {
+    const el = document.getElementById('lev'+trade+'-'+l);
+    if (el) el.className = 'lev-btn' + (l === lev ? ' on' : '');
+  });
+  updateTotalCost();
+}
+
+function updateTotalCost() {
+  const total = (tradeState.A.margin + tradeState.B.margin + tradeState.C.margin).toFixed(3);
+  const el = document.getElementById('totalCost');
+  if (el) el.textContent = total + ' ETH';
+}
+
+function resetRec() {
+  setDir('A','long');  setLev('A',6);
+  setDir('B','long');  setLev('B',4);
+  setDir('C','short'); setLev('C',3);
+}
+
+function updateGapDisplay() {
+  const val = parseInt(document.getElementById('gapSlider').value);
+  const pct = (val / 10).toFixed(1);
+  document.getElementById('gapDisplay').textContent = '−' + pct + '%';
+  updateGapPreview();
+}
+
+function updatePriceDisplay() {
+  const price = parseInt(document.getElementById('priceSlider').value);
+  document.getElementById('priceDisplay').textContent = '$' + price.toLocaleString();
+  updateGapPreview();
+}
+
+function updateGapPreview() {
+  const gap  = parseInt(document.getElementById('gapSlider').value) / 10;
+  const close = parseInt(document.getElementById('priceSlider').value);
+  const open  = Math.round(close * (1 - gap / 100));
+  const bps   = -Math.round(gap * 10);
+  document.getElementById('gp-close').textContent = '$' + close.toLocaleString();
+  document.getElementById('gp-open').textContent  = '$' + open.toLocaleString();
+  document.getElementById('gp-bps').textContent   = bps + ' bps';
+}
+
+function markStep(n, state) {
+  const el = document.getElementById('wnum' + n);
+  if (!el) return;
+  el.className = 'w-step-num ' + state;
+  el.textContent = state === 'done' ? '✓' : n;
+}
+
 async function wOpenPositions() {
   if (!wcontract) return;
   document.getElementById('wOpenBtn').disabled = true;
-  wsetStatus('wOpenStatus', 'Sending transactions...', 'var(--yellow)');
+  wsetStatus('wOpenStatus', 'Sending 3 transactions — approve each in MetaMask...', 'var(--yellow)');
+  markStep(1, 'active');
 
+  const labels = { A: 'HIGH', B: 'MEDIUM', C: 'LOW' };
   try {
-    const positions = [
-      { notional: 1000000000, leverage: 6, isLong: true,  tier: 2, margin: '0.015', label: 'HIGH' },
-      { notional: 800000000,  leverage: 4, isLong: true,  tier: 1, margin: '0.01',  label: 'MEDIUM' },
-      { notional: 600000000,  leverage: 3, isLong: false, tier: 0, margin: '0.008', label: 'LOW' },
-    ];
-
-    for (const pos of positions) {
-      wlog('margin', `Sending: openPosition (${pos.label} risk, ${pos.leverage}×)...`);
-      const tx = await wcontract.openPosition(pos.notional, pos.leverage, pos.isLong, pos.tier, {
-        value: ethers.utils.parseEther(pos.margin)
+    for (const [key, pos] of Object.entries(tradeState)) {
+      const dir = pos.long ? 'LONG ↑' : 'SHORT ↓';
+      wlog('margin', `Opening ${labels[key]} · ${pos.lev}× · ${dir} · ${pos.margin} ETH margin...`);
+      const tx = await wcontract.openPosition(pos.notional, pos.lev, pos.long, pos.tier, {
+        value: ethers.utils.parseEther(pos.margin.toString())
       });
-      wlog('margin', `TX: ${tx.hash.slice(0,22)}... pending`);
+      wlog('margin', `TX: ${tx.hash.slice(0,24)}... pending`);
       await tx.wait();
-      wlog('ok', `✓ Confirmed on-chain`);
+      wlog('ok', `✓ ${labels[key]} position confirmed on-chain`);
     }
-
-    wsetStatus('wOpenStatus', '3 positions opened ✓', 'var(--green)');
+    wsetStatus('wOpenStatus', '3 positions live on-chain ✓', 'var(--green)');
+    markStep(1, 'done'); markStep(2, 'active');
     document.getElementById('wCloseBtn').disabled = false;
     await wRefreshState();
-
   } catch(e) {
-    wlog('critical', 'Error: ' + (e.reason || e.message || e));
-    wsetStatus('wOpenStatus', 'Failed — see event log', 'var(--red)');
+    const msg = e.reason || e.message || String(e);
+    wlog('critical', 'Error: ' + msg.slice(0, 120));
+    wsetStatus('wOpenStatus', msg.includes('insufficient') ? 'Not enough ETH — get some at faucet.quicknode.com/base/sepolia' : 'Failed — see event log', 'var(--red)');
+    markStep(1, 'active');
     document.getElementById('wOpenBtn').disabled = false;
   }
 }
@@ -1413,21 +1689,22 @@ async function wOpenPositions() {
 async function wCloseMarket() {
   if (!wcontract) return;
   document.getElementById('wCloseBtn').disabled = true;
-  wsetStatus('wCloseStatus', 'Sending transaction...', 'var(--yellow)');
+  wsetStatus('wCloseStatus', 'Closing market — approve in MetaMask...', 'var(--yellow)');
 
   try {
-    wlog('margin', 'Sending: closeMarket() — Friday 16:00...');
+    wlog('margin', 'closeMarket() — Friday 16:00. Locking gap-aware margins...');
     const tx = await wcontract.closeMarket();
-    wlog('margin', `TX: ${tx.hash.slice(0,22)}... pending`);
+    wlog('margin', `TX: ${tx.hash.slice(0,24)}... pending`);
     await tx.wait();
-    wlog('ok', '✓ Market closed. Gap-aware margins locked.');
-    wsetStatus('wCloseStatus', 'Market closed ✓', 'var(--green)');
+    wlog('ok', '✓ Market closed. HIGH & MEDIUM margins tightened pre-gap.');
+    wsetStatus('wCloseStatus', 'Market closed ✓ — now fire the gap', 'var(--green)');
+    markStep(2, 'done'); markStep(3, 'active');
     document.getElementById('wReopenBtn').disabled = false;
     await wRefreshState();
-
   } catch(e) {
-    wlog('critical', 'Error: ' + (e.reason || e.message || e));
-    wsetStatus('wCloseStatus', 'Failed — see event log', 'var(--red)');
+    const msg = e.reason || e.message || String(e);
+    wlog('critical', 'Error: ' + msg.slice(0, 120));
+    wsetStatus('wCloseStatus', msg.includes('Not owner') ? 'Requires deployer wallet' : 'Failed — see log', 'var(--red)');
     document.getElementById('wCloseBtn').disabled = false;
   }
 }
@@ -1435,21 +1712,23 @@ async function wCloseMarket() {
 async function wTriggerReopen() {
   if (!wcontract) return;
   document.getElementById('wReopenBtn').disabled = true;
-  wsetStatus('wReopenStatus', 'Sending transaction...', 'var(--yellow)');
+  wsetStatus('wReopenStatus', 'Firing gap — approve in MetaMask...', 'var(--yellow)');
 
   try {
-    const gapBps = -320; // -3.2%
-    const basePrice = 4800 * 1000000;
-    wlog('warn', 'Sending: triggerReopen(−3.2%, $4800)...');
+    const gapBps   = -parseInt(document.getElementById('gapSlider').value);
+    const basePrice = parseInt(document.getElementById('priceSlider').value) * 1000000;
+    const gapPct    = (Math.abs(gapBps) / 10).toFixed(1);
+    wlog('warn', `triggerReopen(${gapBps} bps, $${(basePrice/1000000).toLocaleString()}) — sequenced clearing starting...`);
     const tx = await wcontract.triggerReopen(gapBps, basePrice);
-    wlog('warn', `TX: ${tx.hash.slice(0,22)}... pending`);
+    wlog('warn', `TX: ${tx.hash.slice(0,24)}... pending`);
     await tx.wait();
-    wsetStatus('wReopenStatus', 'Reopen complete — see event log', 'var(--green)');
+    wsetStatus('wReopenStatus', `Gap fired ✓ — see event stream for results`, 'var(--green)');
+    markStep(3, 'done');
     await wRefreshState();
-
   } catch(e) {
-    wlog('critical', 'Error: ' + (e.reason || e.message || e));
-    wsetStatus('wReopenStatus', 'Failed — see event log', 'var(--red)');
+    const msg = e.reason || e.message || String(e);
+    wlog('critical', 'Error: ' + msg.slice(0, 120));
+    wsetStatus('wReopenStatus', msg.includes('Not owner') ? 'Requires deployer wallet' : 'Failed — see log', 'var(--red)');
     document.getElementById('wReopenBtn').disabled = false;
   }
 }
