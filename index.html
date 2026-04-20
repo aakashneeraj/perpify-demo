@@ -1312,7 +1312,10 @@ function wListenEvents() {
 async function wConnect(silent) {
   if (!window.ethereum) { if (!silent) wsetStatus('wConnectStatus', 'MetaMask not detected. Please install it.', 'var(--red)'); return; }
   try {
-    if (!silent) await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const existing = await window.ethereum.request({ method: 'eth_accounts' });
+    if (!existing || existing.length === 0) {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+    }
     wprovider = new ethers.providers.Web3Provider(window.ethereum);
     wsigner = wprovider.getSigner();
     const network = await wprovider.getNetwork();
