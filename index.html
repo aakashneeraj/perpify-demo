@@ -613,6 +613,80 @@ nav {
 .wbtn.outline { background: transparent; border: 1px solid var(--border-hi); color: var(--white); }
 .wbtn.outline:hover { border-color: var(--green); color: var(--green); }
 .wbtn:disabled { background: var(--card2); color: var(--gray3); cursor: not-allowed; }
+.wbtn.auto { width: auto; display: inline-block; }
+
+/* ── POSITION CONFIGURATOR ── */
+.pos-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.pos-row:last-child { border-bottom: none; }
+.pos-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray2);
+  width: 24px;
+  flex-shrink: 0;
+}
+.pos-field { display: flex; flex-direction: column; gap: 5px; }
+.pos-field-label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: var(--gray3); text-transform: uppercase; }
+.pos-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-hi);
+  border-radius: 7px;
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 7px 10px;
+  width: 80px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.pos-input:focus { border-color: var(--green); }
+.lev-group { display: flex; gap: 4px; }
+.lev-btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 1px solid var(--border-hi);
+  background: transparent;
+  color: var(--gray2);
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: 'DM Mono', monospace;
+}
+.lev-btn:hover { border-color: var(--green); color: var(--green); }
+.lev-btn.active { background: var(--green); border-color: var(--green); color: #000; }
+.dir-btn {
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.03em;
+}
+.dir-btn.long { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid var(--green-border); }
+.dir-btn.short { background: rgba(255,72,72,0.12); color: #ff7070; border: 1px solid rgba(255,72,72,0.3); }
+.tier-pill {
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.06em;
+}
+.tier-pill.low { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid var(--green-border); }
+.tier-pill.med { background: rgba(255,200,0,0.1); color: #ffc800; border: 1px solid rgba(255,200,0,0.25); }
+.tier-pill.high { background: rgba(255,72,72,0.1); color: #ff7070; border: 1px solid rgba(255,72,72,0.25); }
 
 /* ── FOOTER ── */
 footer {
@@ -882,41 +956,183 @@ footer {
         <div class="ctr-badge" id="w-chainbadge">● NOT CONNECTED</div>
       </div>
 
-      <!-- Step buttons -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <!-- Step 0 — Connect (inline row) -->
+      <div class="w-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+          <div>
+            <h3 style="margin-bottom:4px;">Step 0 — Connect Wallet</h3>
+            <p style="margin-bottom:0;font-size:12px;">Need testnet ETH? Get some free at <a href="https://app.optimism.io/faucet" target="_blank" style="color:var(--green)">app.optimism.io/faucet</a></p>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex-shrink:0;">
+            <button class="wbtn green auto" id="wConnectBtn" onclick="wConnect(false)">Connect MetaMask</button>
+            <div id="wConnectStatus" style="font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;max-width:220px;line-height:1.4;"></div>
+          </div>
+        </div>
+      </div>
 
-        <!-- Connect -->
-        <div class="w-card">
-          <h3>Step 0 — Connect Wallet</h3>
-          <p>Connect MetaMask on Base Sepolia. Get free testnet ETH at <a href="https://app.optimism.io/faucet" target="_blank" style="color:var(--green)">app.optimism.io/faucet</a>.</p>
-          <button class="wbtn green" id="wConnectBtn" onclick="wConnect(false)">Connect MetaMask</button>
-          <div id="wConnectStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+      <!-- Step 1 — Configure & Open Positions -->
+      <div class="w-card" style="margin-bottom:16px;">
+        <h3>Step 1 — Open Positions</h3>
+        <p>Configure three positions — size, leverage, direction, risk tier. Higher leverage = higher risk tier = more exposure to the weekend gap.</p>
+
+        <div id="pos-rows">
+          <!-- P1 -->
+          <div class="pos-row">
+            <div class="pos-label">P1</div>
+            <div class="pos-field">
+              <div class="pos-field-label">Size (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span style="color:var(--gray2);font-size:13px;">$</span>
+                <input type="number" id="p1-size" value="1000" min="100" max="10000" step="100" class="pos-input" oninput="updateMargin(1)">
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Leverage</div>
+              <div class="lev-group" id="p1-lev-group">
+                <button class="lev-btn" onclick="setLev(1,2)">2×</button>
+                <button class="lev-btn" onclick="setLev(1,3)">3×</button>
+                <button class="lev-btn active" onclick="setLev(1,4)">4×</button>
+                <button class="lev-btn" onclick="setLev(1,6)">6×</button>
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Direction</div>
+              <button class="dir-btn long" id="p1-dir" onclick="toggleDir(1)">LONG ↑</button>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Risk Tier</div>
+              <span class="tier-pill med" id="p1-tier">MED</span>
+            </div>
+            <div class="pos-field" style="margin-left:auto;">
+              <div class="pos-field-label">ETH Margin</div>
+              <span id="p1-margin" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--white);">0.0150 ETH</span>
+            </div>
+          </div>
+          <!-- P2 -->
+          <div class="pos-row">
+            <div class="pos-label">P2</div>
+            <div class="pos-field">
+              <div class="pos-field-label">Size (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span style="color:var(--gray2);font-size:13px;">$</span>
+                <input type="number" id="p2-size" value="800" min="100" max="10000" step="100" class="pos-input" oninput="updateMargin(2)">
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Leverage</div>
+              <div class="lev-group" id="p2-lev-group">
+                <button class="lev-btn" onclick="setLev(2,2)">2×</button>
+                <button class="lev-btn" onclick="setLev(2,3)">3×</button>
+                <button class="lev-btn" onclick="setLev(2,4)">4×</button>
+                <button class="lev-btn active" onclick="setLev(2,6)">6×</button>
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Direction</div>
+              <button class="dir-btn long" id="p2-dir" onclick="toggleDir(2)">LONG ↑</button>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Risk Tier</div>
+              <span class="tier-pill high" id="p2-tier">HIGH</span>
+            </div>
+            <div class="pos-field" style="margin-left:auto;">
+              <div class="pos-field-label">ETH Margin</div>
+              <span id="p2-margin" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--white);">0.0120 ETH</span>
+            </div>
+          </div>
+          <!-- P3 -->
+          <div class="pos-row">
+            <div class="pos-label">P3</div>
+            <div class="pos-field">
+              <div class="pos-field-label">Size (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span style="color:var(--gray2);font-size:13px;">$</span>
+                <input type="number" id="p3-size" value="600" min="100" max="10000" step="100" class="pos-input" oninput="updateMargin(3)">
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Leverage</div>
+              <div class="lev-group" id="p3-lev-group">
+                <button class="lev-btn" onclick="setLev(3,2)">2×</button>
+                <button class="lev-btn active" onclick="setLev(3,3)">3×</button>
+                <button class="lev-btn" onclick="setLev(3,4)">4×</button>
+                <button class="lev-btn" onclick="setLev(3,6)">6×</button>
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Direction</div>
+              <button class="dir-btn short" id="p3-dir" onclick="toggleDir(3)">SHORT ↓</button>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Risk Tier</div>
+              <span class="tier-pill low" id="p3-tier">LOW</span>
+            </div>
+            <div class="pos-field" style="margin-left:auto;">
+              <div class="pos-field-label">ETH Margin</div>
+              <span id="p3-margin" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--white);">0.0090 ETH</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Open positions -->
-        <div class="w-card">
-          <h3>Step 1 — Open Positions</h3>
-          <p>Opens 3 test positions across HIGH, MEDIUM, and LOW risk tiers. This seeds the book and funds the loss buffer.</p>
-          <button class="wbtn outline" id="wOpenBtn" onclick="wOpenPositions()" disabled>Open 3 Test Positions</button>
-          <div id="wOpenStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:20px;">
+          <button class="wbtn outline auto" id="wOpenBtn" onclick="wOpenPositions()" disabled>Open All 3 Positions</button>
+          <div id="wOpenStatus" style="font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;"></div>
         </div>
+      </div>
 
-        <!-- Close market -->
-        <div class="w-card">
-          <h3>Step 2 — Close Market</h3>
-          <p>Simulates Friday 16:00 close. Perpify applies gap-aware margin tightening to HIGH and MEDIUM risk positions before the gap fires.</p>
-          <button class="wbtn outline" id="wCloseBtn" onclick="wCloseMarket()" disabled>Close Market (Friday)</button>
-          <div id="wCloseStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+      <!-- Step 2 — Friday Close Price -->
+      <div class="w-card" style="margin-bottom:16px;">
+        <h3>Step 2 — Close Market (Friday)</h3>
+        <p>Enter Friday's closing price. This is passed as <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:12px;">basePrice</code> to <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:12px;">triggerReopen()</code>. Perpify locks gap-aware margins for HIGH and MED risk positions.</p>
+        <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;">
+          <div>
+            <div class="pos-field-label" style="margin-bottom:8px;">Friday Close Price</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--gray2);font-size:15px;">$</span>
+              <input type="number" id="fridayClose" value="4800" min="100" max="999999" step="10" class="pos-input" style="width:110px;" oninput="updateGap()">
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <button class="wbtn outline auto" id="wCloseBtn" onclick="wCloseMarket()" disabled>Close Market</button>
+            <div id="wCloseStatus" style="font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;"></div>
+          </div>
         </div>
+      </div>
 
-        <!-- Trigger reopen -->
-        <div class="w-card">
-          <h3>Step 3 — Trigger Reopen</h3>
-          <p>Fires a −3.2% gap. Sequenced clearing runs on-chain: HIGH risk first, then MEDIUM, then LOW. Watch the events below.</p>
-          <button class="wbtn green" id="wReopenBtn" onclick="wTriggerReopen()" disabled style="background:var(--green);color:#000;">Trigger Reopen Gap</button>
-          <div id="wReopenStatus" style="margin-top:8px;font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;min-height:16px;"></div>
+      <!-- Step 3 — Monday Open / Gap Fire -->
+      <div class="w-card" style="margin-bottom:24px;">
+        <h3>Step 3 — Fire the Gap (Monday Open)</h3>
+        <p>Set Monday's open price. The gap is auto-calculated and fired on-chain — sequenced clearing runs HIGH → MED → LOW in a single transaction.</p>
+        <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;">
+          <div>
+            <div class="pos-field-label" style="margin-bottom:8px;">Monday Open Price</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--gray2);font-size:15px;">$</span>
+              <input type="number" id="mondayOpen" value="4646" min="100" max="999999" step="10" class="pos-input" style="width:110px;" oninput="updateGap()">
+            </div>
+          </div>
+          <div style="flex:1;min-width:220px;">
+            <div class="pos-field-label" style="margin-bottom:8px;">Gap Preview</div>
+            <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:14px 18px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;">
+                <span style="color:var(--gray2);">Gap (bps)</span>
+                <span id="gap-bps" style="font-family:'DM Mono',monospace;font-weight:700;">−320</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;">
+                <span style="color:var(--gray2);">Gap (%)</span>
+                <span id="gap-pct" style="font-family:'DM Mono',monospace;font-weight:700;color:var(--red);">−3.20%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;border-top:1px solid var(--border);padding-top:8px;margin-top:2px;">
+                <span style="color:var(--gray3);">triggerReopen(gapBps, basePrice)</span>
+                <span id="gap-call" style="font-family:'DM Mono',monospace;color:var(--gray3);">(−320, 4800000000)</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:14px;padding-bottom:0;">
+            <button class="wbtn green auto" id="wReopenBtn" onclick="wTriggerReopen()" disabled>Fire Gap Event</button>
+            <div id="wReopenStatus" style="font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;max-width:180px;line-height:1.4;"></div>
+          </div>
         </div>
-
       </div>
 
       <!-- Live state + event log -->
@@ -1356,26 +1572,85 @@ window.addEventListener('load', async () => {
   }
 });
 
+// Position config state
+const posConfig = {
+  1: { notional: 1000, leverage: 4, isLong: true },
+  2: { notional: 800,  leverage: 6, isLong: true },
+  3: { notional: 600,  leverage: 3, isLong: false }
+};
+
+function getTier(leverage) {
+  if (leverage <= 3) return { id: 0, label: 'LOW', cls: 'low' };
+  if (leverage <= 4) return { id: 1, label: 'MED', cls: 'med' };
+  return { id: 2, label: 'HIGH', cls: 'high' };
+}
+
+function getMarginEth(notionalUsd) {
+  // ~1.5% of notional as ETH margin (safe buffer above contract minimum)
+  return (notionalUsd * 0.000015).toFixed(4);
+}
+
+function setLev(posNum, lev) {
+  posConfig[posNum].leverage = lev;
+  const group = document.getElementById(`p${posNum}-lev-group`);
+  group.querySelectorAll('.lev-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.replace('×','') == lev);
+  });
+  const tier = getTier(lev);
+  const tierEl = document.getElementById(`p${posNum}-tier`);
+  tierEl.textContent = tier.label;
+  tierEl.className = `tier-pill ${tier.cls}`;
+  updateMargin(posNum);
+}
+
+function toggleDir(posNum) {
+  posConfig[posNum].isLong = !posConfig[posNum].isLong;
+  const btn = document.getElementById(`p${posNum}-dir`);
+  const isLong = posConfig[posNum].isLong;
+  btn.textContent = isLong ? 'LONG ↑' : 'SHORT ↓';
+  btn.className = `dir-btn ${isLong ? 'long' : 'short'}`;
+}
+
+function updateMargin(posNum) {
+  const size = parseFloat(document.getElementById(`p${posNum}-size`).value) || 0;
+  posConfig[posNum].notional = size;
+  document.getElementById(`p${posNum}-margin`).textContent = `${getMarginEth(size)} ETH`;
+}
+
+function updateGap() {
+  const friday = parseFloat(document.getElementById('fridayClose').value) || 4800;
+  const monday = parseFloat(document.getElementById('mondayOpen').value) || 4646;
+  const gapBps = Math.round((monday - friday) / friday * 10000);
+  const gapPct = (gapBps / 100).toFixed(2);
+  const sign = gapBps >= 0 ? '+' : '';
+  document.getElementById('gap-bps').textContent = sign + gapBps;
+  const pctEl = document.getElementById('gap-pct');
+  pctEl.textContent = sign + gapPct + '%';
+  pctEl.style.color = gapBps < 0 ? 'var(--red)' : 'var(--green)';
+  document.getElementById('gap-bps').style.color = gapBps < 0 ? 'var(--red)' : 'var(--green)';
+  document.getElementById('gap-call').textContent = `(${gapBps}, ${Math.round(friday * 1e6)})`;
+}
+
 async function wOpenPositions() {
   if (!wcontract) return;
   document.getElementById('wOpenBtn').disabled = true;
   wsetStatus('wOpenStatus', 'Sending transactions...', 'var(--yellow)');
 
   try {
-    const positions = [
-      { notional: 1000000000, leverage: 6, isLong: true,  tier: 2, margin: '0.015', label: 'HIGH' },
-      { notional: 800000000,  leverage: 4, isLong: true,  tier: 1, margin: '0.01',  label: 'MEDIUM' },
-      { notional: 600000000,  leverage: 3, isLong: false, tier: 0, margin: '0.008', label: 'LOW' },
-    ];
+    for (const posNum of [1, 2, 3]) {
+      const cfg = posConfig[posNum];
+      const notional = Math.round(cfg.notional * 1e6);
+      const tier = getTier(cfg.leverage);
+      const marginEth = getMarginEth(cfg.notional);
+      const dir = cfg.isLong ? 'LONG' : 'SHORT';
 
-    for (const pos of positions) {
-      wlog('margin', `Sending: openPosition (${pos.label} risk, ${pos.leverage}×)...`);
-      const tx = await wcontract.openPosition(pos.notional, pos.leverage, pos.isLong, pos.tier, {
-        value: ethers.utils.parseEther(pos.margin)
+      wlog('margin', `P${posNum}: $${cfg.notional} ${cfg.leverage}× ${dir} (${tier.label}) — margin ${marginEth} ETH`);
+      const tx = await wcontract.openPosition(notional, cfg.leverage, cfg.isLong, tier.id, {
+        value: ethers.utils.parseEther(marginEth)
       });
       wlog('margin', `TX: ${tx.hash.slice(0,22)}... pending`);
       await tx.wait();
-      wlog('ok', `✓ Confirmed on-chain`);
+      wlog('ok', `✓ P${posNum} confirmed on-chain`);
     }
 
     wsetStatus('wOpenStatus', '3 positions opened ✓', 'var(--green)');
@@ -1395,11 +1670,12 @@ async function wCloseMarket() {
   wsetStatus('wCloseStatus', 'Sending transaction...', 'var(--yellow)');
 
   try {
-    wlog('margin', 'Sending: closeMarket() — Friday 16:00...');
+    const friday = parseFloat(document.getElementById('fridayClose').value) || 4800;
+    wlog('margin', `Sending: closeMarket() — Friday close at $${friday}...`);
     const tx = await wcontract.closeMarket();
     wlog('margin', `TX: ${tx.hash.slice(0,22)}... pending`);
     await tx.wait();
-    wlog('ok', '✓ Market closed. Gap-aware margins locked.');
+    wlog('ok', `✓ Market closed. Margins locked at $${friday}.`);
     wsetStatus('wCloseStatus', 'Market closed ✓', 'var(--green)');
     document.getElementById('wReopenBtn').disabled = false;
     await wRefreshState();
@@ -1417,13 +1693,18 @@ async function wTriggerReopen() {
   wsetStatus('wReopenStatus', 'Sending transaction...', 'var(--yellow)');
 
   try {
-    const gapBps = -320; // -3.2%
-    const basePrice = 4800 * 1000000;
-    wlog('warn', 'Sending: triggerReopen(−3.2%, $4800)...');
+    const friday = parseFloat(document.getElementById('fridayClose').value) || 4800;
+    const monday = parseFloat(document.getElementById('mondayOpen').value) || 4646;
+    const gapBps = Math.round((monday - friday) / friday * 10000);
+    const basePrice = Math.round(friday * 1e6);
+    const gapPct = (gapBps / 100).toFixed(2);
+
+    wlog('warn', `Sending: triggerReopen(${gapBps} bps = ${gapPct >= 0 ? '+' : ''}${gapPct}%, basePrice=$${friday})...`);
     const tx = await wcontract.triggerReopen(gapBps, basePrice);
     wlog('warn', `TX: ${tx.hash.slice(0,22)}... pending`);
     await tx.wait();
-    wsetStatus('wReopenStatus', 'Reopen complete — see event log', 'var(--green)');
+    wlog('ok', `✓ Gap fired. Clearing ran: HIGH → MED → LOW.`);
+    wsetStatus('wReopenStatus', 'Reopen complete ✓', 'var(--green)');
     await wRefreshState();
 
   } catch(e) {
