@@ -1686,10 +1686,21 @@ async function rOpenPositions() {
   if (!rSigner) { rLog('err', 'Connect wallet first.'); return; }
 
   document.getElementById('r-open-btn').disabled = true;
-  document.getElementById('r-open-status').textContent = 'Opening positions…';
+  document.getElementById('r-open-status').textContent = 'Checking market state…';
 
   try {
     const c = new ethers.Contract(PERPIFY_PYTH_CONTRACT, PERPIFY_PYTH_ABI, rSigner);
+
+    // Check market state before attempting — openPosition requires OPEN (0)
+    const state = await c.marketState();
+    const stateNum = typeof state === 'object' ? state.toNumber() : Number(state);
+    const stateNames = ['OPEN', 'CLOSED', 'REOPENED'];
+    if (stateNum !== 0) {
+      rLog('err', `Market is ${stateNames[stateNum] || stateNum} — click "Reset Contract" first (requires deployer wallet).`);
+      document.getElementById('r-open-status').textContent = 'Need reset first';
+      document.getElementById('r-open-btn').disabled = false;
+      return;
+    }
 
     for (const [posNum, cfg] of Object.entries(rPosConfig)) {
       const slot = parseInt(posNum) - 1;
