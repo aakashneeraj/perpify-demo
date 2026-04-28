@@ -1,0 +1,53 @@
+{
+  "feed": "Equity.US.SPY/USD",
+  "feed_id": "0x19e09bb805456ada3979a7d1cbb4b6d63babc3a0f8e8a9509f68afa5c4c11cd5",
+  "pyth_contract_base_mainnet": "0x8250f4aF4B972684F7b336503E2D6dFeDeB1487a",
+  "hermes_endpoint": "https://hermes.pyth.network/v2/updates/price/{unix}?ids[]={feed_id}&encoding=hex",
+  "events": [
+    {
+      "id": "2026-03-23",
+      "label": "Mar 23, 2026 — Monday reopen, +1.48% gap",
+      "headline": "Largest weekend gap in Q1 2026",
+      "friday_close": { "date_et": "2026-03-20", "time_et": "16:00", "unix": 1774036800 },
+      "monday_open":  { "date_et": "2026-03-23", "time_et": "09:30", "unix": 1774272600 },
+      "expected_gap_pct": "+1.4648",
+      "source": "Q1 2026 SPY freshness addendum"
+    },
+    {
+      "id": "2026-03-03",
+      "label": "Mar 3, 2026 — Tuesday reopen, −1.65% gap",
+      "headline": "Largest single-day gap in Q1 2026",
+      "friday_close": { "date_et": "2026-03-02", "time_et": "16:00", "unix": 1772485200 },
+      "monday_open":  { "date_et": "2026-03-03", "time_et": "09:30", "unix": 1772548200 },
+      "expected_gap_pct": "-1.6492",
+      "source": "Q1 2026 SPY freshness addendum"
+    },
+    {
+      "id": "2026-03-06",
+      "label": "Mar 6, 2026 — Friday reopen, −1.16% gap",
+      "headline": "Pre-weekend risk-off",
+      "friday_close": { "date_et": "2026-03-05", "time_et": "16:00", "unix": 1772744400 },
+      "monday_open":  { "date_et": "2026-03-06", "time_et": "09:30", "unix": 1772807400 },
+      "expected_gap_pct": "-1.1595",
+      "source": "Q1 2026 SPY freshness addendum"
+    },
+    {
+      "id": "2026-03-31",
+      "label": "Mar 31, 2026 — Tuesday reopen, +1.10% gap",
+      "headline": "Quarter-end reopen",
+      "friday_close": { "date_et": "2026-03-30", "time_et": "16:00", "unix": 1774900800 },
+      "monday_open":  { "date_et": "2026-03-31", "time_et": "09:30", "unix": 1774963800 },
+      "expected_gap_pct": "+1.1029",
+      "source": "Q1 2026 SPY freshness addendum"
+    },
+    {
+      "id": "2026-03-02",
+      "label": "Mar 2, 2026 — Monday reopen, −1.06% gap",
+      "headline": "Weekend reopen",
+      "friday_close": { "date_et": "2026-02-27", "time_et": "16:00", "unix": 1772226000 },
+      "monday_open":  { "date_et": "2026-03-02", "time_et": "09:30", "unix": 1772461800 },
+      "expected_gap_pct": "-1.0627",
+      "source": "Q1 2026 SPY freshness addendum"
+    }
+  ]
+}

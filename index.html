@@ -688,6 +688,64 @@ nav {
 .tier-pill.med { background: rgba(255,200,0,0.1); color: #ffc800; border: 1px solid rgba(255,200,0,0.25); }
 .tier-pill.high { background: rgba(255,72,72,0.1); color: #ff7070; border: 1px solid rgba(255,72,72,0.25); }
 
+/* ── REPLAY TAB ── */
+.replay-events {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.replay-event-btn {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border-hi);
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--white);
+}
+.replay-event-btn:hover { border-color: var(--green); }
+.replay-event-btn.running { border-color: var(--green); background: var(--green-dim); }
+.replay-event-date { font-size: 11px; font-weight: 700; color: var(--green); font-family: 'DM Mono', monospace; margin-bottom: 5px; }
+.replay-event-headline { font-size: 12px; color: var(--gray1); line-height: 1.4; }
+.replay-output {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  min-height: 120px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rline { padding: 1px 0; }
+.rline.status { color: var(--gray2); }
+.rline.price  { color: var(--white); }
+.rline.gap.pos { color: var(--green); }
+.rline.gap.neg { color: #ff7070; }
+.rline.tx    { color: #ffc800; }
+.rline.tx a  { color: #ffc800; }
+.rline.result { color: var(--green); font-weight: 700; }
+.rline.err   { color: #ff7070; }
+.rline.info  { color: var(--gray3); }
+.replay-notice {
+  background: rgba(0,230,118,0.07);
+  border: 1px solid var(--green-border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 12px;
+  color: var(--gray1);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.replay-notice strong { color: var(--white); }
+
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
@@ -723,6 +781,7 @@ footer {
       <div class="nav-right">
         <button class="nav-tab active" onclick="switchTab('sim',this)">Watch It Happen</button>
         <button class="nav-tab" onclick="switchTab('wallet',this)">Touch The Contract</button>
+        <button class="nav-tab" onclick="switchTab('replay',this)">Replay Real Events</button>
       </div>
     </div>
   </nav>
@@ -1185,6 +1244,354 @@ footer {
     </div>
   </div>
 </div>
+
+<!-- ════ TAB: REPLAY ════ -->
+<div id="tab-replay" class="tab-content">
+  <div class="wrap">
+    <div class="wallet">
+      <h2>Replay real Q1 2026 reopen events.</h2>
+      <p class="wallet-sub">Each replay pulls a Pyth-signed SPY/USD price for the exact Friday close and the next trading-day open. The contract verifies both Pythnet signatures on Base mainnet before computing the gap and running sequenced clearing. The Friday and Monday prices are not inputs — they're proven on-chain.</p>
+
+      <!-- Contract info row -->
+      <div class="ctr-row" style="margin-bottom:16px;">
+        <div class="ctr-key">Contract</div>
+        <div class="ctr-addr">
+          <span id="r-contract-addr" style="color:var(--gray2);">— deploy first —</span>
+        </div>
+        <div class="ctr-badge" id="r-chainbadge">● BASE MAINNET</div>
+      </div>
+
+      <!-- Notice -->
+      <div class="replay-notice" id="r-deploy-notice">
+        <strong>Deploy the contract first.</strong> Run <code style="background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;">npx hardhat run scripts/deploy-pyth.js --network base</code>, then paste the printed address into <code style="background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;">PERPIFY_PYTH_CONTRACT</code> at the top of the inline script below and push.
+        After deploying, this panel becomes fully live — each button fires two real transactions on Base mainnet (~$0.15 total in gas).
+      </div>
+
+      <!-- Event selector -->
+      <div class="w-card" style="margin-bottom:16px;">
+        <h3>Step 1 — Pick a reopen event</h3>
+        <p>Five real Q1 2026 SPY reopens. Click one to load both Pyth price updates and see the gap before connecting a wallet.</p>
+        <div class="replay-events" id="r-event-btns">
+          <!-- populated by JS from catalog.json -->
+          <div style="color:var(--gray3);font-size:12px;">Loading events…</div>
+        </div>
+      </div>
+
+      <!-- Price preview -->
+      <div class="w-card" style="margin-bottom:16px;" id="r-price-card">
+        <h3>Step 2 — Verify prices</h3>
+        <p>These prices come from Pyth's Benchmarks API, signed by Pythnet validators. The contract will reject any blob with a mismatched signature.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div style="background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;padding:16px;">
+            <div class="pos-field-label" style="margin-bottom:8px;">Friday Close (SPY/USD)</div>
+            <div id="r-fri-price" style="font-size:24px;font-weight:800;font-family:'DM Mono',monospace;color:var(--white);">—</div>
+            <div id="r-fri-ts" style="font-size:11px;color:var(--gray3);margin-top:4px;">Pyth publish time: —</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;padding:16px;">
+            <div class="pos-field-label" style="margin-bottom:8px;">Monday Open (SPY/USD)</div>
+            <div id="r-mon-price" style="font-size:24px;font-weight:800;font-family:'DM Mono',monospace;color:var(--white);">—</div>
+            <div id="r-mon-ts" style="font-size:11px;color:var(--gray3);margin-top:4px;">Pyth publish time: —</div>
+          </div>
+        </div>
+        <div id="r-gap-display" style="margin-top:16px;padding:14px 18px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;display:none;">
+          <div style="display:flex;justify-content:space-between;font-size:14px;">
+            <span style="color:var(--gray2);">Computed gap</span>
+            <span id="r-gap-val" style="font-family:'DM Mono',monospace;font-weight:800;font-size:18px;">—</span>
+          </div>
+          <div style="font-size:11px;color:var(--gray3);margin-top:6px;">
+            This is computed inside the contract from the two Pyth-verified prices. The operator cannot choose a different number.
+          </div>
+        </div>
+      </div>
+
+      <!-- Fire -->
+      <div class="w-card" style="margin-bottom:24px;">
+        <h3>Step 3 — Fire on Base mainnet</h3>
+        <p>Connect MetaMask on Base mainnet (chain 8453). Two transactions: <code style="background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px;">closeMarket</code> then <code style="background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px;">fireReopen</code>. ~$0.15 in gas total. Watch events emit below.</p>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;">
+          <button class="wbtn green auto" id="r-connect-btn" onclick="rConnect()">Connect MetaMask</button>
+          <button class="wbtn outline auto" id="r-fire-btn" onclick="rFireSelected()" disabled>Fire Selected Event</button>
+          <div id="r-status" style="font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;max-width:280px;line-height:1.4;"></div>
+        </div>
+        <div class="replay-output" id="r-log">
+          <div class="rline info">Select an event above to begin.</div>
+          <div class="rline info">No wallet needed to preview the prices — only to fire on-chain.</div>
+        </div>
+      </div>
+
+      <!-- Result summary -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="w-card">
+          <h3 style="margin-bottom:16px;">On-Chain Result</h3>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Gap (bps)</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="r-res-gap">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Total Loss (USD)</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="r-res-loss">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Covered by Equity</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="r-res-covered">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;">
+              <span style="color:var(--gray2);">Buffer Used</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:600;" id="r-res-buf">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
+              <span style="color:var(--gray2);">Venue Survives</span>
+              <span style="font-family:'DM Mono',monospace;font-weight:700;" id="r-res-survives">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="w-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3>Event Stream</h3>
+            <button onclick="document.getElementById('r-log').innerHTML=''" style="font-size:11px;color:var(--gray3);background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;">CLEAR</button>
+          </div>
+          <div style="font-size:12px;color:var(--gray3);line-height:1.6;">
+            Transaction links appear in the event stream above after each on-chain step. You can follow them on Basescan to verify the Pyth call succeeded and the clearing events fired in tier order.
+          </div>
+          <div style="margin-top:16px;">
+            <a href="https://basescan.org" target="_blank" class="wbtn outline" style="font-size:12px;padding:10px;">Open Basescan ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── REPLAY TAB — PerpifyReopenPyth ────────────────────────────────────────────
+//
+// UPDATE THIS after deploying:  npx hardhat run scripts/deploy-pyth.js --network base
+const PERPIFY_PYTH_CONTRACT = null; // e.g. '0xYourDeployedAddress'
+
+const PYTH_BASE_MAINNET  = '0x8250f4aF4B972684F7b336503E2D6dFeDeB1487a';
+const SPY_FEED_ID        = '0x19e09bb805456ada3979a7d1cbb4b6d63babc3a0f8e8a9509f68afa5c4c11cd5';
+const BASE_CHAIN_ID      = 8453;
+const BASE_CHAIN_HEX     = '0x2105';
+const HERMES             = 'https://hermes.pyth.network';
+
+const PYTH_CONTRACT_ABI = ['function getUpdateFee(bytes[] priceUpdate) view returns (uint256)'];
+const PERPIFY_PYTH_ABI  = [
+  'function closeMarket(bytes[] priceUpdate, uint64 fridayCloseUnix) payable',
+  'function fireReopen(bytes[] priceUpdate, uint64 mondayOpenUnix) payable',
+  'function reset()',
+  'function marketState() view returns (uint8)',
+  'function getLastResult() view returns (tuple(uint64 fridayPublishTime,uint64 mondayPublishTime,int64 fridayPriceRaw,int64 mondayPriceRaw,int32 expo,int256 gapBps,uint256 totalLossUsd,uint256 lossCoveredByEquity,uint256 lossUncovered,uint256 bufferUsedBps,bool venueSurvives))',
+];
+
+let rCatalog = null;
+let rBlobs   = null;
+let rSigner  = null;
+let rSelectedEvent = null;
+let rLoadedPrices  = {}; // { friday: {price, publishTime, blob}, monday: ... }
+
+// ── Bootstrap ───────────────────────────────────────────────────────────────
+(async function rInit() {
+  try {
+    rCatalog = await fetch('/replay-cache/catalog.json').then(r => r.json());
+    try { rBlobs = await fetch('/replay-cache/blobs.json').then(r => r.json()); } catch {}
+  } catch(e) {
+    rLog('err', 'Failed to load replay catalog: ' + e.message);
+    return;
+  }
+
+  if (PERPIFY_PYTH_CONTRACT) {
+    document.getElementById('r-contract-addr').innerHTML =
+      `<a href="https://basescan.org/address/${PERPIFY_PYTH_CONTRACT}" target="_blank" style="color:var(--white)">${PERPIFY_PYTH_CONTRACT}</a>`;
+    document.getElementById('r-deploy-notice').style.display = 'none';
+    document.getElementById('r-fire-btn').disabled = false;
+  }
+
+  const btns = document.getElementById('r-event-btns');
+  btns.innerHTML = '';
+  for (const ev of rCatalog.events) {
+    const b = document.createElement('button');
+    b.className = 'replay-event-btn';
+    b.dataset.id = ev.id;
+    const gapStr = ev.expected_gap_pct.startsWith('-') ? ev.expected_gap_pct : '+' + ev.expected_gap_pct;
+    b.innerHTML = `<div class="replay-event-date">${ev.label.split('—')[0].trim()}</div><div class="replay-event-headline">${ev.headline}<br><span style="color:${ev.expected_gap_pct.startsWith('-') ? '#ff7070' : 'var(--green)'};">${gapStr}%</span></div>`;
+    b.onclick = () => rSelectEvent(ev.id);
+    btns.appendChild(b);
+  }
+})();
+
+// ── Select & preview event ───────────────────────────────────────────────────
+async function rSelectEvent(id) {
+  rSelectedEvent = id;
+  rLoadedPrices  = {};
+  document.querySelectorAll('.replay-event-btn').forEach(b => b.classList.toggle('running', b.dataset.id === id));
+  document.getElementById('r-fri-price').textContent = 'Loading…';
+  document.getElementById('r-mon-price').textContent = 'Loading…';
+  document.getElementById('r-fri-ts').textContent    = '';
+  document.getElementById('r-mon-ts').textContent    = '';
+  document.getElementById('r-gap-display').style.display = 'none';
+  rLog('status', `Loading Pyth price data for ${id}…`);
+
+  const ev = rCatalog.events.find(e => e.id === id);
+  try {
+    const [fri, mon] = await Promise.all([
+      rFetchPriceUpdate(ev.id, 'friday',  ev.friday_close.unix),
+      rFetchPriceUpdate(ev.id, 'monday',  ev.monday_open.unix),
+    ]);
+    rLoadedPrices.friday = fri;
+    rLoadedPrices.monday = mon;
+
+    document.getElementById('r-fri-price').textContent = '$' + fri.price.toFixed(4);
+    document.getElementById('r-fri-ts').textContent = 'Pyth publish time: ' + new Date(fri.publishTime * 1000).toUTCString();
+    document.getElementById('r-mon-price').textContent = '$' + mon.price.toFixed(4);
+    document.getElementById('r-mon-ts').textContent = 'Pyth publish time: ' + new Date(mon.publishTime * 1000).toUTCString();
+
+    const gapPct = ((mon.price / fri.price) - 1) * 100;
+    const gapBps = Math.round(gapPct * 100);
+    const sign = gapPct >= 0 ? '+' : '';
+    const gapEl = document.getElementById('r-gap-val');
+    gapEl.textContent = sign + gapPct.toFixed(4) + '%  (' + gapBps + ' bps)';
+    gapEl.style.color = gapPct < 0 ? '#ff7070' : 'var(--green)';
+    document.getElementById('r-gap-display').style.display = 'block';
+
+    rLog('price', `Friday close:  $${fri.price.toFixed(4)} (${new Date(fri.publishTime*1000).toISOString().slice(0,16)} UTC)`);
+    rLog('price', `Monday open:   $${mon.price.toFixed(4)} (${new Date(mon.publishTime*1000).toISOString().slice(0,16)} UTC)`);
+    rLog(gapPct < 0 ? 'gap neg' : 'gap pos', `Computed gap:  ${sign}${gapPct.toFixed(4)}% = ${gapBps} bps`);
+    if (!PERPIFY_PYTH_CONTRACT) rLog('info', 'Deploy the contract to fire this on-chain.');
+  } catch(e) {
+    rLog('err', 'Price fetch error: ' + e.message);
+  }
+}
+
+async function rFetchPriceUpdate(dateId, side, unix) {
+  if (rBlobs && rBlobs[dateId] && rBlobs[dateId][side]) {
+    const c = rBlobs[dateId][side];
+    return { blob: '0x' + c.blob_hex, price: c.price, publishTime: c.publish_time };
+  }
+  const url = `${HERMES}/v2/updates/price/${unix}?ids[]=${SPY_FEED_ID}&parsed=true&encoding=hex`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Hermes ${r.status}`);
+  const j = await r.json();
+  const pr = j.parsed[0].price;
+  return {
+    blob: '0x' + j.binary.data[0],
+    price: Number(pr.price) * Math.pow(10, pr.expo),
+    publishTime: pr.publish_time,
+  };
+}
+
+// ── Wallet connect (Base mainnet) ────────────────────────────────────────────
+async function rConnect() {
+  if (!window.ethereum) { rLog('err', 'MetaMask not detected.'); return; }
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    if (!accounts || accounts.length === 0)
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (chainId !== BASE_CHAIN_HEX) {
+      try {
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BASE_CHAIN_HEX }] });
+      } catch(sw) {
+        if (sw.code === 4902) {
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{
+            chainId: BASE_CHAIN_HEX, chainName: 'Base', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+            rpcUrls: ['https://mainnet.base.org'], blockExplorerUrls: ['https://basescan.org'],
+          }]});
+        } else throw sw;
+      }
+    }
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    rSigner = provider.getSigner();
+    const addr = await rSigner.getAddress();
+    rSetStatus(`Connected: ${addr.slice(0,6)}…${addr.slice(-4)} (Base mainnet)`);
+    rLog('status', `Wallet connected: ${addr}`);
+  } catch(e) {
+    if (e.code === -32002) rSetStatus('MetaMask has a pending request — click the MetaMask icon.');
+    else rSetStatus('Connection failed: ' + (e.message || e));
+  }
+}
+
+// ── Fire selected event on-chain ─────────────────────────────────────────────
+async function rFireSelected() {
+  if (!PERPIFY_PYTH_CONTRACT) { rLog('err', 'Contract not deployed yet — see notice above.'); return; }
+  if (!rSelectedEvent)        { rLog('err', 'Select a reopen event first.'); return; }
+  if (!rLoadedPrices.friday)  { rLog('err', 'Prices not loaded — click the event first.'); return; }
+
+  const ev = rCatalog.events.find(e => e.id === rSelectedEvent);
+  if (!rSigner) { rLog('info', 'Connect wallet first.'); return; }
+
+  document.getElementById('r-fire-btn').disabled = true;
+  try {
+    const provider = rSigner.provider;
+    const c    = new ethers.Contract(PERPIFY_PYTH_CONTRACT, PERPIFY_PYTH_ABI, rSigner);
+    const pyth = new ethers.Contract(PYTH_BASE_MAINNET, PYTH_CONTRACT_ABI, provider);
+
+    // Step 2: closeMarket
+    rLog('status', 'Getting Pyth fee for closeMarket…');
+    const friFee = await pyth.getUpdateFee([rLoadedPrices.friday.blob]);
+    rLog('tx', `Sending closeMarket (Friday ${ev.friday_close.date_et} ${ev.friday_close.time_et} ET)…`);
+    const tx1 = await c.closeMarket([rLoadedPrices.friday.blob], ev.friday_close.unix, { value: friFee });
+    rLogTx('tx', 'closeMarket tx:', tx1.hash);
+    await tx1.wait();
+    rLog('status', 'Friday close locked. Pyth signature verified on-chain.');
+
+    // Step 3: fireReopen
+    rLog('status', 'Getting Pyth fee for fireReopen…');
+    const monFee = await pyth.getUpdateFee([rLoadedPrices.monday.blob]);
+    rLog('tx', `Sending fireReopen (Monday ${ev.monday_open.date_et} ${ev.monday_open.time_et} ET)…`);
+    const tx2 = await c.fireReopen([rLoadedPrices.monday.blob], ev.monday_open.unix, { value: monFee });
+    rLogTx('tx', 'fireReopen tx:', tx2.hash);
+    await tx2.wait();
+    rLog('status', 'Reopen fired. Reading result…');
+
+    const r = await c.getLastResult();
+    const gapBps = r.gapBps.toNumber();
+    const bufPct = (r.bufferUsedBps.toNumber() / 100).toFixed(2);
+    const lossTotalStr = '$' + (r.totalLossUsd.toNumber() / 1e6).toFixed(2);
+    rLog('result', `Gap: ${gapBps} bps | Total loss: ${lossTotalStr} | Buffer used: ${bufPct}% | Venue survives: ${r.venueSurvives}`);
+
+    document.getElementById('r-res-gap').textContent      = gapBps + ' bps';
+    document.getElementById('r-res-gap').style.color      = gapBps < 0 ? '#ff7070' : 'var(--green)';
+    document.getElementById('r-res-loss').textContent     = lossTotalStr;
+    document.getElementById('r-res-covered').textContent  = '$' + (r.lossCoveredByEquity.toNumber() / 1e6).toFixed(2);
+    document.getElementById('r-res-buf').textContent      = bufPct + '%';
+    document.getElementById('r-res-survives').textContent = r.venueSurvives ? '✓ YES' : '✗ NO';
+    document.getElementById('r-res-survives').style.color = r.venueSurvives ? 'var(--green)' : '#ff7070';
+
+  } catch(e) {
+    rLog('err', 'Error: ' + (e.reason || e.message || e));
+  }
+  document.getElementById('r-fire-btn').disabled = false;
+}
+
+function rLog(cls, msg) {
+  const d = document.getElementById('r-log');
+  const line = document.createElement('div');
+  line.className = 'rline ' + cls;
+  line.textContent = msg;
+  d.appendChild(line);
+  d.scrollTop = d.scrollHeight;
+}
+function rLogTx(cls, label, hash) {
+  const d = document.getElementById('r-log');
+  const line = document.createElement('div');
+  line.className = 'rline ' + cls;
+  line.textContent = label + ' ' + hash.slice(0,22) + '… ';
+  const a = document.createElement('a');
+  a.href = 'https://basescan.org/tx/' + hash;
+  a.target = '_blank';
+  a.textContent = '[Basescan ↗]';
+  a.style.color = '#ffc800';
+  line.appendChild(a);
+  d.appendChild(line);
+  d.scrollTop = d.scrollHeight;
+}
+function rSetStatus(msg) {
+  document.getElementById('r-status').textContent = msg;
+}
+</script>
 
 <!-- FOOTER -->
 <div class="wrap">
