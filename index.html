@@ -1277,9 +1277,117 @@ footer {
         </div>
       </div>
 
+      <!-- Open Positions -->
+      <div class="w-card" style="margin-bottom:16px;">
+        <h3>Step 2 — Open Positions</h3>
+        <p>Open three positions on the contract before the close. HIGH and MED tiers face gap-aware margin tightening. Clearing runs HIGH → MED → LOW when the gap fires.</p>
+
+        <div id="r-pos-rows">
+          <!-- R-P1 -->
+          <div class="pos-row">
+            <div class="pos-label">P1</div>
+            <div class="pos-field">
+              <div class="pos-field-label">Size (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--gray2);font-size:13px;">$</span>
+                <input type="number" id="rp1-size" value="20" min="1" max="500" step="1" class="pos-input" oninput="rUpdateMargin(1)">
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Leverage</div>
+              <div class="lev-group" id="rp1-lev-group">
+                <button class="lev-btn" onclick="rSetLev(1,2)">2×</button>
+                <button class="lev-btn" onclick="rSetLev(1,3)">3×</button>
+                <button class="lev-btn active" onclick="rSetLev(1,4)">4×</button>
+                <button class="lev-btn" onclick="rSetLev(1,6)">6×</button>
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Direction</div>
+              <button class="dir-btn long" id="rp1-dir" onclick="rToggleDir(1)">LONG ↑</button>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Risk Tier</div>
+              <span class="tier-pill med" id="rp1-tier">MED</span>
+            </div>
+            <div class="pos-field" style="margin-left:auto;">
+              <div class="pos-field-label">ETH Margin</div>
+              <span id="rp1-margin" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--white);">—</span>
+            </div>
+          </div>
+          <!-- R-P2 -->
+          <div class="pos-row">
+            <div class="pos-label">P2</div>
+            <div class="pos-field">
+              <div class="pos-field-label">Size (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--gray2);font-size:13px;">$</span>
+                <input type="number" id="rp2-size" value="20" min="1" max="500" step="1" class="pos-input" oninput="rUpdateMargin(2)">
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Leverage</div>
+              <div class="lev-group" id="rp2-lev-group">
+                <button class="lev-btn" onclick="rSetLev(2,2)">2×</button>
+                <button class="lev-btn" onclick="rSetLev(2,3)">3×</button>
+                <button class="lev-btn" onclick="rSetLev(2,4)">4×</button>
+                <button class="lev-btn active" onclick="rSetLev(2,6)">6×</button>
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Direction</div>
+              <button class="dir-btn long" id="rp2-dir" onclick="rToggleDir(2)">LONG ↑</button>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Risk Tier</div>
+              <span class="tier-pill high" id="rp2-tier">HIGH</span>
+            </div>
+            <div class="pos-field" style="margin-left:auto;">
+              <div class="pos-field-label">ETH Margin</div>
+              <span id="rp2-margin" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--white);">—</span>
+            </div>
+          </div>
+          <!-- R-P3 -->
+          <div class="pos-row">
+            <div class="pos-label">P3</div>
+            <div class="pos-field">
+              <div class="pos-field-label">Size (USD)</div>
+              <div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--gray2);font-size:13px;">$</span>
+                <input type="number" id="rp3-size" value="20" min="1" max="500" step="1" class="pos-input" oninput="rUpdateMargin(3)">
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Leverage</div>
+              <div class="lev-group" id="rp3-lev-group">
+                <button class="lev-btn" onclick="rSetLev(3,2)">2×</button>
+                <button class="lev-btn active" onclick="rSetLev(3,3)">3×</button>
+                <button class="lev-btn" onclick="rSetLev(3,4)">4×</button>
+                <button class="lev-btn" onclick="rSetLev(3,6)">6×</button>
+              </div>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Direction</div>
+              <button class="dir-btn short" id="rp3-dir" onclick="rToggleDir(3)">SHORT ↓</button>
+            </div>
+            <div class="pos-field">
+              <div class="pos-field-label">Risk Tier</div>
+              <span class="tier-pill low" id="rp3-tier">LOW</span>
+            </div>
+            <div class="pos-field" style="margin-left:auto;">
+              <div class="pos-field-label">ETH Margin</div>
+              <span id="rp3-margin" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--white);">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap;">
+          <button class="wbtn outline auto" id="r-open-btn" onclick="rOpenPositions()" disabled>Open All 3 Positions</button>
+          <button class="wbtn outline auto" id="r-reset-btn" onclick="rReset()" disabled style="border-color:rgba(255,72,72,0.4);color:#ff7070;">Reset Contract</button>
+          <div id="r-open-status" style="font-size:11px;color:var(--gray2);font-family:'DM Mono',monospace;"></div>
+        </div>
+      </div>
+
       <!-- Price preview -->
       <div class="w-card" style="margin-bottom:16px;" id="r-price-card">
-        <h3>Step 2 — Verify prices</h3>
+        <h3>Step 3 — Verify prices</h3>
         <p>These prices come from Pyth's Benchmarks API, signed by Pythnet validators. The contract will reject any blob with a mismatched signature.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
           <div style="background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:8px;padding:16px;">
@@ -1306,7 +1414,7 @@ footer {
 
       <!-- Fire -->
       <div class="w-card" style="margin-bottom:24px;">
-        <h3>Step 3 — Fire on Base mainnet</h3>
+        <h3>Step 4 — Fire on Base mainnet</h3>
         <p>Connect MetaMask on Base mainnet (chain 8453). Two transactions: <code style="background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px;">closeMarket</code> then <code style="background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px;">fireReopen</code>. ~$0.15 in gas total. Watch events emit below.</p>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;">
           <button class="wbtn green auto" id="r-connect-btn" onclick="rConnect()">Connect MetaMask</button>
@@ -1377,12 +1485,65 @@ const HERMES             = 'https://hermes.pyth.network';
 
 const PYTH_CONTRACT_ABI = ['function getUpdateFee(bytes[] priceUpdate) view returns (uint256)'];
 const PERPIFY_PYTH_ABI  = [
+  'function openPosition(uint8 slot, uint256 sizeUsd, uint256 leverage, bool isLong, uint8 tier) payable',
   'function closeMarket(bytes[] priceUpdate, uint64 fridayCloseUnix) payable',
   'function fireReopen(bytes[] priceUpdate, uint64 mondayOpenUnix) payable',
   'function reset()',
   'function marketState() view returns (uint8)',
   'function getLastResult() view returns (tuple(uint64 fridayPublishTime,uint64 mondayPublishTime,int64 fridayPriceRaw,int64 mondayPriceRaw,int32 expo,int256 gapBps,uint256 totalLossUsd,uint256 lossCoveredByEquity,uint256 lossUncovered,uint256 bufferUsedBps,bool venueSurvives))',
 ];
+
+// Position config for replay tab
+const rPosConfig = {
+  1: { size: 20, leverage: 4, isLong: true  },
+  2: { size: 20, leverage: 6, isLong: true  },
+  3: { size: 20, leverage: 3, isLong: false },
+};
+
+function rGetTier(leverage) {
+  if (leverage <= 3) return { id: 0, label: 'LOW', cls: 'low' };
+  if (leverage <= 4) return { id: 1, label: 'MED', cls: 'med' };
+  return { id: 2, label: 'HIGH', cls: 'high' };
+}
+
+// Mirrors PerpifyReopenPyth.sol margin formula exactly.
+// sizeUsd param is whole dollars (e.g. 20 = $20).
+// Returns wei as BigInt.
+function rCalcMarginWei(dollarAmt, leverage, tierIdx) {
+  const sizeUsd = BigInt(Math.round(dollarAmt * 1e6));
+  const base = (sizeUsd * 1000000000000n) / BigInt(leverage) / 1000n;
+  const mult = tierIdx === 2 ? 150n : tierIdx === 1 ? 120n : 100n;
+  return (base * mult) / 100n;
+}
+
+function rUpdateMargin(posNum) {
+  const size = parseFloat(document.getElementById(`rp${posNum}-size`).value) || 0;
+  rPosConfig[posNum].size = size;
+  const tier = rGetTier(rPosConfig[posNum].leverage);
+  const wei = rCalcMarginWei(size, rPosConfig[posNum].leverage, tier.id);
+  const eth = (Number(wei) / 1e18).toFixed(5);
+  document.getElementById(`rp${posNum}-margin`).textContent = `${eth} ETH`;
+}
+
+function rSetLev(posNum, lev) {
+  rPosConfig[posNum].leverage = lev;
+  document.getElementById(`rp${posNum}-lev-group`).querySelectorAll('.lev-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.replace('×','') == lev);
+  });
+  const tier = rGetTier(lev);
+  const el = document.getElementById(`rp${posNum}-tier`);
+  el.textContent = tier.label;
+  el.className = `tier-pill ${tier.cls}`;
+  rUpdateMargin(posNum);
+}
+
+function rToggleDir(posNum) {
+  rPosConfig[posNum].isLong = !rPosConfig[posNum].isLong;
+  const btn = document.getElementById(`rp${posNum}-dir`);
+  const isLong = rPosConfig[posNum].isLong;
+  btn.textContent = isLong ? 'LONG ↑' : 'SHORT ↓';
+  btn.className = `dir-btn ${isLong ? 'long' : 'short'}`;
+}
 
 let rCatalog = null;
 let rBlobs   = null;
@@ -1406,6 +1567,8 @@ let rLoadedPrices  = {}; // { friday: {price, publishTime, blob}, monday: ... }
     document.getElementById('r-deploy-notice').style.display = 'none';
     document.getElementById('r-fire-btn').disabled = false;
   }
+  // Initialize margin displays
+  [1,2,3].forEach(n => rUpdateMargin(n));
 
   const btns = document.getElementById('r-event-btns');
   btns.innerHTML = '';
@@ -1507,13 +1670,74 @@ async function rConnect() {
     const addr = await rSigner.getAddress();
     rSetStatus(`Connected: ${addr.slice(0,6)}…${addr.slice(-4)} (Base mainnet)`);
     rLog('status', `Wallet connected: ${addr}`);
+    if (PERPIFY_PYTH_CONTRACT) {
+      document.getElementById('r-open-btn').disabled = false;
+      document.getElementById('r-reset-btn').disabled = false;
+    }
   } catch(e) {
     if (e.code === -32002) rSetStatus('MetaMask has a pending request — click the MetaMask icon.');
     else rSetStatus('Connection failed: ' + (e.message || e));
   }
 }
 
-// ── Fire selected event on-chain ─────────────────────────────────────────────
+// ── Open positions on Pyth contract ──────────────────────────────────────────
+async function rOpenPositions() {
+  if (!PERPIFY_PYTH_CONTRACT) { rLog('err', 'Contract not deployed.'); return; }
+  if (!rSigner) { rLog('err', 'Connect wallet first.'); return; }
+
+  document.getElementById('r-open-btn').disabled = true;
+  document.getElementById('r-open-status').textContent = 'Opening positions…';
+
+  try {
+    const c = new ethers.Contract(PERPIFY_PYTH_CONTRACT, PERPIFY_PYTH_ABI, rSigner);
+
+    for (const [posNum, cfg] of Object.entries(rPosConfig)) {
+      const slot = parseInt(posNum) - 1;
+      const sizeUsd = Math.round(cfg.size * 1e6);
+      const tier = rGetTier(cfg.leverage);
+      const wei = rCalcMarginWei(cfg.size, cfg.leverage, tier.id);
+      const dir = cfg.isLong ? 'LONG' : 'SHORT';
+
+      rLog('status', `P${posNum}: $${cfg.size} ${cfg.leverage}× ${dir} ${tier.label} — margin ${(Number(wei)/1e18).toFixed(5)} ETH`);
+      const tx = await c.openPosition(slot, sizeUsd, cfg.leverage, cfg.isLong, tier.id, {
+        value: wei.toString()
+      });
+      rLog('tx', `openPosition P${posNum} submitted: ${tx.hash.slice(0,22)}…`);
+      await tx.wait();
+      rLog('status', `✓ P${posNum} confirmed`);
+    }
+
+    document.getElementById('r-open-status').textContent = '3 positions open ✓';
+    document.getElementById('r-reset-btn').disabled = false;
+    rLog('status', 'All 3 positions open. Now pick an event and fire.');
+  } catch(e) {
+    rLog('err', 'Error: ' + (e.reason || e.message || e));
+    document.getElementById('r-open-status').textContent = 'Failed — see log';
+    document.getElementById('r-open-btn').disabled = false;
+  }
+}
+
+async function rReset() {
+  if (!PERPIFY_PYTH_CONTRACT || !rSigner) return;
+  try {
+    rLog('status', 'Sending reset()…');
+    const c = new ethers.Contract(PERPIFY_PYTH_CONTRACT, PERPIFY_PYTH_ABI, rSigner);
+    const tx = await c.reset();
+    await tx.wait();
+    rLog('status', '✓ Contract reset. Positions cleared, margin refunded, market OPEN.');
+    document.getElementById('r-open-btn').disabled = false;
+    document.getElementById('r-open-status').textContent = '';
+    // Clear results
+    ['r-res-gap','r-res-loss','r-res-covered','r-res-buf','r-res-survives'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+      document.getElementById(id).style.color = '';
+    });
+  } catch(e) {
+    rLog('err', 'Reset failed: ' + (e.reason || e.message || e));
+  }
+}
+
+// ── Fire selected event on-chain ──────────────────────────────────────────────
 async function rFireSelected() {
   if (!PERPIFY_PYTH_CONTRACT) { rLog('err', 'Contract not deployed yet — see notice above.'); return; }
   if (!rSelectedEvent)        { rLog('err', 'Select a reopen event first.'); return; }
